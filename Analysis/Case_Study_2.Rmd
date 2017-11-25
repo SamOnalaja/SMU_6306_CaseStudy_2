@@ -1,0 +1,85 @@
+---
+title: "MSDS 6306 Case Study 2"
+author: "Nuoya Rezsonya & Steven Millett"
+date: "November 23, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(knitr)
+library(rvest)
+library(XML)
+library(RCurl)
+library(plyr)
+```
+
+## R Markdown
+
+
+
+```{r import_data, echo=TRUE}
+procrastination_data <- read.csv("Data/Procrastination.csv")
+
+kable(dim(procrastination_data), header = "Dimension of procrastination dataset")
+
+```
+
+</br>
+
+Here we have a good sized data set with `r ncol(procrastination_data)` columns and `r nrow(procrastination_data)` rows.
+
+## Including Plots
+
+```{r renaming_columns, echo=TRUE}
+
+
+```
+
+
+```{r cleanup_data, echo=TRUE}
+
+
+procrastination_data$GPMean <- rowMeans(procrastination_data[,grep(names(procrastination_data),pattern = "GP")])
+procrastination_data$AIPMean <- rowMeans(procrastination_data[,grep(names(procrastination_data),pattern = "AIP")])
+procrastination_data$SWLSMean <- rowMeans(procrastination_data[,grep(names(procrastination_data),pattern = "SWLS")])
+procrastination_data$DPMean <- rowMeans(procrastination_data[,grep(names(procrastination_data),pattern = "DP")])
+
+```
+##Scraping wikipedia
+
+```{r scrape_wikipedia, echo=TRUE}
+bindData <- function(firstframe,dataset,category){
+working_temp <- dataset[[firstframe]][2:nrow(dataset[[firstframe]]),c(3,4)]
+names(working_temp)<-c("Country","HDI")
+working_temp1 <- dataset[[firstframe+1]][2:nrow(dataset[[firstframe+1]]),c(3,4)]
+names(working_temp1)<-c("Country","HDI")
+working_temp<-rbind(working_temp,working_temp)
+working_temp<-cbind(working_temp,"Category"=category)
+}
+
+url <- "https://en.wikipedia.org/wiki/List_of_countries_by_Human_Development_Index"
+
+HDI_table <- url %>%
+  read_html() %>% 
+  html_nodes("table")%>%
+html_table(fill=TRUE)
+
+
+HDI <- data.frame("Country","HDI","Category")
+
+HDI<-rbind(bindData(4,HDI_table,"Very high human development"),
+           bindData(7,HDI_table,"High human development"),
+           bindData(10,HDI_table,"Medium human development"),
+           bindData(13,HDI_table,"Low human development"))
+
+
+```
+
+
+```{r merge_datasets, echo=TRUE}
+procrastination_data<-merge(x=procrastination_data,y=HDI,by.x="Country.of.residence",by.y="Country")
+
+
+```
