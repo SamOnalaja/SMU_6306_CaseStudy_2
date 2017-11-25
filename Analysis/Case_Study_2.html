@@ -124,41 +124,134 @@ $(document).ready(function () {
 </div>
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<pre class="r"><code>procrastination_data &lt;- read.csv(&quot;Data/Procrastination.csv&quot;)
+<div id="import-of-procrastination-data" class="section level2">
+<h2>Import of procrastination data</h2>
+<div id="here-we-are-imporing-the-procrastination-data-that-we-got-from-the" class="section level4">
+<h4>Here we are imporing the procrastination data that we got from the</h4>
+<pre class="r"><code>procrastination_data &lt;- read.csv(&quot;Data/Procrastination.csv&quot;,stringsAsFactors = FALSE)
 
-kable(dim(procrastination_data), header = &quot;Dimension of procrastination dataset&quot;)</code></pre>
-<pre><code>## Warning in kable_markdown(x = structure(c(&quot;4264&quot;, &quot;61&quot;), .Dim = c(2L, 1L:
-## The table should have a header (column names)</code></pre>
-<table>
-<tbody>
-<tr class="odd">
-<td align="right">4264</td>
-</tr>
-<tr class="even">
-<td align="right">61</td>
-</tr>
-</tbody>
-</table>
+#kable(dim(procrastination_data), header = &quot;Dimension of procrastination dataset&quot;)</code></pre>
 <p></br></p>
 <p>Here we have a good sized data set with 61 columns and 4264 rows.</p>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<pre class="r"><code>procrastination_data$GPMean &lt;- rowMeans(procrastination_data[,grep(procrastination_data,pattern = &quot;GP&quot;)])
-procrastination_data$AIPMean &lt;- rowMeans(procrastination_data[,grep(procrastination_data,pattern = &quot;AIP&quot;)])
-procrastination_data$SWLSMean &lt;- rowMeans(procrastination_data[,grep(procrastination_data,pattern = &quot;SWLS&quot;)])
-procrastination_data$DPMean &lt;- rowMeans(procrastination_data[,grep(procrastination_data,pattern = &quot;DP&quot;)])</code></pre>
+<div id="here-we-are-renaming-the-values-of-the-columns-to-limit-the-size-of-all-variable-names-to-12-characters-or-less.-we-have-a-lot-of-questions-from-different-questionnaires-due-to-the-fact-that-we-are-more-interested-in-the-average-score-from-these-questionnaires-we-are-simply-going-to-create-sequential-names-based-on-the-source-questionnaire." class="section level4">
+<h4>Here we are renaming the values of the columns to limit the size of all variable names to 12 characters or less. We have a lot of questions from different questionnaires, due to the fact that we are more interested in the average score from these questionnaires we are simply going to create sequential names based on the source questionnaire.</h4>
+<pre class="r"><code>#Here is a function that removesall of the periods from variable names and makes the name into Camel Case form.
+camel &lt;- function(x){ #function for camel case
+    capit &lt;- function(x) paste0(toupper(substring(x, 1, 1)), substring(x, 2, nchar(x)))
+    sapply(strsplit(x, &quot;\\.&quot;), function(x) paste(capit(x), collapse=&quot;&quot;))
+}
+
+names(procrastination_data)&lt;-camel(names(procrastination_data))
+
+#This is just a manual update of variable names that are too long or not descriptive. 
+procrastination_data&lt;- rename(x=procrastination_data,replace=c(&quot;HowLongHaveYouHeldThisPositionYears&quot;=&quot;ExpYears&quot;, &quot;Edu&quot;=&quot;Education&quot;,
+&quot;CountryOfResidence&quot;=&quot;Country&quot;, 
+&quot;ÏAge&quot;=&quot;Age&quot;,                              
+&quot;HowLongHaveYouHeldThisPositionMonths&quot;=&quot;ExpMonths&quot;,
+&quot;DoYouConsiderYourselfAProcrastinator&quot;=&quot;SelfQuestion&quot;,
+&quot;NumberOfDaughters&quot; = &quot;Daughters&quot;, 
+&quot;NumberOfSons&quot; = &quot;Sons&quot;,
+&quot;CurrentOccupation&quot;=&quot;Job&quot;,
+&quot;CommunitySize&quot;=&quot;Community&quot;,
+&quot;MaritalStatus&quot;=&quot;Marital&quot;,
+&quot;DoOthersConsiderYouAProcrastinator&quot;=&quot;OthQuestion&quot;,
+&quot;AnnualIncome&quot;=&quot;Income&quot;))
+
+#This will rename the columns of the different questionnaires 
+colnames(procrastination_data)[grep(names(procrastination_data),pattern = &quot;GP&quot;)] &lt;- sprintf(&quot;GPQues%d&quot;,1:length(grep(names(procrastination_data),pattern = &quot;GP&quot;)))
+colnames(procrastination_data)[grep(names(procrastination_data),pattern = &quot;AIP&quot;)] &lt;- sprintf(&quot;AIPQues%d&quot;,1:length(grep(names(procrastination_data),pattern = &quot;AIP&quot;)))
+colnames(procrastination_data)[grep(names(procrastination_data),pattern = &quot;SWLS&quot;)] &lt;- sprintf(&quot;SWLSQues%d&quot;,1:length(grep(names(procrastination_data),pattern = &quot;SWLS&quot;)))
+colnames(procrastination_data)[grep(names(procrastination_data),pattern = &quot;DP&quot;)] &lt;- sprintf(&quot;DPQues%d&quot;,1:length(grep(names(procrastination_data),pattern = &quot;DP&quot;)))</code></pre>
+</div>
+<div id="we-need-to-clean-the-data.-this-section-we-are-eliminating-values-that-dont-make-sense-as-well-as-errors-that-occured-when-the-data-was-exported." class="section level4">
+<h4>We need to clean the data. This section we are eliminating values that don’t make sense as well as errors that occured when the data was exported.</h4>
+<pre class="r"><code>#This is to replace all values of Country with an empty string
+procrastination_data$Country[procrastination_data$Country==&quot;0&quot;] &lt;- &quot;&quot;
+
+#We are truncating all values of age after the decimal
+procrastination_data$Age &lt;- trunc(procrastination_data$Age,digits=0)
+
+#We are replacing mis identified
+procrastination_data$Sons[procrastination_data$Sons==&quot;Male&quot;] &lt;- &quot;1&quot;
+procrastination_data$Sons[procrastination_data$Sons==&quot;Female&quot;] &lt;- &quot;2&quot;
+
+procrastination_data$Job[procrastination_data$Job==&quot;0&quot;] &lt;- &quot;&quot;
+
+#Years of experience
+#For years of experience any unrealistic value or null value is assigned 
+procrastination_data$ExpYears &lt;-as.numeric(procrastination_data$ExpYears)
+procrastination_data$ExpYears[procrastination_data$ExpYears==999 | is.na(procrastination_data$ExpYears)] &lt;- 0
+procrastination_data$ExpYears &lt;- round(procrastination_data$ExpYears,digits=1)
+
+#The Kids data is updated to only Yes or no
+procrastination_data$Kids &lt;- ifelse(grepl(procrastination_data$Kids,pattern = &quot;Yes&quot;),&quot;Yes&quot;,&quot;No&quot;) 
+
+#Any blank income is assigned a value of 0
+procrastination_data$Income[is.na(procrastination_data$Income)] &lt;- 0
+
+#Any blank answers in the procrastination questionnaires are assigned a Yes value
+procrastination_data$OthQuestion[procrastination_data$OthQuestion==&quot;&quot;] &lt;- &quot;Yes&quot;
+procrastination_data$SelfQuestion[procrastination_data$SelfQuestion==&quot;&quot;] &lt;- &quot;Yes&quot;
+
+#Here we are greping all of the variables with certain criteria in their names and creating a new variable of the mean of variables
+procrastination_data$GPMean &lt;- rowMeans(procrastination_data[,grep(names(procrastination_data),pattern = &quot;GP&quot;)])
+procrastination_data$AIPMean &lt;- rowMeans(procrastination_data[,grep(names(procrastination_data),pattern = &quot;AIP&quot;)])
+procrastination_data$SWLSMean &lt;- rowMeans(procrastination_data[,grep(names(procrastination_data),pattern = &quot;SWLS&quot;)])
+procrastination_data$DPMean &lt;- rowMeans(procrastination_data[,grep(names(procrastination_data),pattern = &quot;DP&quot;)])
+
+#We are rounding the characters to only 1 digit after the decimal
+procrastination_data$GPMean &lt;- round(procrastination_data$GPMean,digits=1)
+procrastination_data$AIPMean &lt;- round(procrastination_data$AIPMean,digits=1)</code></pre>
+</div>
+<div id="due-to-additional-care-being-needed-to-clean-the-job-title-information-we-are-seperating-this-to-a-different-subprocess" class="section level4">
+<h4>Due to additional care being needed to clean the job title information we are seperating this to a different subprocess</h4>
+<pre class="r"><code>#Any job title where the person filled in please specify is made into an empty string.
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;please specify&quot;)] &lt;- &quot;&quot;
+
+#All students are titled as student. As well if someone put their work status as Student then their occupation was updated to student
+procrastination_data$Job[grep(procrastination_data$WorkStatus,pattern = &quot;[sS]tudent&quot;)] &lt;- &quot;Student&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[sS]tudent&quot;)] &lt;- &quot;Student&quot;
+
+#These are statements to make professional job titles more general, i.e. yoga teacher and ESL teacher were simplified to teacher
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[tT]eacher&quot;)] &lt;- &quot;Teacher&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[wW]riter&quot;)] &lt;- &quot;Writer&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;RN|[nN]urse|LPN|PCA&quot;)] &lt;- &quot;Nurse&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[cC][ ]*[eE][ ]*[oO]&quot;)] &lt;- &quot;Chief Executive&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;IT&quot;)] &lt;- &quot;Information Technology&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[dD]octor|[mM][dD]&quot;)] &lt;- &quot;Doctor&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[sS]ales&quot;)] &lt;- &quot;Sales&quot;
+
+#Everyone with a job status of Unemployed with a blank occupation is assigned the value Unemployed for their occupation 
+procrastination_data$Job[procrastination_data$WorkStatus==&quot;unemployed&quot;&amp;procrastination_data$Job==&quot;&quot;] &lt;- &quot;Unemployed&quot;
+
+#All Job titles under 5 characters were made to an empty string
+procrastination_data$Job[nchar(procrastination_data$Job)&lt;5] &lt;- &quot;&quot;
+
+#All jobs with a slash(/) had all text after the slash removed
+procrastination_data$Job&lt;-sub(&quot;\\s*/.*&quot;, &quot;&quot;, procrastination_data$Job)
+
+#All jobs with parantheses had the parantheses removed
+procrastination_data$Job&lt;-sub(&quot;\\s*\\(.*&quot;, &quot;&quot;, procrastination_data$Job)
+
+#All jobs with leading and trailing white space were trimmed
+procrastination_data$Job&lt;-gsub(&quot;^\\s+|\\s+$&quot;, &quot;&quot;, procrastination_data$Job)</code></pre>
+</div>
 </div>
 <div id="scraping-wikipedia" class="section level2">
 <h2>Scraping wikipedia</h2>
-<pre class="r"><code>bindData &lt;- function(firstframe,dataset,category){
+<div id="we-are-pulling-data-from-the-human-development-index-page-on-wikipedia.-we-will-combine-this-data-from-different-tables-and-assign-it-a-category-value-based-on-the-hdi-score." class="section level4">
+<h4>We are pulling data from the Human Development Index page on Wikipedia. We will combine this data from different tables and assign it a category value based on the HDI score.</h4>
+<pre class="r"><code>#This is a function to combine multiple tables of scraped data that share a similar category
+bindData &lt;- function(firstframe,dataset,category){
+#Here we are assigning the columns we need to some temporary variables and renaming the columns
 working_temp &lt;- dataset[[firstframe]][2:nrow(dataset[[firstframe]]),c(3,4)]
 names(working_temp)&lt;-c(&quot;Country&quot;,&quot;HDI&quot;)
 working_temp1 &lt;- dataset[[firstframe+1]][2:nrow(dataset[[firstframe+1]]),c(3,4)]
 names(working_temp1)&lt;-c(&quot;Country&quot;,&quot;HDI&quot;)
-working_temp&lt;-rbind(working_temp,working_temp)
+
+#We are binding the rows of our two temp variables and adding the Category value.
+working_temp&lt;-rbind(working_temp,working_temp1)
 working_temp&lt;-cbind(working_temp,&quot;Category&quot;=category)
 }
 
@@ -176,7 +269,16 @@ HDI&lt;-rbind(bindData(4,HDI_table,&quot;Very high human development&quot;),
            bindData(7,HDI_table,&quot;High human development&quot;),
            bindData(10,HDI_table,&quot;Medium human development&quot;),
            bindData(13,HDI_table,&quot;Low human development&quot;))</code></pre>
-<pre class="r"><code>procrastination_data&lt;-merge(x=procrastination_data,y=HDI,by.x=&quot;Country.of.residence&quot;,by.y=&quot;Country&quot;)</code></pre>
+</div>
+<div id="here-we-are-merging-our-procrastination-data-to-the-hdi-data-pulled-from-wikipedia." class="section level4">
+<h4>Here we are merging our procrastination data to the HDI data pulled from Wikipedia.</h4>
+<pre class="r"><code>#We are doing a left merge of the procrastination data on the HDI data pulled from wikipedia. This means that if there is a missing country value from the procrastination data we will still bring that data over with missing HDI information.
+merged_data&lt;-merge(x=procrastination_data,y=HDI,by=&quot;Country&quot;,all.x=TRUE)</code></pre>
+</div>
+<div id="our-client-wants-us-to-only-study-subjects-over-the-age-of-18-so-we-are-selecting-a-subset-of-only-ages-that-we-can-confirm-are-over-the-age-of-18." class="section level4">
+<h4>Our client wants us to only study subjects over the age of 18 so we are selecting a subset of only ages that we can confirm are over the age of 18.</h4>
+<pre class="r"><code>cleaned_data &lt;- merged_data[merged_data$Age&gt;18 &amp; !is.na(merged_data$Age),]</code></pre>
+</div>
 </div>
 
 
