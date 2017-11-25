@@ -279,6 +279,414 @@ merged_data&lt;-merge(x=procrastination_data,y=HDI,by=&quot;Country&quot;,all.x=
 <h4>Our client wants us to only study subjects over the age of 18 so we are selecting a subset of only ages that we can confirm are over the age of 18.</h4>
 <pre class="r"><code>cleaned_data &lt;- merged_data[merged_data$Age&gt;18 &amp; !is.na(merged_data$Age),]</code></pre>
 </div>
+<div id="presented-below-is-a-table-of-the-number-count-of-the-participants-in-the-survey-per-country." class="section level4">
+<h4>Presented below is a table of the number count of the participants in the survey per country.</h4>
+<pre class="r"><code>frequencyOfRespondantsByGender &lt;- as.data.frame(table(cleaned_data$Gender))
+colnames(frequencyOfRespondantsByGender) &lt;- c(&quot;Gender&quot;,&quot;Number of Participants&quot;)
+kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],row.names = FALSE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Gender</th>
+<th align="right">Number of Participants</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Female</td>
+<td align="right">2309</td>
+</tr>
+<tr class="even">
+<td align="left">Male</td>
+<td align="right">1721</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="right">6</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="presented-below-is-a-table-of-the-number-count-of-the-participants-in-the-survey-per-country.-1" class="section level4">
+<h4>Presented below is a table of the number count of the participants in the survey per country.</h4>
+<pre class="r"><code>frequencyOfRespondantsByCountry &lt;- as.data.frame(table(cleaned_data$Country))
+colnames(frequencyOfRespondantsByCountry) &lt;- c(&quot;Country&quot;,&quot;Number of Participants&quot;)
+kable(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountry$`Number of Participants`),],row.names = FALSE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Country</th>
+<th align="right">Number of Participants</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">United States</td>
+<td align="right">2785</td>
+</tr>
+<tr class="even">
+<td align="left">Canada</td>
+<td align="right">243</td>
+</tr>
+<tr class="odd">
+<td align="left">United Kingdom</td>
+<td align="right">177</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="right">160</td>
+</tr>
+<tr class="odd">
+<td align="left">Australia</td>
+<td align="right">99</td>
+</tr>
+<tr class="even">
+<td align="left">India</td>
+<td align="right">78</td>
+</tr>
+<tr class="odd">
+<td align="left">Italy</td>
+<td align="right">62</td>
+</tr>
+<tr class="even">
+<td align="left">Germany</td>
+<td align="right">36</td>
+</tr>
+<tr class="odd">
+<td align="left">Brazil</td>
+<td align="right">20</td>
+</tr>
+<tr class="even">
+<td align="left">Ireland</td>
+<td align="right">19</td>
+</tr>
+<tr class="odd">
+<td align="left">Isreal</td>
+<td align="right">19</td>
+</tr>
+<tr class="even">
+<td align="left">Netherlands</td>
+<td align="right">18</td>
+</tr>
+<tr class="odd">
+<td align="left">Sweden</td>
+<td align="right">15</td>
+</tr>
+<tr class="even">
+<td align="left">Norway</td>
+<td align="right">14</td>
+</tr>
+<tr class="odd">
+<td align="left">France</td>
+<td align="right">13</td>
+</tr>
+<tr class="even">
+<td align="left">Japan</td>
+<td align="right">13</td>
+</tr>
+<tr class="odd">
+<td align="left">Spain</td>
+<td align="right">13</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="right">12</td>
+</tr>
+<tr class="odd">
+<td align="left">Finland</td>
+<td align="right">12</td>
+</tr>
+<tr class="even">
+<td align="left">Mexico</td>
+<td align="right">12</td>
+</tr>
+<tr class="odd">
+<td align="left">New Zealand</td>
+<td align="right">12</td>
+</tr>
+<tr class="even">
+<td align="left">South Africa</td>
+<td align="right">12</td>
+</tr>
+<tr class="odd">
+<td align="left">Switzerland</td>
+<td align="right">12</td>
+</tr>
+<tr class="even">
+<td align="left">Philippines</td>
+<td align="right">11</td>
+</tr>
+<tr class="odd">
+<td align="left">Greece</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">Belgium</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="left">Denmark</td>
+<td align="right">9</td>
+</tr>
+<tr class="even">
+<td align="left">Turkey</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="left">Hong Kong</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td align="left">Portugal</td>
+<td align="right">7</td>
+</tr>
+<tr class="odd">
+<td align="left">Slovenia</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">Poland</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">Romania</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">Afghanistan</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Chile</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Croatia</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Malaysia</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Singapore</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Algeria</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Argentina</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">Austria</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Czech Republic</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">Ecuador</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Puerto Rico</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">Uruguay</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Albania</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Andorra</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Bermuda</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Bulgaria</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Columbia</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Ghana</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Iran</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Malta</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Peru</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Saudi Arabia</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">South Korea</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Thailand</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Ukraine</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Venezuela</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Yugoslavia</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Antigua</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Bahamas</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Barbados</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Bolivia</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Botswana</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Brunei</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Cyprus</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Dominican Republic</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Egypt</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">El Salvador</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Guam</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Guyana</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Hungary</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Iceland</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Jamaica</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Kazakhstan</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Kenya</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Lithuania</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Luxembourg</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Macao</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Macedonia</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Morocco</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Myanmar</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Nicaragua</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Pakistan</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Panama</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Qatar</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Russia</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Sri Lanka</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Taiwan</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Vietnam</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
 

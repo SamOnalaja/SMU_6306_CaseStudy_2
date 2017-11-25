@@ -193,3 +193,18 @@ merged_data<-merge(x=procrastination_data,y=HDI,by="Country",all.x=TRUE)
 cleaned_data <- merged_data[merged_data$Age>18 & !is.na(merged_data$Age),]
 
 ```
+
+####Presented below is a table of the number count of the participants in the survey per country.
+```{r countByGender, echo=TRUE}
+frequencyOfRespondantsByGender <- as.data.frame(table(cleaned_data$Gender))
+colnames(frequencyOfRespondantsByGender) <- c("Gender","Number of Participants")
+kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],row.names = FALSE)
+```
+
+
+####Presented below is a table of the number count of the participants in the survey per country.
+```{r countByCountry, echo=TRUE}
+frequencyOfRespondantsByCountry <- as.data.frame(table(cleaned_data$Country))
+colnames(frequencyOfRespondantsByCountry) <- c("Country","Number of Participants")
+kable(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountry$`Number of Participants`),],row.names = FALSE)
+```
