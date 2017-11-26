@@ -225,7 +225,6 @@ HDI<-rbind(bindData(4,HDI_table,"Very high human development"),
 ```{r merge_datasets, echo=TRUE}
 #We are doing a left merge of the procrastination data on the HDI data pulled from wikipedia. This means that if there is a missing country value from the procrastination data we will still bring that data over with missing HDI information.
 merged_data<-merge(x=procrastination_data,y=HDI,by="Country",all.x=TRUE)
-
 ```
 
 ####Our client wants us to only study subjects over the age of 18 so we are selecting a subset of only ages that we can confirm are over the age of 18.
