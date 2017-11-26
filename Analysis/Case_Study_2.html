@@ -219,8 +219,10 @@ procrastination_data$Country[procrastination_data$Country==&quot;0&quot;] &lt;- 
 <li>There are blanks answers under the question: Do you consider yourself a procrastinator and question:Do others consider you a procrastinator. Here we assign them a Yes value.</li>
 </ul>
 <pre class="r"><code>#Any blank answers in the procrastination questionnaires are assigned a Yes value
-procrastination_data$OthQuestion[procrastination_data$OthQuestion==&quot;&quot;] &lt;- &quot;Yes&quot;
-procrastination_data$SelfQuestion[procrastination_data$SelfQuestion==&quot;&quot;] &lt;- &quot;Yes&quot;</code></pre>
+procrastination_data$OthQuestion[procrastination_data$OthQuestion==&quot;&quot;] &lt;- &quot;NA&quot;
+procrastination_data$SelfQuestion[procrastination_data$SelfQuestion==&quot;&quot;] &lt;- &quot;NA&quot;
+procrastination_data$SelfQuestion[procrastination_data$SelfQuestion == '0'] &lt;- &quot;NA&quot;
+procrastination_data$SelfQuestion[procrastination_data$SelfQuestion == '4'] &lt;- &quot;NA&quot;</code></pre>
 <ul>
 <li>Creating columns for the mean of DP,AIP,GP and SWLS to represent the individual’s average decisional procrastination, procrastination behavior,generalized procrastination and life satisfaction. We round the mean up to only one digit.</li>
 </ul>
