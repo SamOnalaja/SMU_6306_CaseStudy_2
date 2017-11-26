@@ -1,13 +1,79 @@
-# MSDS 6306 Case Study 2
-Nuoya Rezsonya & Steven Millett  
-November 23, 2017  
+---
+title: "MSDS 6306 Case Study 2"
+author: "Nuoya Rezsonya & Steven Millett"
+date: "November 23, 2017"
+output: 
+  html_document:
+      keep_md: true
+---
 
 
 
-##Import of procrastination data
+### Introduction
 
+This report summarizes the statistical analysis, analysis results and analysis plots associated with the procrastination data set.
 
-#### Here we are importing the procrastination data that we got from the client and get the dimension of the data.This data set has 4262 rows and 61 columns.
+The purpose of this report is to illustrate data processing and modelling method used in this analysis as well as inferences and conclusions one can draw from it.
+
+Project target is providing the analysis result to clients who want to get a preliminary understanding of how procrasination and life satisfaction scale are associated with the following factors:
+
+* Age
+	
+* Gender
+	
+* Children(having children or not and how many children)
+	
+* Education Level
+	
+* Work Status(full time or part time)
+	
+* Annual Income
+	
+* Occupation
+	
+* Years of Experience
+	
+* Community Size
+	
+* Country of Residence(HDIs of Nations)
+	
+* Marital Status
+
+Project report including:
+
+* Statistical analysis:
+
+	+ keep all pbservations where the participant is above 18
+	
+	+ provide descriptive statistics on age, income, HDI and mean scores of decisional procrastination, procrastination behavior,generalized procrastination and life satisfactor
+
+	+ provide histograms of Age and mean score of generalized procrastination
+
+	+ provide tables of the number count of participants in the survey by gender, work status and occupation
+	
+	+ provide table of the number count of participants in the survey per contry in descending order
+	
+	+ provide how many people said they felt they were procrastinators and also said others thought they were procrastinators
+	
+	+ provide a plot which displays top 15 nations in average generalized procrastination score
+	
+	+ provide a plot which displays top 15 nations in average procrastination behavior score
+	
+	+ find out the relationship between age and income
+	
+	+ find out the relationship between life satisfaction score and HDI score
+	
+	+ find out the relationship between life satisfaction score and HDI category
+	
+* Conclusion and references from the statistical analysis 
+
+* Output files(in csv format) can be found in the repository.
+
+### Analysis processes
+
+#### Import of procrastination data
+
+##### Importing the procrastination data that we got from the client and get the dimension of the data.This data set has 4262 rows and 61 columns.
 
 
 ```r
@@ -28,10 +94,10 @@ kable(dim(procrastination_data), header = "Dimension of procrastination dataset"
 | 4264|
 |   61|
 
-</br>
 
-####We are renaming the values of the columns to limit the size of all variable names to 12 characters or less. We have a lot of questions from different questionnaires, due to the fact that we are more interested in the average score from these questionnaires we are simply going to create sequential names based on the source questionnaire. 
+#### Munging the imported data 
 
+##### 1. Renaming the values of the columns to limit the size of all variable names to 12 characters or less. We have a lot of questions from different questionnaires, due to the fact that we are more interested in the average score from these questionnaires we are simply going to create sequential names based on the source questionnaire. 
 
 
 ```r
@@ -46,7 +112,7 @@ names(procrastination_data)<-camel(names(procrastination_data))
 #a manual update of variable names that are too long or not descriptive. 
 procrastination_data<- rename(x=procrastination_data,replace=c("HowLongHaveYouHeldThisPositionYears"="ExpYears", "Edu"="Education",
 "CountryOfResidence"="Country", 
-"ÃAge"="Age",                              
+"ÏAge"="Age",                              
 "HowLongHaveYouHeldThisPositionMonths"="ExpMonths",
 "DoYouConsiderYourselfAProcrastinator"="SelfQuestion",
 "NumberOfDaughters" = "Daughters", 
@@ -65,7 +131,7 @@ colnames(procrastination_data)[grep(names(procrastination_data),pattern = "SWLS"
 colnames(procrastination_data)[grep(names(procrastination_data),pattern = "DP")] <- sprintf("DPQues%d",1:length(grep(names(procrastination_data),pattern = "DP")))
 ```
 
-####Cleaning up the data. This section we are eliminating values that don't make sense as well as errors that occured when the data was exported.
+##### 2. Cleaning up the data. We are eliminating values that don't make sense as well as errors that occured when the data was exported.
 
 * There are unrealistic and null values in the years of experience data, here those values will be assigned to zero. We also round up values to only one digit.
 
@@ -74,7 +140,9 @@ colnames(procrastination_data)[grep(names(procrastination_data),pattern = "DP")]
 #Years of experience
 #For years of experience any unrealistic value or null value is assigned 
 procrastination_data$ExpYears <-as.numeric(procrastination_data$ExpYears)
+
 procrastination_data$ExpYears[procrastination_data$ExpYears==999 | is.na(procrastination_data$ExpYears)] <- 0
+
 procrastination_data$ExpYears <- round(procrastination_data$ExpYears,digits=1)
 ```
 
@@ -84,11 +152,12 @@ procrastination_data$ExpYears <- round(procrastination_data$ExpYears,digits=1)
 ```r
 #We are replacing mis identified
 procrastination_data$Job[procrastination_data$Job=="0"] <- "NA"
+
 #Any blank income is assigned a value of 0
 procrastination_data$Income[is.na(procrastination_data$Income)] <- 0
 ```
 
-* Relabelling the Number of sons data. The data is labelled as Male and Female. Here we relabel the gender back to intergers with Male=1 and Female =2.
+* Relabelling the number of sons data. The data is labelled as Male and Female. Here we relabel the genders back to intergers with Male=1 and Female =2.
 
 
 ```r
@@ -114,12 +183,17 @@ procrastination_data$Age <- trunc(procrastination_data$Age,digits=0)
 
 * There are zero values in the contry of residence. We are replacing them with NA to treat this as missing.
 
+
 ```r
 #This is to replace all 0 values of Country with an empty string
 procrastination_data$Country[procrastination_data$Country=="0"] <- "NA"
 ```
 
-* There are blanks answers under the question: Do you consider yourself a procrastinator and question:Do others consider you a procrastinator. Here we assign them a Yes value.
+* There are blanks answers under the question: 
+	* Do you consider yourself a procrastinator?
+	* Do others consider you a procrastinator?
+	* Here we assign them a NA value.
+	
 
 ```r
 #Any blank answers in the procrastination questionnaires are assigned a Yes value
@@ -130,6 +204,7 @@ procrastination_data$SelfQuestion[procrastination_data$SelfQuestion == '4'] <- "
 ```
 
 * Creating columns for the mean of DP,AIP,GP and SWLS to represent the individual's average decisional procrastination, procrastination behavior,generalized procrastination and life satisfaction. We round the mean up to only one digit.
+
 
 ```r
 #Here we are greping all of the variables with certain criteria in their names and creating a new variable of the mean of variables
@@ -144,6 +219,7 @@ procrastination_data$AIPMean <- round(procrastination_data$AIPMean,digits=1)
 ```
 
 * The job titles also need to be organized. 
+
 	* In this process, any job title with 'please specify' will be assigned to a NA to be treated as missing.
 	
 	* All students are titled as student.
@@ -175,6 +251,7 @@ camelpreserve <- function(x){ #function for camel case
 }
 
 #Any job title where the person filled in please specify is made into an empty string.
+
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "please specify")] <- "NA"
 
 #All students are titled as student. As well if someone put their work status as Student then their occupation was updated to student
@@ -208,11 +285,13 @@ procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Bb]usiness")]
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Cc]linical")] <- "Clinical"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Cc]ommunications")] <- "Communication"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Cc]omputer")] <- "Computer"
+procrastination_data$Job[procrastination_data$Job==""] <- "NA"
 #Everyone with a job status of Unemployed with a blank occupation is assigned the value Unemployed for their occupation 
 procrastination_data$Job[procrastination_data$WorkStatus=="unemployed"& procrastination_data$Job==""] <- "Unemployed"
 
 #All Job titles under 5 characters were made to an empty string
 procrastination_data$Job[nchar(procrastination_data$Job)<5] <- ""
+procrastination_data$Job[procrastination_data$Job==""] <- "NA"
 
 #All jobs with a slash(/) had all text after the slash removed
 procrastination_data$Job<-sub("\\s*/.*", "", procrastination_data$Job)
@@ -224,6 +303,8 @@ procrastination_data$Job<-sub("\\s*\\(.*", "", procrastination_data$Job)
 procrastination_data$Job<-gsub("^\\s+|\\s+$", "", procrastination_data$Job)
 
 procrastination_data$Job<-camelpreserve(procrastination_data$Job)
+
+procrastination_data$Job[procrastination_data$Job==""] <- "NA"
 ```
 
 * There are blanks in Gender data. We are replacing blanks with NA.
@@ -238,9 +319,10 @@ procrastination_data$Gender[procrastination_data$Gender ==""] <- "NA"
 ```r
 procrastination_data$WorkStatus[procrastination_data$WorkStatus ==""] <- "NA"
 ```
-##Scraping wikipedia
 
-####We are pulling data from the Human Development Index page on Wikipedia. We will combine this data from different tables and assign it a category value based on the HDI score.
+#### Web Scraping wikipedia
+
+##### 1. We are pulling data(HDI for nations recognized by the United Nation only) from the Human Development Index page on Wikipedia. We will combine this data from different tables and assign it a category value based on the HDI score.
 
 
 ```r
@@ -273,20 +355,23 @@ HDI<-rbind(bindData(4,HDI_table,"Very high human development"),
            bindData(13,HDI_table,"Low human development"))
 ```
 
-####Merging our procrastination data to the HDI data pulled from Wikipedia. 
+##### 2. Merging our procrastination data to the HDI data pulled from Wikipedia. 
 
 ```r
 #We are doing a left merge of the procrastination data on the HDI data pulled from wikipedia. This means that if there is a missing country value from the procrastination data we will still bring that data over with missing HDI information.
 merged_data<-merge(x=procrastination_data,y=HDI,by="Country",all.x=TRUE)
 ```
 
-####Our client wants us to only study subjects over the age of 18 so we are selecting a subset of only ages that we can confirm are over the age of 18.
+##### 3. Based on the request from our client. We only study subjects over the age of 18 so we are selecting a subset of only ages that we can confirm are over the age of 18.And let columns have proper data type.
 
 ```r
 cleaned_data <- merged_data[merged_data$Age>18 & !is.na(merged_data$Age),]
+# make columns into proper data types
+cleaned_data$Sons <- as.numeric(cleaned_data$Sons)
+cleaned_data$HDI <- as.numeric(cleaned_data$HDI )
 ```
 
-####Presented below are the descriptive statistics on Age, Income, HDI, and for mean columns of GP,AIP,SWLS,DP.There are two histograms for Age and Mean GP data. The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.
+##### 4. Presented below are the descriptive statistics on Age, Income, HDI, and for mean columns of GP,AIP,SWLS,DP. There are two histograms for Age and Mean GP data. The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.
 
 
 ```r
@@ -316,8 +401,8 @@ HDIsummary
 ```
 
 ```
-##    Length     Class      Mode 
-##      4036 character character
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##  0.4790  0.9200  0.9200  0.9056  0.9200  0.9490     192
 ```
 
 ```r
@@ -382,7 +467,7 @@ qplot(cleaned_data$GPMean,
 			geom="histogram",
       binwidth = 0.1,  
       main = "Histogram for Mean GP", 
-      xlab = "Mean GP",  
+      xlab = "Mean GP Score",  
       fill=I("light blue"), 
       col=I("red"))+
 	theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
@@ -391,7 +476,7 @@ qplot(cleaned_data$GPMean,
 
 ![](Case_Study_2_files/figure-html/countByGender-2.png)<!-- -->
 
-####Presented below is a table of the number count of the participants in the survey by genders.
+##### 5. Presented below is a table of the number count of the participants in the survey by genders.If there are blanks in gender data, they will be assigned NA. Therefore the table will have females, males and NA.
 
 ```r
 frequencyOfRespondantsByGender <- as.data.frame(table(cleaned_data$Gender))
@@ -408,7 +493,7 @@ Male                        1721
 NA                             6
 
 
-####Presented below is a table of the number count of the participants in the survey by Work Status.
+##### 6. Presented below is a table of the number count of the participants in the survey by Work Status.If there are 'blanks'please specify" in work status data, they will be assigned NA. Therefore the table will have full-time, part-time,student,unemployed, retired and NA.
 
 ```r
 frequencyOfRespondantsByWork <- as.data.frame(table(cleaned_data$WorkStatus))
@@ -427,7 +512,7 @@ unemployed                       258
 retired                          174
 NA                                42
 
-####Presented below is a table of the number count of the participants in the survey by Occupation.
+##### 7. Presented below is a table of the number count of the participants in the survey by Occupation.
 
 
 ```r
@@ -440,9 +525,8 @@ kable(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of 
 
 Job                                         Number of Participants
 -----------------------------------------  -----------------------
-                                                              1824
+Na                                                            1966
 Student                                                        845
-Unemployed                                                     155
 Teacher                                                         88
 Attorney                                                        53
 College Professor                                               42
@@ -464,6 +548,7 @@ Marketing                                                       20
 Doctor                                                          19
 Sales                                                           18
 Supervisor                                                      13
+Unemployed                                                      13
 Business                                                        12
 Scientist                                                       12
 Consultant                                                      11
@@ -804,7 +889,8 @@ Volunteer Director                                               1
 Vp Scientific Affairs                                            1
 Warehouse                                                        1
 
-####Presented below is a table of the number count of the participants in the survey per country.
+##### 8. Presented below is a table of the number count of the participants in the survey per country. Blanks in the country data will be assigned to NA. 
+
 
 ```r
 cleaned_data$Country[cleaned_data$Country==""] <- "NA"
@@ -909,7 +995,7 @@ Sri Lanka                                  1
 Taiwan                                     1
 Vietnam                                    1
 
-####Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2846 people matched their perceptions to others.
+##### 9. Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2846 people matched their perceptions to others.
 
 
 ```r
@@ -922,7 +1008,7 @@ matched
 ## [1] 2846
 ```
 
-####Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.
+##### 10. Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.Those regions are not recognized as soverign nations will have NA values to their HDI score and HDI category.
 
 
 ```r
@@ -957,8 +1043,8 @@ merged15
 
 ```r
 ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) + 
-			geom_bar(stat="identity", aes(fill=HDI))+  scale_fill_hue(h = c(5, 100)) +
-			ggtitle('Barchart: Top 15 Nations In Average Procrastination Scores(GP)')+
+			geom_bar(stat="identity", aes(fill=Category))+  scale_fill_hue(h = c(5, 100)) +
+			ggtitle('Top 15 Nations In Average Procrastination Scores(GP)')+
 			ylab('Average Procrastination Scores(GP)')+ 
 			xlab('Country')+
 
@@ -968,7 +1054,7 @@ ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) +
 
 ![](Case_Study_2_files/figure-html/barchart5B-1.png)<!-- -->
 
-####Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the AIP score.
+##### 11. Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the AIP score.Those regions are not recognized as soverign nations will have NA values as their HDI score and HDI category.
 
 
 ```r
@@ -1003,8 +1089,8 @@ AIPmerged15
 
 ```r
 ggplot(AIPmerged15, aes(reorder(Country, AIPMean),AIPMean)) + 
-			geom_bar(stat="identity", aes(fill=HDI))+  scale_fill_hue(h = c(5, 100)) +
-			ggtitle('Barchart: Top 15 Nations In Average Procrastination Scores(AIP)')+
+			geom_bar(stat="identity", aes(fill=Category))+  scale_fill_hue(h = c(5, 100)) +
+			ggtitle('Top 15 Nations In Average Procrastination Scores(AIP)')+
 			ylab('Average Procrastination Scores(AIP)')+ 
 			xlab('Country')+
 
@@ -1015,36 +1101,128 @@ ggplot(AIPmerged15, aes(reorder(Country, AIPMean),AIPMean)) +
 ![](Case_Study_2_files/figure-html/barchart5C-1.png)<!-- -->
 
 
-####Presented below is a table displaying nations show up both in GP and AIP plot.
+##### 12. Presented below is a table displaying nations and regions show up both in GP and AIP plot.
 
 
 ```r
 countrymatching<-intersect(merged15$Country,AIPmerged15$Country)
 countrymatching <- data.frame(countrymatching)
-names(countrymatching) <- c('CountryInBoth')
+names(countrymatching) <- c('Country/Region')
 countrymatching
 ```
 
 ```
-##   CountryInBoth
-## 1        Taiwan
-## 2   Puerto Rico
-## 3         Qatar
-## 4        Panama
-## 5     Sri Lanka
-## 6        Turkey
-## 7       Ecuador
-## 8        France
-## 9       Uruguay
+##   Country/Region
+## 1         Taiwan
+## 2    Puerto Rico
+## 3          Qatar
+## 4         Panama
+## 5      Sri Lanka
+## 6         Turkey
+## 7        Ecuador
+## 8         France
+## 9        Uruguay
 ```
 
-####Presented below is to show the relationship between Age and Income.
+#### 13. Presented below is to show the relationship between Age and Income.
+
+* Finding: At younger ages it appears men and women have about the same mean income, but as they get older on average men will make more money than women.
 
 
 ```r
 #scatter plot
 
+ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(Age, Income),color=Gender) + geom_jitter(aes(color=Gender)) + 
+	scale_color_manual(breaks = c("Female", "Male", ""), values=c("red", "blue", "green")) + 
+	geom_smooth(method='lm',mapping=aes(x=Age,y=Income,color=Gender))+
+	
+	theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
+  theme(axis.text.x = element_text(angle=60,hjust=1))
+```
+
+![](Case_Study_2_files/figure-html/age and income-1.png)<!-- -->
+
+```r
 #linear regression
 AgeIncome <- lm(Income~Age,data = cleaned_data)
+lmsummary <- summary(AgeIncome)
+
+layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page 
+plot(AgeIncome)
+```
+
+![](Case_Study_2_files/figure-html/age and income-2.png)<!-- -->
+
+#### 14. Presented below is to show the relationship between Life Satisfaction and HDI Score.
+
+* Finding: In countries that have lower HDI, females appear to have higher life satisfaction level than males.As the HDI increases, the life satisfaction diffenrecence between females and males is getting smaller.
+
+
+```r
+#scatter plot
+ggplot(data=cleaned_data, aes(HDI, SWLSMean),color=Gender) + geom_jitter(aes(color=Gender)) + 
+	scale_color_manual(breaks = c("Female", "Male", ""), values=c("red", "blue", "green")) + 
+	geom_smooth(method='lm',mapping=aes(x=HDI,y=SWLSMean,color=Gender))+
+	
+	theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
+  theme(axis.text.x = element_text(angle=60,hjust=1))
+```
+
+```
+## Warning: Removed 192 rows containing non-finite values (stat_smooth).
+```
+
+```
+## Warning: Removed 192 rows containing missing values (geom_point).
+```
+
+![](Case_Study_2_files/figure-html/SWLS and HDI-1.png)<!-- -->
+
+#### 14. Presented below is to show the relationship between Life Satisfaction and HDI Category.
+
+* Finding: 
+In countries that have very high human development category, the life satisfaction mean scores are the highest. 
+
+In countries that have low human development category, the life satisfaction mean scores are the lowest.
+
+In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
+
+
+```r
+#scatter plot of HDI category
+
+ggplot(cleaned_data, aes(Category, SWLSMean)) + 
+			geom_bar(stat="identity", aes(fill=Category))+  scale_fill_hue(h = c(5, 100)) +
+
+			ylab('Life Satisfaction Mean Score')+ 
+			xlab('HDI Category')+
+
+			theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
+  		theme(axis.text.x = element_text(angle=60,hjust=1))
+```
+
+![](Case_Study_2_files/figure-html/SWLS and category-1.png)<!-- -->
+
+#### Outputting data
+
+* Finalized HDI table
+
+
+```r
+HDIout <- write.csv(HDI, "HDI.csv", row.names=FALSE)
+```
+
+* Tidied version of the original data
+
+```r
+cleaned_data <- write.csv(cleaned_data, "cleaned_data.csv", row.names=FALSE)
+```
+
+* Top 15 nations in average procrastination scores using the measure of the GP score and AIP score 
+
+
+```r
+top15GP <- write.csv(merged15, "GP15.csv", row.names=FALSE)
+top15AIP <- write.csv(AIPmerged15, "AIP15.csv", row.names=FALSE)
 ```
 
