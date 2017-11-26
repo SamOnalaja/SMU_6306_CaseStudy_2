@@ -189,10 +189,10 @@ procrastination_data$ExpYears &lt;-as.numeric(procrastination_data$ExpYears)
 procrastination_data$ExpYears[procrastination_data$ExpYears==999 | is.na(procrastination_data$ExpYears)] &lt;- 0
 procrastination_data$ExpYears &lt;- round(procrastination_data$ExpYears,digits=1)</code></pre>
 <ul>
-<li>There are zeros in the occupation data. We are replacing zeros with blank. And also there are blanks in the Income data. We are replacing them with zero.</li>
+<li>There are zeros in the occupation data. We are replacing zeros with NA. And also there are blanks in the Income data. We are replacing them with zero.</li>
 </ul>
 <pre class="r"><code>#We are replacing mis identified
-procrastination_data$Job[procrastination_data$Job==&quot;0&quot;] &lt;- &quot;&quot;
+procrastination_data$Job[procrastination_data$Job==&quot;0&quot;] &lt;- &quot;NA&quot;
 #Any blank income is assigned a value of 0
 procrastination_data$Income[is.na(procrastination_data$Income)] &lt;- 0</code></pre>
 <ul>
@@ -211,10 +211,10 @@ procrastination_data$Kids &lt;- ifelse(grepl(procrastination_data$Kids,pattern =
 <pre class="r"><code>#We are truncating all values of age after the decimal
 procrastination_data$Age &lt;- trunc(procrastination_data$Age,digits=0)</code></pre>
 <ul>
-<li>There are zero values in the contry of residence. We are replacing them with blank to treat this as missing.</li>
+<li>There are zero values in the contry of residence. We are replacing them with NA to treat this as missing.</li>
 </ul>
 <pre class="r"><code>#This is to replace all 0 values of Country with an empty string
-procrastination_data$Country[procrastination_data$Country==&quot;0&quot;] &lt;- &quot;&quot;</code></pre>
+procrastination_data$Country[procrastination_data$Country==&quot;0&quot;] &lt;- &quot;NA&quot;</code></pre>
 <ul>
 <li>There are blanks answers under the question: Do you consider yourself a procrastinator and question:Do others consider you a procrastinator. Here we assign them a Yes value.</li>
 </ul>
@@ -238,7 +238,8 @@ procrastination_data$AIPMean &lt;- round(procrastination_data$AIPMean,digits=1)<
 <ul>
 <li>The job titles also need to be organized.
 <ul>
-<li><p>In this process, any job title with ‘please specify’ will be assigned to a blank to be treated as missing.All students are titled as student.</p></li>
+<li><p>In this process, any job title with ‘please specify’ will be assigned to a NA to be treated as missing.</p></li>
+<li><p>All students are titled as student.</p></li>
 <li><p>Professional job titles are being assigned to a more general term, i.e. yoga teacher and ESL teacher were simplified to teacher.</p></li>
 <li><p>Everyone with a job status of Unemployed with a blank occupation is assigned the value Unemployed for their occupation</p></li>
 <li><p>All Job titles under 5 characters were made to an empty string.</p></li>
@@ -248,7 +249,7 @@ procrastination_data$AIPMean &lt;- round(procrastination_data$AIPMean,digits=1)<
 </ul></li>
 </ul>
 <pre class="r"><code>#Any job title where the person filled in please specify is made into an empty string.
-procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;please specify&quot;)] &lt;- &quot;&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;please specify&quot;)] &lt;- &quot;NA&quot;
 
 #All students are titled as student. As well if someone put their work status as Student then their occupation was updated to student
 procrastination_data$Job[grep(procrastination_data$WorkStatus,pattern = &quot;[sS]tudent&quot;)] &lt;- &quot;Student&quot;
@@ -262,7 +263,17 @@ procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[cC][ ]*[
 procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;IT&quot;)] &lt;- &quot;Information Technology&quot;
 procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[dD]octor|[mM][dD]&quot;)] &lt;- &quot;Doctor&quot;
 procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[sS]ales&quot;)] &lt;- &quot;Sales&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[Aa]cademic&quot;)] &lt;- &quot;Academic&quot;
 
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[Aa]dmin&quot;)] &lt;- &quot;Administration&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[Aa]nalyst&quot;)] &lt;- &quot;Analyst&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[Aa]rt&quot;)] &lt;- &quot;Art&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[Aa]ssist&quot;)] &lt;- &quot;Assistant&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[Aa]ttor&quot;)] &lt;- &quot;Attorney&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[Bb]usiness&quot;)] &lt;- &quot;Business&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[Cc]linical&quot;)] &lt;- &quot;Clinical&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[Cc]ommunications&quot;)] &lt;- &quot;Communication&quot;
+procrastination_data$Job[grep(procrastination_data$Job,pattern = &quot;[Cc]omputer&quot;)] &lt;- &quot;Computer&quot;
 #Everyone with a job status of Unemployed with a blank occupation is assigned the value Unemployed for their occupation 
 procrastination_data$Job[procrastination_data$WorkStatus==&quot;unemployed&quot;&amp; procrastination_data$Job==&quot;&quot;] &lt;- &quot;Unemployed&quot;
 
@@ -277,6 +288,14 @@ procrastination_data$Job&lt;-sub(&quot;\\s*\\(.*&quot;, &quot;&quot;, procrastin
 
 #All jobs with leading and trailing white space were trimmed
 procrastination_data$Job&lt;-gsub(&quot;^\\s+|\\s+$&quot;, &quot;&quot;, procrastination_data$Job)</code></pre>
+<ul>
+<li>There are blanks in Gender data. We are replacing blanks with NA.</li>
+</ul>
+<pre class="r"><code>procrastination_data$Gender[procrastination_data$Gender ==&quot;&quot;] &lt;- &quot;NA&quot;</code></pre>
+<ul>
+<li>There are blanks in Working Status. We are replacing blanks with NA.</li>
+</ul>
+<pre class="r"><code>procrastination_data$WorkStatus[procrastination_data$WorkStatus ==&quot;&quot;] &lt;- &quot;NA&quot;</code></pre>
 </div>
 </div>
 <div id="scraping-wikipedia" class="section level2">
@@ -311,8 +330,8 @@ HDI&lt;-rbind(bindData(4,HDI_table,&quot;Very high human development&quot;),
            bindData(10,HDI_table,&quot;Medium human development&quot;),
            bindData(13,HDI_table,&quot;Low human development&quot;))</code></pre>
 </div>
-<div id="here-we-are-merging-our-procrastination-data-to-the-hdi-data-pulled-from-wikipedia." class="section level4">
-<h4>Here we are merging our procrastination data to the HDI data pulled from Wikipedia.</h4>
+<div id="merging-our-procrastination-data-to-the-hdi-data-pulled-from-wikipedia." class="section level4">
+<h4>Merging our procrastination data to the HDI data pulled from Wikipedia.</h4>
 <pre class="r"><code>#We are doing a left merge of the procrastination data on the HDI data pulled from wikipedia. This means that if there is a missing country value from the procrastination data we will still bring that data over with missing HDI information.
 merged_data&lt;-merge(x=procrastination_data,y=HDI,by=&quot;Country&quot;,all.x=TRUE)</code></pre>
 </div>
@@ -320,8 +339,63 @@ merged_data&lt;-merge(x=procrastination_data,y=HDI,by=&quot;Country&quot;,all.x=
 <h4>Our client wants us to only study subjects over the age of 18 so we are selecting a subset of only ages that we can confirm are over the age of 18.</h4>
 <pre class="r"><code>cleaned_data &lt;- merged_data[merged_data$Age&gt;18 &amp; !is.na(merged_data$Age),]</code></pre>
 </div>
-<div id="presented-below-is-a-table-of-the-number-count-of-the-participants-in-the-survey-per-country." class="section level4">
-<h4>Presented below is a table of the number count of the participants in the survey per country.</h4>
+<div id="presented-below-are-the-descriptive-statistics-on-age-income-hdi-and-for-mean-columns-of-gpaipswlsdp.there-are-two-histograms-for-age-and-mean-gp-data.-the-histogram-for-age-is-right-skewed-while-the-histogram-for-mean-gp-is-more-symmetrical-and-bell-shaped." class="section level4">
+<h4>Presented below are the descriptive statistics on Age, Income, HDI, and for mean columns of GP,AIP,SWLS,DP.There are two histograms for Age and Mean GP data. The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.</h4>
+<pre class="r"><code>agesummary &lt;- summary(cleaned_data$Age)
+incomesummary &lt;-summary(cleaned_data$Income)
+HDIsummary &lt;- summary(cleaned_data$HDI)
+
+agesummary</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   19.00   28.00   37.00   38.14   45.00   80.00</code></pre>
+<pre class="r"><code>incomesummary</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       0   10000   35000   53723   67500  250000</code></pre>
+<pre class="r"><code>HDIsummary</code></pre>
+<pre><code>##    Length     Class      Mode 
+##      4036 character character</code></pre>
+<pre class="r"><code>meanGPsummary &lt;- summary(cleaned_data$GPMean)
+meanAIPSsummary &lt;-summary(cleaned_data$AIPMean)
+meanSWLsummary &lt;-summary(cleaned_data$SWLSMean)
+meanDPsummary &lt;- summary(cleaned_data$DPMean)
+
+meanGPsummary </code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   2.800   3.200   3.235   3.800   5.000</code></pre>
+<pre class="r"><code>meanAIPSsummary</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   2.400   2.900   2.964   3.500   5.000</code></pre>
+<pre class="r"><code>meanSWLsummary </code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   2.400   3.000   3.047   3.800   5.000</code></pre>
+<pre class="r"><code>meanDPsummary </code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   2.400   3.000   3.052   3.800   5.000</code></pre>
+<pre class="r"><code>#histogram of age
+qplot(cleaned_data$Age, 
+            geom=&quot;histogram&quot;,
+      binwidth = 2,  
+      main = &quot;Histogram for Age&quot;, 
+      xlab = &quot;Age&quot;,  
+      fill=I(&quot;light blue&quot;), 
+      col=I(&quot;red&quot;))+
+    theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
+  theme(axis.text.x = element_text(angle=60,hjust=1))</code></pre>
+<p><img src="data:image/png;base64,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GCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGilbBgjAhohoAEC2twGKWsIaKVsGCMCGiGgAQLa3AYpawhopWwYIwIaIaABAtrcBilrCGil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fTY+ffg3H1eLfNxASZ+4EJ8+7HbZesvxI8PLstl0m2fovvufF7yqsRD7E/tq85z+FR8kshj7bBye/cx/m1jJHrgUh4Cur8a3J/X9f2TPLcX24eXmg2vo52Jcba4D7i8OpzfPmCzDpw/bZu4ft17lX+uX5HmLcbzyvL/YPxfK456l2F8e3VDQ5dj+OOHN/oro0wcuQRdi89LzIaP1j8TnUJLnLcfd/mzeXYryY8NLcrf5x2r/sIcnTBZhe9V5c+jmFYd5IbbvFjs+y3yTfpxL8rwFuTk8Cbr+V4RnQhdl++lfm3+jqh8hhkw2h/Z//4f9BdENP8O5FJvrgP/0cf8USf5xLsnzBGz+tb7hvF6U9b/U+4c9/4/jvBDba6PDRQEP4ZfkcHwXOM4leZ6Am9X7w3MasBCfPnz/33lhY2mu+BlOEVe7zXyTf5xL9sDlub/4/p85uRfmhrfWCNg/QccbQZdm+5aSRY5zyR64PJsnNTi5F2Z9anNRJGCXUA710uwKusC/UyV94vLcsOME/A8uiuBrYpln88sSQ5fmikc8AHAGlNECAACulNECAACulNECAACulNECAACulNECAACulNECAACulNECAACulNECAACul5ySvAAAArZJREFUlNECAACulNECAACulNECAACulNECAACulNECAACulNECAACulNECAACulNECAACulNECAACulNECAACulNECAKfwjz+W8tu/jraAt04ZLQBwCn/7XSnf/Gm0Bbx1ymgBgFO4Lv/i35Z3oy3grVNGCwCcwPoR/Lvr8pu/jPaAN04ZLQBwArel/Lj5v9Ee8MYpowUATuByffX59z/wMhIMpowWAOhn3c53m+dBw8tIm1eV1r95fFy/eZmeF+phYcpoAYB+do/e1838dv8bu1yW8pv/sg/oddnDC02wIGW0AEA361xuMrn/nw2Xu1Jebhq6+a3r/cXnJQWFJSmjBQC6WV96brN4fXgZ6Xgter0L6GHBg4f5AMmU0QIA3RyquO7k7knO4zOff//D9lfTO5w273caZAlvgDJaAKCXdRR33Vz/YlvSUMnNy/NVNS95IQmWo4wWAOjltgQ2D93X152HV5O2157r2wHebg+LUUYLAPRy+TCPBBQGUUYLAHRS53HzMtLubaFbDgHliU9QUEYLAHRyW47Xm5tfv3vyOVCe+AQFZbQAQB+HV462rK81Nzcevgp/eVxCS2FJymgBgD6m93huuN5ejj7xPtB9NvnEEViSMloAoI/rKon7VF4//kmk7TXoNT8OD0tSRgsAdBF+fnPL5a6nl8/9LDz9hAUpowUAuogvIe1vbx/RP/1pTPwcJyxKGS0AkAk/eARKymgBgNdzGa47eQco6CijBQBez+OPZQJQUEYLALyezROgm4Le8oObIKWMFgBI4Pj5IvQTlJTRAgApXB5+MB5ARxktAADgShktAADgShktAADgShktAADgShktAADgShktAADgShktAADgShktAADgShktAADgShktAADgShktAADgShktAADgShktAADgShktAADgyv8H7U2ODtppffcAAAAASUVORK5CYII=" width="672" /></p>
+<pre class="r"><code>#histogram of mean GP
+qplot(cleaned_data$GPMean, 
+            geom=&quot;histogram&quot;,
+      binwidth = 0.1,  
+      main = &quot;Histogram for Mean GP&quot;, 
+      xlab = &quot;Mean GP&quot;,  
+      fill=I(&quot;light blue&quot;), 
+      col=I(&quot;red&quot;))+
+    theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
+  theme(axis.text.x = element_text(angle=60,hjust=1))</code></pre>
+<p><img src="data:image/png;base64,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" width="672" /></p>
+</div>
+<div id="presented-below-is-a-table-of-the-number-count-of-the-participants-in-the-survey-by-genders." class="section level4">
+<h4>Presented below is a table of the number count of the participants in the survey by genders.</h4>
 <pre class="r"><code>frequencyOfRespondantsByGender &lt;- as.data.frame(table(cleaned_data$Gender))
 colnames(frequencyOfRespondantsByGender) &lt;- c(&quot;Gender&quot;,&quot;Number of Participants&quot;)
 kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],row.names = FALSE)</code></pre>
@@ -342,15 +416,1780 @@ kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Numb
 <td align="right">1721</td>
 </tr>
 <tr class="odd">
-<td align="left"></td>
+<td align="left">NA</td>
 <td align="right">6</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="presented-below-is-a-table-of-the-number-count-of-the-participants-in-the-survey-per-country.-1" class="section level4">
+<div id="presented-below-is-a-table-of-the-number-count-of-the-participants-in-the-survey-by-work-status." class="section level4">
+<h4>Presented below is a table of the number count of the participants in the survey by Work Status.</h4>
+<pre class="r"><code>frequencyOfRespondantsByWork &lt;- as.data.frame(table(cleaned_data$WorkStatus))
+colnames(frequencyOfRespondantsByWork) &lt;- c(&quot;WorkStatus&quot;,&quot;Number of Participants&quot;)
+kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number of Participants`),],row.names = FALSE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">WorkStatus</th>
+<th align="right">Number of Participants</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">full-time</td>
+<td align="right">2260</td>
+</tr>
+<tr class="even">
+<td align="left">student</td>
+<td align="right">837</td>
+</tr>
+<tr class="odd">
+<td align="left">part-time</td>
+<td align="right">465</td>
+</tr>
+<tr class="even">
+<td align="left">unemployed</td>
+<td align="right">258</td>
+</tr>
+<tr class="odd">
+<td align="left">retired</td>
+<td align="right">174</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="right">42</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="presented-below-is-a-table-of-the-number-count-of-the-participants-in-the-survey-by-occupation." class="section level4">
+<h4>Presented below is a table of the number count of the participants in the survey by Occupation.</h4>
+<pre class="r"><code>frequencyOfRespondantsByJob&lt;- as.data.frame(table(cleaned_data$Job))
+colnames(frequencyOfRespondantsByJob) &lt;- c(&quot;Job&quot;,&quot;Number of Participants&quot;)
+kable(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],row.names = FALSE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Job</th>
+<th align="right">Number of Participants</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"></td>
+<td align="right">1826</td>
+</tr>
+<tr class="even">
+<td align="left">Student</td>
+<td align="right">845</td>
+</tr>
+<tr class="odd">
+<td align="left">Unemployed</td>
+<td align="right">155</td>
+</tr>
+<tr class="even">
+<td align="left">Teacher</td>
+<td align="right">88</td>
+</tr>
+<tr class="odd">
+<td align="left">Attorney</td>
+<td align="right">53</td>
+</tr>
+<tr class="even">
+<td align="left">college professor</td>
+<td align="right">42</td>
+</tr>
+<tr class="odd">
+<td align="left">Writer</td>
+<td align="right">41</td>
+</tr>
+<tr class="even">
+<td align="left">Analyst</td>
+<td align="right">40</td>
+</tr>
+<tr class="odd">
+<td align="left">engineer</td>
+<td align="right">32</td>
+</tr>
+<tr class="even">
+<td align="left">Assistant</td>
+<td align="right">31</td>
+</tr>
+<tr class="odd">
+<td align="left">manager</td>
+<td align="right">31</td>
+</tr>
+<tr class="even">
+<td align="left">retired</td>
+<td align="right">28</td>
+</tr>
+<tr class="odd">
+<td align="left">Administration</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">Information Technology</td>
+<td align="right">24</td>
+</tr>
+<tr class="odd">
+<td align="left">Editor</td>
+<td align="right">21</td>
+</tr>
+<tr class="even">
+<td align="left">Nurse</td>
+<td align="right">21</td>
+</tr>
+<tr class="odd">
+<td align="left">Marketing</td>
+<td align="right">20</td>
+</tr>
+<tr class="even">
+<td align="left">Doctor</td>
+<td align="right">19</td>
+</tr>
+<tr class="odd">
+<td align="left">Sales</td>
+<td align="right">18</td>
+</tr>
+<tr class="even">
+<td align="left">houswife</td>
+<td align="right">15</td>
+</tr>
+<tr class="odd">
+<td align="left">Software Developer</td>
+<td align="right">14</td>
+</tr>
+<tr class="even">
+<td align="left">Business</td>
+<td align="right">12</td>
+</tr>
+<tr class="odd">
+<td align="left">Scientist</td>
+<td align="right">12</td>
+</tr>
+<tr class="even">
+<td align="left">consultant</td>
+<td align="right">11</td>
+</tr>
+<tr class="odd">
+<td align="left">Financial Advisor</td>
+<td align="right">11</td>
+</tr>
+<tr class="even">
+<td align="left">home maker</td>
+<td align="right">11</td>
+</tr>
+<tr class="odd">
+<td align="left">Computer</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">director</td>
+<td align="right">10</td>
+</tr>
+<tr class="odd">
+<td align="left">Graphic Designer</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">Librarian</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="left">Customer Service</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">Research Scientist</td>
+<td align="right">8</td>
+</tr>
+<tr class="odd">
+<td align="left">President</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td align="left">psychologis</td>
+<td align="right">7</td>
+</tr>
+<tr class="odd">
+<td align="left">Social Worker</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td align="left">Academic</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="left">Journalist</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">Project Manager</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="left">Server</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">Translator</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="left">Chief Executive</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">Finance</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">Pastor ; Life coach clergy</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">Architect</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Communication</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">operations manager</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Programmer</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">project manager</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Research Associate</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Web Designer</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Deputy Director</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Human Resource Manager</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">Insurance Agent</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">law enforcement</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">Musician</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Pharmacist</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">psychotherapist</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Receptionist</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">researcher</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">secretary</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">Accountant</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Accounting</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Accounting Manager</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Accounts Payable</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">associate</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Bank Teller</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">banker</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">bookkeeper</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Chief of Staff</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">clerk</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Clinical</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Consumer Case Coordinator</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Counselor</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Creative Director</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">dentist</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">designer</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Designer</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Diplomat</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Epidemiologist</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Executive Director</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Geologist</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Information Technology Consultant</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Insurance</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">journalist</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">lecturer</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">letter carrier</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Library technician</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Medical</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Network Engineer</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Office Manager</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Owner</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Paralegal</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Paraprofessional</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Postdoc</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Press Officer</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Retail</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">self-employed Photographer</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Self Employed</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Software engineer</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Software Pro</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">stocker</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Supervisor</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Tutor</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">university faculty</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">vice-president</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Account Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">account planner</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Account Service Rep</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Activities Leader</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Actress</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">acupuncturist</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">adjunct faculty</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">adult care</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">advocate</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Agronomist</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">airline</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">airport ground handler</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">anthropologist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Antique Dealer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Associate</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">associate at law firm</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Associate director</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Associate Director</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Associate Producer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Asst. Prof.</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Astrohysicist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">audio engineer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Aviation Specialist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Bar &amp; Restaurant Owner</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Biologist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Box Office Representative</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Braillist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">BUSINESS CONSULTA</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">buyer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">CAD operator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">CAD Technician</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Camera Coordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Campus Planner</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Capstone Golf Course</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Career Placement Associate</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Case Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Casting Director</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">chairman of the board</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">chauffeur</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Chief Financial Officer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Chiefe Development Engineer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">chiropractor</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">civil servant</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Civil servant</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Clutter clearer, video editor, caterer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Co-Proprietor</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Collection management specialist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">college faculty</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">company director</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Consultant and entrepreneur</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Consulting Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Controller</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Contsuruction Management</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Coordinator of International Programs</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">coordinatore operativo</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">copy supervisor</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Corporate instructor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Corporate Trainer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Corporation President</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Corrections</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Country Style Employee</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Creative Consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Data Warehouse Engineer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Dealer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Dental &amp; Disability Coordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Dept. Director</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Deputy Chief of Public Information for t</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Deputy Chieif Information Officer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">deputy practice manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Developer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Dietitian</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Director</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Director of a language program</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Director of Contract Management</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Director of non-profit organization</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Director of Software Company</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Director Operations</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Director,social Dvelopment</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Disability Allowance</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Dish Washer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Divisional Manager of a large cosmetics</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Driver</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Ecology technician</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Economist</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Economy</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Education</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Education Specialist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">EHS Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">election services</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Electrical Technician</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">electronic technician</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">employed by a church</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">energy therapist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">enologist</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">entertainer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">entrepreneur</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Entrepreneur &amp; Consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">environmental education non profit direc</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Environmental Engineer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Environmental Senior Specialist</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Executive</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Executive officer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Executive Vice President</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Facilitator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Facilities Management</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Farm Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">federal excise tax auditor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Field Coordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">film editor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Film Industry</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Film maker</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Financial Consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Financial Controller</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">financial officer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">financial risk manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">First VP &amp; Associate General Counsel</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Fitness Instructor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">flight surgeon</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Food Service Supervisor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Foreign Affairs Specialist</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">free lance bookkeeper</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Free lance editor and tutor–in theory</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">free professionist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Freelance</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Freelance Project Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Gender</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Geophysicist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Gove service</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Head - Operations &amp; QA</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">health care</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Healthcare Consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">hostess</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Hotel Desk Clerk</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Housekeeping</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">HR generalist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Human Resource Manger</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">HVAC Tech</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">ICT Director</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">In-house Legal Counsel</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">information assisstant</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Information Developer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Information Management</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Information technology</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">innkeeper</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">instructor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">insurance agent</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Insurance Claims Supervisor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Insurance Coordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Internet &amp; media consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Internship</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">interpreter</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Investigative Specialist</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">investment banker</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Investment Counsel</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">ISTraining Coordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Janitor</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Juvenile Corrections Officer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Lab Director</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Labor Relations Specialist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">laboratory technician</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">land use planner</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">landscape designer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Language Service Provider</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">language trainer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Law clerk</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Legal Secretary</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">library paraprofessional</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Licensed Professional Counselor</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">maintenance tech.</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Management consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Management Consultant &amp; Entrepreneur</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Manager - Analytical and Environmental S</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Manager,Interacitve Media</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">manufacturing</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Master Control Operator</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Mechanical Engineer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Media Consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">media relations</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Media Relations Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Medical Laboratory</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Medical Practitioner</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">medical sonographer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Mentor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Military</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Multimedia Developer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">museum docent</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Network Services Engineer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">new realtor</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">newspaper carrier</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Night Dispatch Supervisor</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Non-profit Consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">nursing home</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">office</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Office Services Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Organic Grocery Store Cashier</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Outdoor Recreation Coordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">owner - private practice physical therap</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">P-T College Faculty &amp; P-T Self-Employed</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Page Designer for a newspaper</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Parent Educator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">pathology</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">pharmacy tech.</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">photo profucer</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">physician</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Physicist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Physiotherapst</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">pjublic relations director</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Plant Engineering Supervisor</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Please specify title Manager for Regulat</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">President Nongovernmental organization</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Private Equity Principal</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">pro poker player</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Probation Supervisor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Process Engineer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Procrastinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">producer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Product Field Test Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Professional Organizer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Program Coordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Program Director</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Program director at a non-profit organiz</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Program Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Program Manager and Acting Director</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Program officer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Program Specialist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Proofreader</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Proposal Director</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Psychiatrist in Private Practice</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Public Health</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">public relations</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Publishing</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Quality Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Quotations specialist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">real estate</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">real estate agent</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Real Estate Appraiser</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">real estate broker</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Real estate developer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">realtor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Recreational Staff</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Registered Respiratory Therapist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">regulatory affairs</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">research coordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Research manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">research specialist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">research technician</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Researcher - Physician</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">resident physician</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Residential Services Supervisor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Respiratory Therapist</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Restaurant operations manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">rocket scientist</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">School Counselor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Science writing intern</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Secretary</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Self-Employed</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Self-employed Family Therapist</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">self-employed translator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">self employed</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Self employed Public Relations</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">self employeed</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">selfemplyed renovator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">senior consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Senior Grant Officer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Senior Human Resources Consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Senior Policy Advisor</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">senior project manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Service co-ordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Service Registrar</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">set designer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">set lighting technician</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Shipping</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Social Media consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Software trainer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Speaker</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Speaker Author Consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Special Projects Editor</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">specialist</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Sr. Drug Safety Associate</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Statistician</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Stay-at-home dad</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">steamship agent</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">supervising program development speciali</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">supervisor shelderd workshop for handcap</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Surgeon</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Surgical Resident</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">system manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">tax consultant</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Tax Examiner</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Technical Coordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Technical director</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Technical officer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Technical support rep</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Technical Trainer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Technology</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Technology Curriculum Developer Science</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">television director</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Television Producer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">temporary office</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Theater General Manager</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Town Clerk</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Town Planner</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">trader</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Traffic Reporter-Radio</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">trainee</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">training Coordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Training Coordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">treatment support co-ordinator</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">TV BROADCAST TECHNICIAN</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">TV News Executive Producer</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">University Staff</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Urban Planner</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">veterinarian</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Vetrans Representative</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">vice president</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Vice President</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Volunteer Director</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">VP Scientific Affairs</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">warehouse</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Warehouse Supervisor</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Webmaster</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">wig designer</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="presented-below-is-a-table-of-the-number-count-of-the-participants-in-the-survey-per-country." class="section level4">
 <h4>Presented below is a table of the number count of the participants in the survey per country.</h4>
-<pre class="r"><code>frequencyOfRespondantsByCountry &lt;- as.data.frame(table(cleaned_data$Country))
+<pre class="r"><code>cleaned_data$Country[cleaned_data$Country==&quot;&quot;] &lt;- &quot;NA&quot;
+frequencyOfRespondantsByCountry &lt;- as.data.frame(table(cleaned_data$Country))
 colnames(frequencyOfRespondantsByCountry) &lt;- c(&quot;Country&quot;,&quot;Number of Participants&quot;)
 kable(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountry$`Number of Participants`),],row.names = FALSE)</code></pre>
 <table>
@@ -374,7 +2213,7 @@ kable(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountry$`Nu
 <td align="right">177</td>
 </tr>
 <tr class="even">
-<td align="left"></td>
+<td align="left">NA</td>
 <td align="right">160</td>
 </tr>
 <tr class="odd">
@@ -727,6 +2566,13 @@ kable(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountry$`Nu
 </tr>
 </tbody>
 </table>
+</div>
+<div id="presented-below-is-a-total-number-of-the-matched-answers-from-question-whether-the-person-considers-themselves-a-procrastinator-and-question-whether-others-consider-them-a-procrastinator.-there-are-2846-people-matched-their-perceptions-to-others." class="section level4">
+<h4>Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2846 people matched their perceptions to others.</h4>
+<pre class="r"><code>cleaned_data$matching &lt;- ifelse(cleaned_data$SelfQuestion ==cleaned_data$OthQuestion,1,0)
+matched &lt;-sum(cleaned_data$matching)
+matched </code></pre>
+<pre><code>## [1] 2846</code></pre>
 </div>
 </div>
 
