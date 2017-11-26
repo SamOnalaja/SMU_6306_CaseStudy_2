@@ -2,7 +2,9 @@
 title: "MSDS 6306 Case Study 2"
 author: "Nuoya Rezsonya & Steven Millett"
 date: "November 23, 2017"
-output: html_document
+output: 
+  html_document:
+      keep_md: true
 ---
 
 ```{r setup, include=FALSE}
