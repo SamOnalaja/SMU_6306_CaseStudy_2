@@ -18,23 +18,24 @@ library(stringr)
 
 ##Import of procrastination data
 
-#### Here we are imporing the procrastination data that we got from the 
 
-```{r import_data, echo=TRUE}
+#### Here we are importing the procrastination data that we got from the client and get the dimension of the data.This data set has 4262 rows and 61 columns.
+
+```{r import_data, echo=TRUE,include=TRUE}
 procrastination_data <- read.csv("Data/Procrastination.csv",stringsAsFactors = FALSE)
 
-#kable(dim(procrastination_data), header = "Dimension of procrastination dataset")
+kable(dim(procrastination_data), header = "Dimension of procrastination dataset")
 
 ```
 
 </br>
 
-Here we have a good sized data set with `r ncol(procrastination_data)` columns and `r nrow(procrastination_data)` rows.
+####We are renaming the values of the columns to limit the size of all variable names to 12 characters or less. We have a lot of questions from different questionnaires, due to the fact that we are more interested in the average score from these questionnaires we are simply going to create sequential names based on the source questionnaire. 
 
-#### Here we are renaming the values of the columns to limit the size of all variable names to 12 characters or less. We have a lot of questions from different questionnaires, due to the fact that we are more interested in the average score from these questionnaires we are simply going to create sequential names based on the source questionnaire. 
 
-```{r renaming_columns, echo=TRUE}
-#Here is a function that removesall of the periods from variable names and makes the name into Camel Case form.
+```{r renaming_columns, echo=TRUE,include= TRUE}
+
+#a function that removes all of the periods from variable names and makes the name into Camel Case form.
 camel <- function(x){ #function for camel case
     capit <- function(x) paste0(toupper(substring(x, 1, 1)), substring(x, 2, nchar(x)))
     sapply(strsplit(x, "\\."), function(x) paste(capit(x), collapse=""))
@@ -42,7 +43,7 @@ camel <- function(x){ #function for camel case
 
 names(procrastination_data)<-camel(names(procrastination_data))
 
-#This is just a manual update of variable names that are too long or not descriptive. 
+#a manual update of variable names that are too long or not descriptive. 
 procrastination_data<- rename(x=procrastination_data,replace=c("HowLongHaveYouHeldThisPositionYears"="ExpYears", "Edu"="Education",
 "CountryOfResidence"="Country", 
 "ÏAge"="Age",                              
@@ -57,46 +58,74 @@ procrastination_data<- rename(x=procrastination_data,replace=c("HowLongHaveYouHe
 "AnnualIncome"="Income"))
 
 #This will rename the columns of the different questionnaires 
+
 colnames(procrastination_data)[grep(names(procrastination_data),pattern = "GP")] <- sprintf("GPQues%d",1:length(grep(names(procrastination_data),pattern = "GP")))
 colnames(procrastination_data)[grep(names(procrastination_data),pattern = "AIP")] <- sprintf("AIPQues%d",1:length(grep(names(procrastination_data),pattern = "AIP")))
 colnames(procrastination_data)[grep(names(procrastination_data),pattern = "SWLS")] <- sprintf("SWLSQues%d",1:length(grep(names(procrastination_data),pattern = "SWLS")))
 colnames(procrastination_data)[grep(names(procrastination_data),pattern = "DP")] <- sprintf("DPQues%d",1:length(grep(names(procrastination_data),pattern = "DP")))
 
-
 ```
 
-####We need to clean the data. This section we are eliminating values that don't make sense as well as errors that occured when the data was exported.
+####Cleaning up the data. This section we are eliminating values that don't make sense as well as errors that occured when the data was exported.
 
-```{r cleanup_data, echo=TRUE}
+* There are unrealistic and null values in the years of experience data, here those values will be assigned to zero. We also round up values to only one digit.
 
-#This is to replace all values of Country with an empty string
-procrastination_data$Country[procrastination_data$Country=="0"] <- ""
-
-#We are truncating all values of age after the decimal
-procrastination_data$Age <- trunc(procrastination_data$Age,digits=0)
-
-#We are replacing mis identified
-procrastination_data$Sons[procrastination_data$Sons=="Male"] <- "1"
-procrastination_data$Sons[procrastination_data$Sons=="Female"] <- "2"
-
-procrastination_data$Job[procrastination_data$Job=="0"] <- ""
-
+```{r Years of experience, echo=TRUE, include=TRUE}
 #Years of experience
 #For years of experience any unrealistic value or null value is assigned 
 procrastination_data$ExpYears <-as.numeric(procrastination_data$ExpYears)
 procrastination_data$ExpYears[procrastination_data$ExpYears==999 | is.na(procrastination_data$ExpYears)] <- 0
 procrastination_data$ExpYears <- round(procrastination_data$ExpYears,digits=1)
 
-#The Kids data is updated to only Yes or no
-procrastination_data$Kids <- ifelse(grepl(procrastination_data$Kids,pattern = "Yes"),"Yes","No") 
+```
 
+* There are zeros in the occupation data. We are replacing zeros with blank. And also there are blanks in the Income data. We are replacing them with zero.
+
+```{r job and income, echo=TRUE, include=TRUE}
+#We are replacing mis identified
+procrastination_data$Job[procrastination_data$Job=="0"] <- ""
 #Any blank income is assigned a value of 0
 procrastination_data$Income[is.na(procrastination_data$Income)] <- 0
 
+```
+
+* Relabelling the Number of sons data. The data is labelled as Male and Female. Here we relabel the gender back to intergers with Male=1 and Female =2.
+
+```{r number of sons relabel, echo=TRUE, include=TRUE}
+procrastination_data$Sons[procrastination_data$Sons=="Male"] <- "1"
+procrastination_data$Sons[procrastination_data$Sons=="Female"] <- "2"
+```
+
+* Update the kids data to only Yes and No.
+
+```{r kids, echo=TRUE,include=TRUE}
+#The Kids data is updated to only Yes or no
+procrastination_data$Kids <- ifelse(grepl(procrastination_data$Kids,pattern = "Yes"),"Yes","No") 
+
+```
+
+* Update the age data. We are truncating all values of age after the decimal.
+
+```{r age, echo=TRUE,include=TRUE}
+#We are truncating all values of age after the decimal
+procrastination_data$Age <- trunc(procrastination_data$Age,digits=0)
+```
+
+* There are zero values in the contry of residence. We are replacing them with blank to treat this as missing.
+```{r country of residence,echo=TRUE,include=TRUE}
+#This is to replace all 0 values of Country with an empty string
+procrastination_data$Country[procrastination_data$Country=="0"] <- ""
+```
+
+* There are blanks answers under the question: Do you consider yourself a procrastinator and question:Do others consider you a procrastinator. Here we assign them a Yes value.
+```{r assign yes,echo=TRUE,include=TRUE}
 #Any blank answers in the procrastination questionnaires are assigned a Yes value
 procrastination_data$OthQuestion[procrastination_data$OthQuestion==""] <- "Yes"
 procrastination_data$SelfQuestion[procrastination_data$SelfQuestion==""] <- "Yes"
+```
 
+* Creating columns for the mean of DP,AIP,GP and SWLS to represent the individual's average decisional procrastination, procrastination behavior,generalized procrastination and life satisfaction. We round the mean up to only one digit.
+```{r mean ,echo=TRUE,include=TRUE}
 #Here we are greping all of the variables with certain criteria in their names and creating a new variable of the mean of variables
 procrastination_data$GPMean <- rowMeans(procrastination_data[,grep(names(procrastination_data),pattern = "GP")])
 procrastination_data$AIPMean <- rowMeans(procrastination_data[,grep(names(procrastination_data),pattern = "AIP")])
@@ -109,9 +138,22 @@ procrastination_data$AIPMean <- round(procrastination_data$AIPMean,digits=1)
 
 ```
 
-####Due to additional care being needed to clean the job title information we are seperating this to a different subprocess
-
-```{r cleanup_jobdata, echo=TRUE}
+* The job titles also need to be organized. 
+	* In this process, any job title with 'please specify' will be assigned to a blank to be treated as missing.All students are titled as student.
+	
+	* Professional job titles are being assigned to a more general term, i.e. yoga teacher and ESL teacher were simplified to teacher.
+	
+	* Everyone with a job status of Unemployed with a blank occupation is assigned the value Unemployed for their occupation 
+	
+	* All Job titles under 5 characters were made to an empty string.
+	
+	* All jobs with a slash(/) had all text after the slash removed.
+	
+	* All jobs with parantheses had the parantheses removed.
+	
+	* All jobs with leading and trailing white space were trimmed.
+	
+```{r cleanup_jobdata, echo=TRUE,include=TRUE}
 
 #Any job title where the person filled in please specify is made into an empty string.
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "please specify")] <- ""
@@ -130,7 +172,7 @@ procrastination_data$Job[grep(procrastination_data$Job,pattern = "[dD]octor|[mM]
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[sS]ales")] <- "Sales"
 
 #Everyone with a job status of Unemployed with a blank occupation is assigned the value Unemployed for their occupation 
-procrastination_data$Job[procrastination_data$WorkStatus=="unemployed"&procrastination_data$Job==""] <- "Unemployed"
+procrastination_data$Job[procrastination_data$WorkStatus=="unemployed"& procrastination_data$Job==""] <- "Unemployed"
 
 #All Job titles under 5 characters were made to an empty string
 procrastination_data$Job[nchar(procrastination_data$Job)<5] <- ""
@@ -148,10 +190,11 @@ procrastination_data$Job<-gsub("^\\s+|\\s+$", "", procrastination_data$Job)
 ##Scraping wikipedia
 
 ####We are pulling data from the Human Development Index page on Wikipedia. We will combine this data from different tables and assign it a category value based on the HDI score.
-```{r scrape_wikipedia, echo=TRUE}
 
+```{r scrape_wikipedia, echo=TRUE,include=TRUE}
 #This is a function to combine multiple tables of scraped data that share a similar category
 bindData <- function(firstframe,dataset,category){
+	
 #Here we are assigning the columns we need to some temporary variables and renaming the columns
 working_temp <- dataset[[firstframe]][2:nrow(dataset[[firstframe]]),c(3,4)]
 names(working_temp)<-c("Country","HDI")
@@ -166,10 +209,9 @@ working_temp<-cbind(working_temp,"Category"=category)
 url <- "https://en.wikipedia.org/wiki/List_of_countries_by_Human_Development_Index"
 
 HDI_table <- url %>%
-  read_html() %>% 
+  read_html() %>%  
   html_nodes("table")%>%
 html_table(fill=TRUE)
-
 
 HDI <- data.frame("Country","HDI","Category")
 
@@ -177,8 +219,6 @@ HDI<-rbind(bindData(4,HDI_table,"Very high human development"),
            bindData(7,HDI_table,"High human development"),
            bindData(10,HDI_table,"Medium human development"),
            bindData(13,HDI_table,"Low human development"))
-
-
 ```
 
 ####Here we are merging our procrastination data to the HDI data pulled from Wikipedia. 
