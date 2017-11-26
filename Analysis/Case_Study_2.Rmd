@@ -161,6 +161,18 @@ procrastination_data$AIPMean <- round(procrastination_data$AIPMean,digits=1)
 	
 ```{r cleanup_jobdata, echo=TRUE,include=TRUE}
 
+camelpreserve <- function(x){ #function for camel case
+    capit <- function(temp_x) {
+      temp_x<-tolower(temp_x)
+      paste0(toupper(substring(temp_x, 1, 1)), substring(temp_x, 2, nchar(temp_x)))
+    }
+    capit2 <- function(temp_x) {
+      paste0(toupper(substring(temp_x, 1, 1)), substring(temp_x, 2, nchar(temp_x)))
+    }
+    x2<-sapply(strsplit(x, "[ ]+"), function(x) paste(capit(x), collapse=" "))
+    sapply(strsplit(x2, "\\-"), function(x2) paste(capit2(x2), collapse="-"))
+}
+
 #Any job title where the person filled in please specify is made into an empty string.
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "please specify")] <- "NA"
 
@@ -172,11 +184,19 @@ procrastination_data$Job[grep(procrastination_data$Job,pattern = "[sS]tudent")] 
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[tT]eacher")] <- "Teacher"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[wW]riter")] <- "Writer"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "RN|[nN]urse|LPN|PCA")] <- "Nurse"
-procrastination_data$Job[grep(procrastination_data$Job,pattern = "[cC][ ]*[eE][ ]*[oO]")] <- "Chief Executive"
-procrastination_data$Job[grep(procrastination_data$Job,pattern = "IT")] <- "Information Technology"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[cC][ ]*[eE][ ]*[oO]|[Cc]hief")] <- "Executive"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "IT|[Nn]etwork")] <- "Information Technology"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[dD]octor|[mM][dD]")] <- "Doctor"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[sS]ales")] <- "Sales"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Aa]cademic")] <- "Academic"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Pp]roducer")] <- "Producer"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Ss]upervis")] <- "Supervisor"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Dd]esigner")] <- "Designer"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Ff]inanc|[Bb]ank")] <- "Finance"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Ss]oftware")] <- "Software Developer"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "houswife|\\Shome|^home")] <- "Homemaker"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Ee]ngineer")] <- "Engineer"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Rr]eal [Ee]state")] <- "Real Estate"
 
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Aa]dmin")] <- "Administration"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Aa]nalyst")] <- "Analyst"
@@ -201,6 +221,8 @@ procrastination_data$Job<-sub("\\s*\\(.*", "", procrastination_data$Job)
 
 #All jobs with leading and trailing white space were trimmed
 procrastination_data$Job<-gsub("^\\s+|\\s+$", "", procrastination_data$Job)
+
+procrastination_data$Job<-camelpreserve(procrastination_data$Job)
 ```
 
 * There are blanks in Gender data. We are replacing blanks with NA.

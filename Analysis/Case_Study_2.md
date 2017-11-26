@@ -1,11 +1,6 @@
----
-title: "MSDS 6306 Case Study 2"
-author: "Nuoya Rezsonya & Steven Millett"
-date: "November 23, 2017"
-output: 
-  html_document:
-      keep_md: true
----
+# MSDS 6306 Case Study 2
+Nuoya Rezsonya & Steven Millett  
+November 23, 2017  
 
 
 
@@ -51,7 +46,7 @@ names(procrastination_data)<-camel(names(procrastination_data))
 #a manual update of variable names that are too long or not descriptive. 
 procrastination_data<- rename(x=procrastination_data,replace=c("HowLongHaveYouHeldThisPositionYears"="ExpYears", "Edu"="Education",
 "CountryOfResidence"="Country", 
-"ÏAge"="Age",                              
+"ÃAge"="Age",                              
 "HowLongHaveYouHeldThisPositionMonths"="ExpMonths",
 "DoYouConsiderYourselfAProcrastinator"="SelfQuestion",
 "NumberOfDaughters" = "Daughters", 
@@ -167,6 +162,18 @@ procrastination_data$AIPMean <- round(procrastination_data$AIPMean,digits=1)
 	
 
 ```r
+camelpreserve <- function(x){ #function for camel case
+    capit <- function(temp_x) {
+      temp_x<-tolower(temp_x)
+      paste0(toupper(substring(temp_x, 1, 1)), substring(temp_x, 2, nchar(temp_x)))
+    }
+    capit2 <- function(temp_x) {
+      paste0(toupper(substring(temp_x, 1, 1)), substring(temp_x, 2, nchar(temp_x)))
+    }
+    x2<-sapply(strsplit(x, "[ ]+"), function(x) paste(capit(x), collapse=" "))
+    sapply(strsplit(x2, "\\-"), function(x2) paste(capit2(x2), collapse="-"))
+}
+
 #Any job title where the person filled in please specify is made into an empty string.
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "please specify")] <- "NA"
 
@@ -178,11 +185,19 @@ procrastination_data$Job[grep(procrastination_data$Job,pattern = "[sS]tudent")] 
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[tT]eacher")] <- "Teacher"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[wW]riter")] <- "Writer"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "RN|[nN]urse|LPN|PCA")] <- "Nurse"
-procrastination_data$Job[grep(procrastination_data$Job,pattern = "[cC][ ]*[eE][ ]*[oO]")] <- "Chief Executive"
-procrastination_data$Job[grep(procrastination_data$Job,pattern = "IT")] <- "Information Technology"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[cC][ ]*[eE][ ]*[oO]|[Cc]hief")] <- "Executive"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "IT|[Nn]etwork")] <- "Information Technology"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[dD]octor|[mM][dD]")] <- "Doctor"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[sS]ales")] <- "Sales"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Aa]cademic")] <- "Academic"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Pp]roducer")] <- "Producer"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Ss]upervis")] <- "Supervisor"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Dd]esigner")] <- "Designer"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Ff]inanc|[Bb]ank")] <- "Finance"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Ss]oftware")] <- "Software Developer"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "houswife|\\Shome|^home")] <- "Homemaker"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Ee]ngineer")] <- "Engineer"
+procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Rr]eal [Ee]state")] <- "Real Estate"
 
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Aa]dmin")] <- "Administration"
 procrastination_data$Job[grep(procrastination_data$Job,pattern = "[Aa]nalyst")] <- "Analyst"
@@ -207,6 +222,8 @@ procrastination_data$Job<-sub("\\s*\\(.*", "", procrastination_data$Job)
 
 #All jobs with leading and trailing white space were trimmed
 procrastination_data$Job<-gsub("^\\s+|\\s+$", "", procrastination_data$Job)
+
+procrastination_data$Job<-camelpreserve(procrastination_data$Job)
 ```
 
 * There are blanks in Gender data. We are replacing blanks with NA.
@@ -423,95 +440,90 @@ kable(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of 
 
 Job                                         Number of Participants
 -----------------------------------------  -----------------------
-                                                              1826
+                                                              1824
 Student                                                        845
 Unemployed                                                     155
 Teacher                                                         88
 Attorney                                                        53
-college professor                                               42
+College Professor                                               42
 Writer                                                          41
-Analyst                                                         40
-engineer                                                        32
+Engineer                                                        37
+Analyst                                                         35
 Assistant                                                       31
-manager                                                         31
-retired                                                         28
+Manager                                                         31
+Finance                                                         28
+Information Technology                                          28
+Retired                                                         28
+Homemaker                                                       27
+Designer                                                        25
 Administration                                                  24
-Information Technology                                          24
+Software Developer                                              23
 Editor                                                          21
 Nurse                                                           21
 Marketing                                                       20
 Doctor                                                          19
 Sales                                                           18
-houswife                                                        15
-Software Developer                                              14
+Supervisor                                                      13
 Business                                                        12
 Scientist                                                       12
-consultant                                                      11
-Financial Advisor                                               11
-home maker                                                      11
+Consultant                                                      11
+Director                                                        11
+Executive                                                       11
 Computer                                                        10
-director                                                        10
-Graphic Designer                                                10
+Project Manager                                                 10
 Librarian                                                        9
 Customer Service                                                 8
+Journalist                                                       8
 Research Scientist                                               8
 President                                                        7
-psychologis                                                      7
+Psychologis                                                      7
 Social Worker                                                    7
 Academic                                                         6
-Journalist                                                       6
-Project Manager                                                  6
 Server                                                           6
 Translator                                                       6
-Chief Executive                                                  5
-Finance                                                          5
-Pastor ; Life coach  clergy                                      5
+Pastor ; Life Coach Clergy                                       5
+Real Estate                                                      5
 Architect                                                        4
 Communication                                                    4
-operations manager                                               4
+Insurance Agent                                                  4
+Operations Manager                                               4
+Producer                                                         4
 Programmer                                                       4
-project manager                                                  4
 Research Associate                                               4
-Web Designer                                                     4
+Secretary                                                        4
 Deputy Director                                                  3
 Human Resource Manager                                           3
-Insurance Agent                                                  3
-law enforcement                                                  3
+Law Enforcement                                                  3
 Musician                                                         3
 Pharmacist                                                       3
-psychotherapist                                                  3
+Psychotherapist                                                  3
 Receptionist                                                     3
-researcher                                                       3
-secretary                                                        3
+Researcher                                                       3
+Self Employed                                                    3
 Accountant                                                       2
 Accounting                                                       2
 Accounting Manager                                               2
 Accounts Payable                                                 2
-associate                                                        2
-Bank Teller                                                      2
-banker                                                           2
-bookkeeper                                                       2
-Chief of Staff                                                   2
-clerk                                                            2
+Associate                                                        2
+Associate Director                                               2
+Bookkeeper                                                       2
+Civil Servant                                                    2
+Clerk                                                            2
 Clinical                                                         2
 Consumer Case Coordinator                                        2
 Counselor                                                        2
 Creative Director                                                2
-dentist                                                          2
-designer                                                         2
-Designer                                                         2
+Dentist                                                          2
 Diplomat                                                         2
 Epidemiologist                                                   2
 Executive Director                                               2
 Geologist                                                        2
 Information Technology Consultant                                2
 Insurance                                                        2
-journalist                                                       2
-lecturer                                                         2
-letter carrier                                                   2
-Library technician                                               2
+Lecturer                                                         2
+Letter Carrier                                                   2
+Library Technician                                               2
 Medical                                                          2
-Network Engineer                                                 2
 Office Manager                                                   2
 Owner                                                            2
 Paralegal                                                        2
@@ -519,337 +531,278 @@ Paraprofessional                                                 2
 Postdoc                                                          2
 Press Officer                                                    2
 Retail                                                           2
-self-employed Photographer                                       2
-Self Employed                                                    2
-Software engineer                                                2
-Software Pro                                                     2
-stocker                                                          2
-Supervisor                                                       2
+Self-Employed Photographer                                       2
+Stocker                                                          2
+Training Coordinator                                             2
 Tutor                                                            2
-university faculty                                               2
-vice-president                                                   2
+University Faculty                                               2
+Vice-President                                                   2
+Vice President                                                   2
 Account Manager                                                  1
-account planner                                                  1
+Account Planner                                                  1
 Account Service Rep                                              1
 Activities Leader                                                1
 Actress                                                          1
-acupuncturist                                                    1
-adjunct faculty                                                  1
-adult care                                                       1
-advocate                                                         1
+Acupuncturist                                                    1
+Adjunct Faculty                                                  1
+Adult Care                                                       1
+Advocate                                                         1
 Agronomist                                                       1
-airline                                                          1
-airport ground handler                                           1
-anthropologist                                                   1
+Airline                                                          1
+Airport Ground Handler                                           1
+Anthropologist                                                   1
 Antique Dealer                                                   1
-Associate                                                        1
-associate at law firm                                            1
-Associate director                                               1
-Associate Director                                               1
-Associate Producer                                               1
+Associate At Law Firm                                            1
 Asst. Prof.                                                      1
 Astrohysicist                                                    1
-audio engineer                                                   1
 Aviation Specialist                                              1
 Bar & Restaurant Owner                                           1
 Biologist                                                        1
 Box Office Representative                                        1
 Braillist                                                        1
-BUSINESS CONSULTA                                                1
-buyer                                                            1
-CAD operator                                                     1
-CAD Technician                                                   1
+Business Consulta                                                1
+Buyer                                                            1
+Cad Operator                                                     1
+Cad Technician                                                   1
 Camera Coordinator                                               1
 Campus Planner                                                   1
 Capstone Golf Course                                             1
 Career Placement Associate                                       1
 Case Manager                                                     1
 Casting Director                                                 1
-chairman of the board                                            1
-chauffeur                                                        1
-Chief Financial Officer                                          1
-Chiefe Development Engineer                                      1
-chiropractor                                                     1
-civil servant                                                    1
-Civil servant                                                    1
-Clutter clearer,  video editor, caterer                          1
+Chairman Of The Board                                            1
+Chauffeur                                                        1
+Chiropractor                                                     1
+Clutter Clearer, Video Editor, Caterer                           1
 Co-Proprietor                                                    1
-Collection management specialist                                 1
-college faculty                                                  1
-company director                                                 1
-Consultant and entrepreneur                                      1
+Collection Management Specialist                                 1
+College Faculty                                                  1
+Company Director                                                 1
+Consultant And Entrepreneur                                      1
 Consulting Manager                                               1
 Controller                                                       1
 Contsuruction Management                                         1
-Coordinator of International Programs                            1
-coordinatore operativo                                           1
-copy supervisor                                                  1
-Corporate instructor                                             1
+Coordinator Of International Programs                            1
+Coordinatore Operativo                                           1
+Corporate Instructor                                             1
 Corporate Trainer                                                1
 Corporation President                                            1
 Corrections                                                      1
 Country Style Employee                                           1
 Creative Consultant                                              1
-Data Warehouse Engineer                                          1
 Dealer                                                           1
 Dental & Disability Coordinator                                  1
 Dept. Director                                                   1
-Deputy Chief of Public Information for t                         1
 Deputy Chieif Information Officer                                1
-deputy practice manager                                          1
+Deputy Practice Manager                                          1
 Developer                                                        1
 Dietitian                                                        1
-Director                                                         1
-Director of a language program                                   1
-Director of Contract Management                                  1
-Director of non-profit organization                              1
-Director of Software Company                                     1
+Director Of A Language Program                                   1
+Director Of Contract Management                                  1
+Director Of Non-Profit Organization                              1
 Director Operations                                              1
 Director,social Dvelopment                                       1
 Disability Allowance                                             1
 Dish Washer                                                      1
-Divisional Manager of a large cosmetics                          1
+Divisional Manager Of A Large Cosmetics                          1
 Driver                                                           1
-Ecology technician                                               1
+Ecology Technician                                               1
 Economist                                                        1
 Economy                                                          1
 Education                                                        1
 Education Specialist                                             1
-EHS Manager                                                      1
-election services                                                1
+Ehs Manager                                                      1
+Election Services                                                1
 Electrical Technician                                            1
-electronic technician                                            1
-employed by a church                                             1
-energy therapist                                                 1
-enologist                                                        1
-entertainer                                                      1
-entrepreneur                                                     1
+Electronic Technician                                            1
+Employed By A Church                                             1
+Energy Therapist                                                 1
+Enologist                                                        1
+Entertainer                                                      1
+Entrepreneur                                                     1
 Entrepreneur & Consultant                                        1
-environmental education non profit direc                         1
-Environmental Engineer                                           1
+Environmental Education Non Profit Direc                         1
 Environmental Senior Specialist                                  1
-Executive                                                        1
-Executive officer                                                1
+Executive Officer                                                1
 Executive Vice President                                         1
 Facilitator                                                      1
 Facilities Management                                            1
 Farm Manager                                                     1
-federal excise tax auditor                                       1
+Federal Excise Tax Auditor                                       1
 Field Coordinator                                                1
-film editor                                                      1
+Film Editor                                                      1
 Film Industry                                                    1
-Film maker                                                       1
-Financial Consultant                                             1
-Financial Controller                                             1
-financial officer                                                1
-financial risk manager                                           1
-First VP & Associate General Counsel                             1
+Film Maker                                                       1
+First Vp & Associate General Counsel                             1
 Fitness Instructor                                               1
-flight surgeon                                                   1
-Food Service Supervisor                                          1
+Flight Surgeon                                                   1
 Foreign Affairs Specialist                                       1
-free lance bookkeeper                                            1
-Free lance editor and tutor--in theory                           1
-free professionist                                               1
+Free Lance Bookkeeper                                            1
+Free Lance Editor And Tutor--In Theory                           1
+Free Professionist                                               1
 Freelance                                                        1
 Freelance Project Manager                                        1
 Gender                                                           1
 Geophysicist                                                     1
-Gove service                                                     1
-Head - Operations & QA                                           1
-health care                                                      1
+Gove Service                                                     1
+Head - Operations & Qa                                           1
+Health Care                                                      1
 Healthcare Consultant                                            1
-hostess                                                          1
+Hostess                                                          1
 Hotel Desk Clerk                                                 1
 Housekeeping                                                     1
-HR generalist                                                    1
+Hr Generalist                                                    1
 Human Resource Manger                                            1
-HVAC Tech                                                        1
-ICT Director                                                     1
-In-house Legal Counsel                                           1
-information assisstant                                           1
+Hvac Tech                                                        1
+Ict Director                                                     1
+In-House Legal Counsel                                           1
+Information Assisstant                                           1
 Information Developer                                            1
 Information Management                                           1
-Information technology                                           1
-innkeeper                                                        1
-instructor                                                       1
-insurance agent                                                  1
-Insurance Claims Supervisor                                      1
+Innkeeper                                                        1
+Instructor                                                       1
 Insurance Coordinator                                            1
-Internet & media consultant                                      1
+Internet & Media Consultant                                      1
 Internship                                                       1
-interpreter                                                      1
+Interpreter                                                      1
 Investigative Specialist                                         1
-investment banker                                                1
 Investment Counsel                                               1
-ISTraining Coordinator                                           1
+Istraining Coordinator                                           1
 Janitor                                                          1
 Juvenile Corrections Officer                                     1
 Lab Director                                                     1
 Labor Relations Specialist                                       1
-laboratory technician                                            1
-land use planner                                                 1
-landscape designer                                               1
+Laboratory Technician                                            1
+Land Use Planner                                                 1
 Language Service Provider                                        1
-language trainer                                                 1
-Law clerk                                                        1
+Language Trainer                                                 1
+Law Clerk                                                        1
 Legal Secretary                                                  1
-library paraprofessional                                         1
+Library Paraprofessional                                         1
 Licensed Professional Counselor                                  1
-maintenance tech.                                                1
-Management consultant                                            1
+Maintenance Tech.                                                1
+Management Consultant                                            1
 Management Consultant & Entrepreneur                             1
-Manager - Analytical and Environmental S                         1
-Manager,Interacitve Media                                        1
-manufacturing                                                    1
+Manager - Analytical And Environmental S                         1
+Manager,interacitve Media                                        1
+Manufacturing                                                    1
 Master Control Operator                                          1
-Mechanical Engineer                                              1
 Media Consultant                                                 1
-media relations                                                  1
+Media Relations                                                  1
 Media Relations Manager                                          1
 Medical Laboratory                                               1
 Medical Practitioner                                             1
-medical sonographer                                              1
+Medical Sonographer                                              1
 Mentor                                                           1
 Military                                                         1
 Multimedia Developer                                             1
-museum docent                                                    1
-Network Services Engineer                                        1
-new realtor                                                      1
-newspaper carrier                                                1
-Night Dispatch Supervisor                                        1
-Non-profit Consultant                                            1
-nursing home                                                     1
-office                                                           1
+Museum Docent                                                    1
+New Realtor                                                      1
+Newspaper Carrier                                                1
+Non-Profit Consultant                                            1
+Nursing Home                                                     1
+Office                                                           1
 Office Services Manager                                          1
 Organic Grocery Store Cashier                                    1
 Outdoor Recreation Coordinator                                   1
-owner - private practice physical therap                         1
+Owner - Private Practice Physical Therap                         1
 P-T College Faculty & P-T Self-Employed                          1
-Page Designer for a newspaper                                    1
-Parent Educator                                                  1
-pathology                                                        1
-pharmacy tech.                                                   1
-photo profucer                                                   1
-physician                                                        1
+Pathology                                                        1
+Pharmacy Tech.                                                   1
+Photo Profucer                                                   1
+Physician                                                        1
 Physicist                                                        1
 Physiotherapst                                                   1
-pjublic relations director                                       1
-Plant Engineering Supervisor                                     1
-Please specify title Manager for Regulat                         1
-President Nongovernmental organization                           1
+Pjublic Relations Director                                       1
+Please Specify Title Manager For Regulat                         1
+President Nongovernmental Organization                           1
 Private Equity Principal                                         1
-pro poker player                                                 1
-Probation Supervisor                                             1
-Process Engineer                                                 1
+Pro Poker Player                                                 1
 Procrastinator                                                   1
-producer                                                         1
 Product Field Test Manager                                       1
 Professional Organizer                                           1
 Program Coordinator                                              1
 Program Director                                                 1
-Program director at a non-profit organiz                         1
+Program Director At A Non-Profit Organiz                         1
 Program Manager                                                  1
-Program Manager and Acting Director                              1
-Program officer                                                  1
+Program Manager And Acting Director                              1
+Program Officer                                                  1
 Program Specialist                                               1
 Proofreader                                                      1
 Proposal Director                                                1
-Psychiatrist in Private Practice                                 1
+Psychiatrist In Private Practice                                 1
 Public Health                                                    1
-public relations                                                 1
+Public Relations                                                 1
 Publishing                                                       1
 Quality Manager                                                  1
-Quotations specialist                                            1
-real estate                                                      1
-real estate agent                                                1
-Real Estate Appraiser                                            1
-real estate broker                                               1
-Real estate developer                                            1
-realtor                                                          1
+Quotations Specialist                                            1
+Realtor                                                          1
 Recreational Staff                                               1
 Registered Respiratory Therapist                                 1
-regulatory affairs                                               1
-research coordinator                                             1
-Research manager                                                 1
-research specialist                                              1
-research technician                                              1
+Regulatory Affairs                                               1
+Research Coordinator                                             1
+Research Manager                                                 1
+Research Specialist                                              1
+Research Technician                                              1
 Researcher - Physician                                           1
-resident physician                                               1
-Residential Services Supervisor                                  1
+Resident Physician                                               1
 Respiratory Therapist                                            1
-Restaurant operations manager                                    1
-rocket scientist                                                 1
+Restaurant Operations Manager                                    1
+Rocket Scientist                                                 1
 School Counselor                                                 1
-Science writing intern                                           1
-Secretary                                                        1
+Science Writing Intern                                           1
 Self-Employed                                                    1
-Self-employed Family Therapist                                   1
-self-employed translator                                         1
-self employed                                                    1
-Self employed Public Relations                                   1
-self employeed                                                   1
-selfemplyed renovator                                            1
-senior consultant                                                1
+Self-Employed Family Therapist                                   1
+Self-Employed Translator                                         1
+Self Employed Public Relations                                   1
+Self Employeed                                                   1
+Selfemplyed Renovator                                            1
+Senior Consultant                                                1
 Senior Grant Officer                                             1
 Senior Human Resources Consultant                                1
 Senior Policy Advisor                                            1
-senior project manager                                           1
-Service co-ordinator                                             1
+Senior Project Manager                                           1
+Service Co-Ordinator                                             1
 Service Registrar                                                1
-set designer                                                     1
-set lighting technician                                          1
+Set Lighting Technician                                          1
 Shipping                                                         1
-Social Media consultant                                          1
-Software trainer                                                 1
+Social Media Consultant                                          1
 Speaker                                                          1
 Speaker Author Consultant                                        1
 Special Projects Editor                                          1
-specialist                                                       1
+Specialist                                                       1
 Sr. Drug Safety Associate                                        1
 Statistician                                                     1
-Stay-at-home dad                                                 1
-steamship agent                                                  1
-supervising program development speciali                         1
-supervisor shelderd workshop for handcap                         1
+Steamship Agent                                                  1
 Surgeon                                                          1
 Surgical Resident                                                1
-system manager                                                   1
-tax consultant                                                   1
+System Manager                                                   1
+Tax Consultant                                                   1
 Tax Examiner                                                     1
 Technical Coordinator                                            1
-Technical director                                               1
-Technical officer                                                1
-Technical support rep                                            1
+Technical Director                                               1
+Technical Officer                                                1
+Technical Support Rep                                            1
 Technical Trainer                                                1
 Technology                                                       1
 Technology Curriculum Developer Science                          1
-television director                                              1
-Television Producer                                              1
-temporary office                                                 1
+Television Director                                              1
+Temporary Office                                                 1
 Theater General Manager                                          1
 Town Clerk                                                       1
 Town Planner                                                     1
-trader                                                           1
+Trader                                                           1
 Traffic Reporter-Radio                                           1
-trainee                                                          1
-training Coordinator                                             1
-Training Coordinator                                             1
-treatment support co-ordinator                                   1
-TV BROADCAST TECHNICIAN                                          1
-TV News Executive Producer                                       1
+Trainee                                                          1
+Treatment Support Co-Ordinator                                   1
+Tv Broadcast Technician                                          1
 University Staff                                                 1
 Urban Planner                                                    1
-veterinarian                                                     1
+Veterinarian                                                     1
 Vetrans Representative                                           1
-vice president                                                   1
-Vice President                                                   1
 Volunteer Director                                               1
-VP Scientific Affairs                                            1
-warehouse                                                        1
-Warehouse Supervisor                                             1
-Webmaster                                                        1
-wig designer                                                     1
+Vp Scientific Affairs                                            1
+Warehouse                                                        1
 
 ####Presented below is a table of the number count of the participants in the survey per country.
 
