@@ -969,3 +969,129 @@ matched
 ## [1] 2846
 ```
 
+####Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.
+
+
+```r
+top15 <- aggregate(cleaned_data$GPMean,list(cleaned_data$Country),mean)
+names(top15) <- c("Country", "GPMean")
+
+merged15 <- merge(x=top15,y=HDI,by='Country',all.x =TRUE)
+
+merged15<- merged15[with(merged15,order(-GPMean)),]
+merged15 <- merged15[1:15,]
+merged15
+```
+
+```
+##        Country   GPMean   HDI                    Category
+## 82      Taiwan 4.800000  <NA>                        <NA>
+## 69 Puerto Rico 4.266667  <NA>                        <NA>
+## 70       Qatar 4.200000 0.856 Very high human development
+## 64      Panama 4.000000 0.788      High human development
+## 57     Myanmar 3.800000 0.556    Medium human development
+## 79   Sri Lanka 3.800000 0.766      High human development
+## 67      Poland 3.780000 0.855 Very high human development
+## 8      Austria 3.766667 0.893 Very high human development
+## 84      Turkey 3.744444 0.767      High human development
+## 27     Ecuador 3.700000 0.739      High human development
+## 31      France 3.684615 0.897 Very high human development
+## 75    Slovenia 3.666667 0.890 Very high human development
+## 88     Uruguay 3.666667 0.795      High human development
+## 53    Malaysia 3.650000 0.789      High human development
+## 80      Sweden 3.646667 0.913 Very high human development
+```
+
+```r
+ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) + 
+			geom_bar(stat="identity", aes(fill=HDI))+  scale_fill_hue(h = c(5, 100)) +
+			ggtitle('Barchart: Top 15 Nations In Average Procrastination Scores(GP)')+
+			ylab('Average Procrastination Scores(GP)')+ 
+			xlab('Country')+
+
+			theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
+  		theme(axis.text.x = element_text(angle=60,hjust=1))
+```
+
+![](Case_Study_2_files/figure-html/barchart5B-1.png)<!-- -->
+
+####Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the AIP score.
+
+
+```r
+AIPtop15 <- aggregate(cleaned_data$AIPMean,list(cleaned_data$Country),mean)
+names(AIPtop15) <- c("Country", "AIPMean")
+
+AIPmerged15 <- merge(x=AIPtop15,y=HDI,by='Country',all.x =TRUE)
+
+AIPmerged15<- AIPmerged15[with(AIPmerged15,order(-AIPMean)),]
+AIPmerged15<- AIPmerged15[1:15,]
+AIPmerged15
+```
+
+```
+##               Country  AIPMean   HDI                    Category
+## 51              Macao 4.600000  <NA>                        <NA>
+## 82             Taiwan 4.600000  <NA>                        <NA>
+## 26 Dominican Republic 4.500000 0.722      High human development
+## 23             Cyprus 4.400000 0.856 Very high human development
+## 70              Qatar 4.100000 0.856 Very high human development
+## 64             Panama 4.000000 0.788      High human development
+## 69        Puerto Rico 4.000000  <NA>                        <NA>
+## 39            Iceland 3.900000 0.921 Very high human development
+## 27            Ecuador 3.733333 0.739      High human development
+## 21           Columbia 3.700000  <NA>                        <NA>
+## 48              Kenya 3.700000 0.555    Medium human development
+## 79          Sri Lanka 3.700000 0.766      High human development
+## 84             Turkey 3.677778 0.767      High human development
+## 88            Uruguay 3.600000 0.795      High human development
+## 31             France 3.561538 0.897 Very high human development
+```
+
+```r
+ggplot(AIPmerged15, aes(reorder(Country, AIPMean),AIPMean)) + 
+			geom_bar(stat="identity", aes(fill=HDI))+  scale_fill_hue(h = c(5, 100)) +
+			ggtitle('Barchart: Top 15 Nations In Average Procrastination Scores(AIP)')+
+			ylab('Average Procrastination Scores(AIP)')+ 
+			xlab('Country')+
+
+			theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
+  		theme(axis.text.x = element_text(angle=60,hjust=1))
+```
+
+![](Case_Study_2_files/figure-html/barchart5C-1.png)<!-- -->
+
+
+####Presented below is a table displaying nations show up both in GP and AIP plot.
+
+
+```r
+countrymatching<-intersect(merged15$Country,AIPmerged15$Country)
+countrymatching <- data.frame(countrymatching)
+names(countrymatching) <- c('CountryInBoth')
+countrymatching
+```
+
+```
+##   CountryInBoth
+## 1        Taiwan
+## 2   Puerto Rico
+## 3         Qatar
+## 4        Panama
+## 5     Sri Lanka
+## 6        Turkey
+## 7       Ecuador
+## 8        France
+## 9       Uruguay
+```
+
+####Presented below is to show the relationship between Age and Income.
+
+
+```r
+#scatter plot
+
+#linear regression
+AgeIncome <- lm(Income~Age,data = cleaned_data)
+```
+

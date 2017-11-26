@@ -344,3 +344,68 @@ matched <-sum(cleaned_data$matching)
 matched 
 ```
 
+####Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.
+
+```{r barchart5B,echo=TRUE,include=TRUE}
+top15 <- aggregate(cleaned_data$GPMean,list(cleaned_data$Country),mean)
+names(top15) <- c("Country", "GPMean")
+
+merged15 <- merge(x=top15,y=HDI,by='Country',all.x =TRUE)
+
+merged15<- merged15[with(merged15,order(-GPMean)),]
+merged15 <- merged15[1:15,]
+merged15
+
+ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) + 
+			geom_bar(stat="identity", aes(fill=HDI))+  scale_fill_hue(h = c(5, 100)) +
+			ggtitle('Barchart: Top 15 Nations In Average Procrastination Scores(GP)')+
+			ylab('Average Procrastination Scores(GP)')+ 
+			xlab('Country')+
+
+			theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
+  		theme(axis.text.x = element_text(angle=60,hjust=1))
+```
+
+####Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the AIP score.
+
+```{r barchart5C,echo=TRUE,include=TRUE}
+AIPtop15 <- aggregate(cleaned_data$AIPMean,list(cleaned_data$Country),mean)
+names(AIPtop15) <- c("Country", "AIPMean")
+
+AIPmerged15 <- merge(x=AIPtop15,y=HDI,by='Country',all.x =TRUE)
+
+AIPmerged15<- AIPmerged15[with(AIPmerged15,order(-AIPMean)),]
+AIPmerged15<- AIPmerged15[1:15,]
+AIPmerged15
+
+ggplot(AIPmerged15, aes(reorder(Country, AIPMean),AIPMean)) + 
+			geom_bar(stat="identity", aes(fill=HDI))+  scale_fill_hue(h = c(5, 100)) +
+			ggtitle('Barchart: Top 15 Nations In Average Procrastination Scores(AIP)')+
+			ylab('Average Procrastination Scores(AIP)')+ 
+			xlab('Country')+
+
+			theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
+  		theme(axis.text.x = element_text(angle=60,hjust=1))
+```
+
+
+####Presented below is a table displaying nations show up both in GP and AIP plot.
+
+```{r countryinboth, echo=TRUE,include=TRUE}
+countrymatching<-intersect(merged15$Country,AIPmerged15$Country)
+countrymatching <- data.frame(countrymatching)
+names(countrymatching) <- c('CountryInBoth')
+countrymatching
+```
+
+####Presented below is to show the relationship between Age and Income.
+
+```{r age and income,echo=TRUE,include=TRUE }
+
+#scatter plot
+
+#linear regression
+AgeIncome <- lm(Income~Age,data = cleaned_data)
+
+```
+
