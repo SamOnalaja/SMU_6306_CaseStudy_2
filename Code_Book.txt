@@ -111,7 +111,7 @@ Analyzing/Manipulating data
 	Gender		Number of Participants
 	Female		2309
 	Male		1721
-	NA			6
+	NA		6
 
 	Frequencies for Work Status
 	WorkStatus	Number of Participants
@@ -120,7 +120,7 @@ Analyzing/Manipulating data
 	part-time	465
 	unemployed	258
 	retired		174
-	NA			42
+	NA		42
 
 	Frequencies for Occupation
 	Job			    		Number of Participants
@@ -128,7 +128,7 @@ Analyzing/Manipulating data
 	Student	 				845
 	Teacher					88
 	Attorney				53
-	College Professor		42
+	College Professor			42
 	Writer					41
 	Engineer				37
 	Analyst					35
@@ -139,8 +139,8 @@ Analyzing/Manipulating data
 	Retired					28
 	Homemaker				27
 	Designer				25
-	Administration			24
-	Software Developer		23
+	Administration				24
+	Software Developer			23
 	Editor					21
 	Nurse					21
 	Marketing				20
@@ -149,10 +149,10 @@ Analyzing/Manipulating data
 5.	Give the counts of how many participants per country in descending order.
 
 	Country			Number of Participants
-	United States	2785
+	United States		2785
 	Canada			243
-	United Kingdom	177
-	NA				160
+	United Kingdom		177
+	NA			160
 	Australia		99
 	India			78
 	Italy			62
@@ -182,7 +182,7 @@ Analyzing/Manipulating data
 	Puerto Rico		4.267		NA	 	NA
 	Qatar			4.200	  	0.856  	Very high human development
 	Panama			4.000	  	0.788	High human development
-	Myanmar		    3.800	  	0.556   Medium human development
+	Myanmar				3.800	0.556   Medium human development
 	Sri Lanka		3.800	  	0.766	High human development
 	Poland			3.780	  	0.855	Very high human development
 	Austria			3.767	  	0.893	Very high human development
@@ -199,7 +199,7 @@ Analyzing/Manipulating data
 	Country					GPMean	HDI	 	Category
 	Macao					4.600	NA	 	NA
 	Taiwan					4.600	NA	 	NA
-	Dominican Republic		4.500	0.722	High human development
+	Dominican Republic			4.500	0.722	High human development
 	Cyprus					4.400	0.856	Very high human development
 	Qatar					4.100	0.856	Very high human development
 	Panama					4.000	0.788 	High human development
