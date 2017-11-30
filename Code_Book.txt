@@ -135,7 +135,7 @@ Analyzing/Manipulating data
 	Assistant				31
 	Manager					31
 	Finance					28	
-	Information Technology	28
+	Information Technology			28
 	Retired					28
 	Homemaker				27
 	Designer				25
@@ -182,7 +182,7 @@ Analyzing/Manipulating data
 	Puerto Rico		4.267		NA	 	NA
 	Qatar			4.200	  	0.856  	Very high human development
 	Panama			4.000	  	0.788	High human development
-	Myanmar				3.800	0.556   Medium human development
+	Myanmar			3.800	    0.556   Medium human development
 	Sri Lanka		3.800	  	0.766	High human development
 	Poland			3.780	  	0.855	Very high human development
 	Austria			3.767	  	0.893	Very high human development
