@@ -2,7 +2,7 @@ Code Book
 
 This document describes the code for Case_Study_2.Rmd
 
-The code is splitted (by comments) in some sections:
+The project is splitted (by comments) in some sections:
 
     Objects
     Loading data
