@@ -1,0 +1,316 @@
+Code Book
+
+This document describes the code for Case_Study_2.Rmd
+
+The code is splitted (by comments) in some sections:
+
+    Objects
+    Loading data
+    Analysing /Manipulating data
+	Plots
+    Writing final data to CSV
+
+Objects
+
+data.frame objects: 
+procrastination_data - imported raw data
+HDI - HDI table from wiki(web scraping)
+
+merged_data - data frame after merging procrastination_data and HDI
+cleaned_data - data frame, subset of merged data(subjects over the age of 18),updated after analysis
+
+frequencyOfRespondantsByGender - data frame of counts of number of participants by gender
+frequencyOfRespondantsByWork - data frame of counts of number of participants by work status
+frequencyOfRespondantsByJob -data frame of counts of number of participants by occupation
+frequencyOfRespondantsByCountry -data frame of counts of number of participants by country/region
+
+top15 - data frame contains all countries and their corresponding GP mean
+merged15 - merged data frame of the top 15 nations in average GP scores, HDI score and HDI category
+
+AIPtop15 - data frame contains all countries and their corresponding AIP mean
+AIPmerged15 - merged data frame of the top 15 nations in average AIP scores, HDI score and HDI category
+
+countrymatching - data frame of countries that show up both in AIPmerged15 and merged15
+
+Loading data
+
+This case study analyzes the dataset of procrastination data. The dataset is not in a tidy format and munging is needed.
+Raw data is read into procrastination_data data frame.
+There are 4262 entries in the original procrastination dataset which contain the following information:
+• Age: The participant’s age in years.
+• Gender: The gender the participant identifies as (Male or Female)
+• Kids: Binary, whether they have kids or not.
+• Edu: Education level
+• Work Status: What kind of job are they working?
+• Annual Income: All converted to dollars.
+• Current Occupation: A write-in for occupation.
+• How long have you held this position?: Years: Number of years in this job.
+• How long have you held this position?: Months: Number of months in this job.
+• Community: Size of community
+• Country of Residence: The country where the person holds citizenship.
+• Marital Status: Single, Married, Divorced, Separated, etc.
+• Number of sons/Number of daughters: integer number of children.
+• All variables starting DP(5 columns/questions) – the Decisional Procrastination Scale (Mann, 1982)
+• All variables starting AIP(15 columns/quesions) – Adult Inventory of Procrastination (McCown & Johnson, 1989)
+• All variables starting GP(20 columns/questions) – the General Procrastination scale (Lay, 1986)
+• All variables starting SWLS(5 columns/questions) – the Satisfaction with Life Scale (Diener et al., 1985)
+• Do you consider yourself a procrastinator?: a binary response
+• Do others consider you a procrastinator?: a binary response
+
+HDI is a data frame we obtained from wiki by web scraping. HDI data frame contains the following information:
+• country - countries are recognized as soverign nations
+• HDI score - numbers
+• HDI category - categorized as low, medium, high, very high
+
+The procrastination_data is merged with HDI data frame on country, then being subsetted to study subjects over the age of 18.
+The final data set being used for the analysis is saved as csv file -> Output/cleaned_data.csv
+
+Analyzing/Manipulating data
+
+		Answers following question about the dataset
+		
+1.	Output number of rows and columns the procrastination data set has
+	rows : 4262
+	columns: 61
+
+2.	Descriptive statistics on Age, Income, HDI, and the four mean columns (DP, etc.)
+	Age
+	Min.   |1st Qu. | Median  |  Mean  |  3rd Qu.  |  Max.
+	------------------------------------------------------- 
+	19.00  |28.00   | 37.00   |  38.14 |  45.00    | 80.00
+
+	Income
+	Min.|1st Qu. | Median  |  Mean  |  3rd Qu.  |  Max.
+	--------------------------------------------------- 
+	0   |10000   |  35000  | 53723  | 67500     | 250000
+
+	HDI
+		Min. |1st Qu. | Median  |  Mean  |  3rd Qu.  |  Max.  | NA
+	------------------------------------------------------------------ 
+	0.4790   | 0.9200 | 0.9200  | 0.9056 |	0.9200   | 0.9490 | 192
+
+	Mean GP
+	Min. |1st Qu. | Median  |  Mean  |  3rd Qu.  |  Max.  
+	-----------------------------------------------------
+	1.000| 2.800  | 3.200   | 3.235  |  3.800    | 5.000
+
+	Mean AIP
+	Min. |1st Qu. | Median  |  Mean  |  3rd Qu.  |  Max.  
+	-----------------------------------------------------
+	1.000| 2.400  | 2.900   |  2.964 |	3.500    |	5.000
+
+	Mean SWLS
+	Min. |1st Qu. | Median  |  Mean  |  3rd Qu.  |  Max.  
+	-----------------------------------------------------
+	1.000|2.400   |3.000    | 3.047  |  3.800    |5.000
+
+	Mean DP
+	Min. |1st Qu. | Median  |  Mean  |  3rd Qu.  |  Max.  
+	-----------------------------------------------------
+	1.000|2.400   | 3.000   |3.052   |  3.800    |5.000
+
+3.  Comment on the shape of the distribution
+    The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.
+
+4.	Give the frequencies for Gender, Work Status, and Occupation.
+	
+	Frequencies for Gender
+	Gender	|Number of Participants
+	-------------------------------
+	Female	|		2309
+	-------------------------------
+	Male	|		1721
+	-------------------------------
+	NA		|		6
+
+	Frequencies for Work Status
+	WorkStatus	|Number of Participants
+	------------------------------------
+	full-time	| 	2260
+	------------------------------------
+	student		|	837
+	------------------------------------
+	part-time	|	465
+	------------------------------------
+	unemployed	|	258
+	------------------------------------
+	retired		|	174
+	------------------------------------
+	NA			|	42
+
+	Frequencies for Occupation
+	Job			    		|Number of Participants
+	-------------------------------------------
+	Na						|	1966
+	-------------------------------------------
+	Student	 				|	845
+	-------------------------------------------
+	Teacher					|	88
+	-------------------------------------------
+	Attorney				|	53
+	-------------------------------------------
+	College Professor		|	42
+	-------------------------------------------
+	Writer					|	41
+	-------------------------------------------
+	Engineer				|	37
+	-------------------------------------------
+	Analyst					|	35
+	-------------------------------------------
+	Assistant				|	31
+	-------------------------------------------
+	Manager					|	31
+	-------------------------------------------
+	Finance					|	28
+	-------------------------------------------	
+	Information Technology	|	28
+	-------------------------------------------
+	Retired					|	28
+	-------------------------------------------
+	Homemaker				|	27
+	-------------------------------------------
+	Designer				|	25
+	-------------------------------------------
+	Administration			|	24
+	-------------------------------------------
+	Software Developer		|	23
+	-------------------------------------------
+	Editor					|	21
+	-------------------------------------------
+	Nurse					|	21
+	-------------------------------------------
+	Marketing				|	20
+
+
+5.	Give the counts of how many participants per country in descending order.
+
+	Country			|Number of Participants
+	----------------------------------------
+	United States	|	2785
+	----------------------------------------
+	Canada			|	243
+	----------------------------------------
+	United Kingdom	|	177
+	----------------------------------------
+	NA				|	160
+	----------------------------------------
+	Australia		|	99
+	----------------------------------------
+	India			|	78
+	----------------------------------------
+	Italy			|	62
+	----------------------------------------
+	Germany			|	36
+	----------------------------------------
+	Brazil			|	20
+	----------------------------------------
+	Ireland			|	19
+	----------------------------------------
+	Isreal			|	19
+	----------------------------------------
+	Netherlands		|	18
+	----------------------------------------
+	Sweden			|	15
+	----------------------------------------
+	Norway			|	14
+	----------------------------------------
+	France			|	13
+	----------------------------------------
+	Japan			|	13
+	----------------------------------------
+	Spain			|	13
+	----------------------------------------
+	China			|	12
+	----------------------------------------
+	Finland			|	12
+	----------------------------------------
+	Mexico			|	12
+
+	Create a simple histogram for two of these seven variables. Comment on the shape of the distribution in your markdown.
+
+6. 	How many people said they felt they were procrastinators and also said others thought they were procrastinators?	
+	2846 people.
+
+7.	The top 15 nations in average procrastination scores using the measure of the GP.
+	Country		|	GPMean	|	HDI	 |	Category
+	-----------------------------------------------------------------
+	Taiwan		|	4.800	|	NA	 |	NA
+	-----------------------------------------------------------------
+	Puerto Rico	|	4.267	|	NA	 |	NA
+	-----------------------------------------------------------------
+	Qatar		|	4.200	| 0.856  |	Very high human development
+	-----------------------------------------------------------------
+	Panama		|	4.000	| 0.788	 |	High human development
+	-----------------------------------------------------------------
+	Myanmar		|   3.800	| 0.556	 |	Medium human development
+	-----------------------------------------------------------------
+	Sri Lanka	| 	3.800	| 0.766	 | 	High human development
+	-----------------------------------------------------------------
+	Poland		|	3.780	| 0.855	 |	Very high human development
+	-----------------------------------------------------------------
+	Austria		|	3.767	| 0.893	 |	Very high human development
+	-----------------------------------------------------------------
+	Turkey		|	3.744	| 0.767	 |	High human development
+	-----------------------------------------------------------------
+	Ecuador		|	3.700	| 0.739	 |	High human development
+	-----------------------------------------------------------------
+	France		|	3.685	| 0.897	 |	Very high human development
+	-----------------------------------------------------------------
+	Slovenia	|	3.667	| 0.890	 |	Very high human development
+	-----------------------------------------------------------------
+	Uruguay		|	3.667	| 0.795	 |	High human development
+	-----------------------------------------------------------------
+	Malaysia	|	3.650	| 0.789	 |	High human development
+	-----------------------------------------------------------------
+	Sweden		| 	3.647	| 0.913	 |	Very high human development
+
+8.	Top 15 nations in average procrastination scores using the measure of the AIP.
+
+	Country				|	GPMean	|	HDI	 |	Category
+	-------------------------------------------------------------------
+	Macao				|	4.600	|	NA	 |	NA
+	Taiwan				|	4.600	|	NA	 |	NA
+	Dominican Republic	|	4.500	|0.722	 |	High human development
+	Cyprus				|	4.400	|0.856	 |	Very high human development
+	Qatar				|	4.100	|0.856	 |	Very high human development
+	Panama				|	4.000	|0.788	 |	High human development
+	Puerto Rico			|	4.000	|	NA	 |	NA
+	Iceland				|	3.900	|0.921	 |	Very high human development
+	Ecuador				|	3.733	|0.739	 |	High human development
+	Columbia			|	3.700	|	NA	 |	NA
+	Kenya				|	3.700	|0.555	 |	Medium human development
+	Sri Lanka			|	3.700	|0.766	 |	High human development
+	Turkey				|	3.678	|0.767	 |	High human development
+	Uruguay				|	3.600	|0.795	 |	High human development
+	France				|	3.562	|0.897	 |	Very high human development
+
+9.	Nations and regions show up both in GP and AIP
+	Taiwan,Puerto Rico,Qatar,Panama,Sri Lanka,Turkey,Ecuador,France,Uruguay
+
+10. Relationship between age and income:
+	At younger ages it appears men and women have about the same mean income, but as they get older on average men will make more money than women.
+
+11. Relationship between Life Satisfaction and HDI Score:
+	In countries that have lower HDI, females appear to have higher life satisfaction level than males.As the HDI increases, the life satisfaction diffenrecence between females and males is getting smaller.
+
+12. Relationship between Life Satisfaction and HDI Category:
+	In countries that have low human development category, the life satisfaction mean scores are the lowest.
+	In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category.
+
+Plots
+
+1. Two simple histograms for age and Mean GP data. 
+2. A barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.
+3. A barchart displaying the top 15 nations in average procrastination scores using the measure of the AIP score.
+4. Scatter plot between age and income. (Age data is on horizontal axis)
+5. Scatter plot between Life Satisfaction and HDI Score. (HDI score data is on horizontal axis)
+6. Barplot of Life Satisfaction and HDI Category.
+
+Writing final data to CSV
+
+The OutPut file contains the following csv files: 
+1. HDI.csv          -  write HDI table from wiki(web scraping) into csv
+2. cleaned_data.csv - updated after analysis,
+					  tidied version of the original input to be output in the repository, including the merged HDI data
+3. GP15.csv         - top 15 nation with mean GP score as well as their HDI scores
+4. AIP15.csv        - top 15 nation with mean AIP score as well as their HDI scores
