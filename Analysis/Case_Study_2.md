@@ -1,11 +1,6 @@
----
-title: "MSDS 6306 Case Study 2"
-author: "Nuoya Rezsonya & Steven Millett"
-date: "November 23, 2017"
-output: 
-  html_document:
-      keep_md: true
----
+# MSDS 6306 Case Study 2
+Nuoya Rezsonya & Steven Millett  
+November 23, 2017  
 
 
 
@@ -110,7 +105,7 @@ names(procrastination_data)<-camel(names(procrastination_data))
 #a manual update of variable names that are too long or not descriptive. 
 procrastination_data<- rename(x=procrastination_data,replace=c("HowLongHaveYouHeldThisPositionYears"="ExpYears", "Edu"="Education",
 "CountryOfResidence"="Country", 
-"ÏAge"="Age",                              
+"ÃAge"="Age",                              
 "HowLongHaveYouHeldThisPositionMonths"="ExpMonths",
 "DoYouConsiderYourselfAProcrastinator"="SelfQuestion",
 "NumberOfDaughters" = "Daughters", 
@@ -1110,16 +1105,19 @@ In countries that have medium human development category, the life satisfaction 
 
 
 ```r
-#scatter plot of HDI category
+#
 
-ggplot(cleaned_data, aes(Category, SWLSMean)) + 
-			geom_bar(stat="identity", aes(fill=Category))+  scale_fill_hue(h = c(5, 100)) +
+ggplot(cleaned_data, aes(x=factor(Category), y=SWLSMean)) + 
+			stat_summary(fun.y = mean, geom = "bar", aes(fill=Category)) +  scale_fill_hue(h = c(5, 100)) +
+      
+    
 
 			ylab('Life Satisfaction Mean Score')+ 
 			xlab('HDI Category')+
-
+      ggtitle("Bar Plot of Life Satisfaction by HDI Category") + 
 			theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
-  		theme(axis.text.x = element_text(angle=60,hjust=1))
+  		theme(axis.text.x = element_text(angle=60,hjust=1))+
+      ylim(0,5)
 ```
 
 ![](Case_Study_2_files/figure-html/SWLS_and_category-1.png)<!-- -->
