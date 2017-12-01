@@ -135,7 +135,7 @@ colnames(procrastination_data)[grep(names(procrastination_data),pattern = "DP")]
 
 * There are unrealistic and null values in the years of experience data, here those values will be assigned to zero. We also round up values to only one digit.
 
-```{r Years of experience, echo=TRUE, include=TRUE}
+```{r Years_of_experience, echo=TRUE, include=TRUE}
 #Years of experience
 #For years of experience any unrealistic value or null value is assigned 
 procrastination_data$ExpYears <-as.numeric(procrastination_data$ExpYears)
@@ -148,7 +148,7 @@ procrastination_data$ExpYears <- round(procrastination_data$ExpYears,digits=1)
 
 * There are zeros in the occupation data. We are replacing zeros with NA. And also there are blanks in the Income data. We are replacing them with zero.
 
-```{r job and income, echo=TRUE, include=TRUE}
+```{r job_and_income, echo=TRUE, include=TRUE}
 #We are replacing mis identified
 procrastination_data$Job[procrastination_data$Job=="0"] <- "NA"
 
@@ -159,7 +159,7 @@ procrastination_data$Income[is.na(procrastination_data$Income)] <- 0
 
 * Relabelling the number of sons data. The data is labelled as Male and Female. Here we relabel the genders back to intergers with Male=1 and Female =2.
 
-```{r number of sons relabel, echo=TRUE, include=TRUE}
+```{r number_of_sons relabel, echo=TRUE, include=TRUE}
 procrastination_data$Sons[procrastination_data$Sons=="Male"] <- "1"
 procrastination_data$Sons[procrastination_data$Sons=="Female"] <- "2"
 ```
@@ -181,7 +181,7 @@ procrastination_data$Age <- trunc(procrastination_data$Age,digits=0)
 
 * There are zero values in the contry of residence. We are replacing them with NA to treat this as missing.
 
-```{r country of residence,echo=TRUE,include=TRUE}
+```{r country_of_residence,echo=TRUE,include=TRUE}
 #This is to replace all 0 values of Country with an empty string
 procrastination_data$Country[procrastination_data$Country=="0"] <- "NA"
 ```
@@ -191,7 +191,7 @@ procrastination_data$Country[procrastination_data$Country=="0"] <- "NA"
 	* Do others consider you a procrastinator?
 	* Here we assign them a NA value.
 	
-```{r assign yes,echo=TRUE,include=TRUE}
+```{r assign_yes,echo=TRUE,include=TRUE}
 #Any blank answers in the procrastination questionnaires are assigned a Yes value
 procrastination_data$OthQuestion[procrastination_data$OthQuestion==""] <- "NA"
 procrastination_data$SelfQuestion[procrastination_data$SelfQuestion==""] <- "NA"
@@ -368,7 +368,7 @@ cleaned_data$HDI <- as.numeric(cleaned_data$HDI )
 
 ##### 4. Presented below are the descriptive statistics on Age, Income, HDI, and for mean columns of GP,AIP,SWLS,DP. There are two histograms for Age and Mean GP data. The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.
 
-```{r countByGender, echo=TRUE}
+```{r histogram_statistics, echo=TRUE}
 
 agesummary <- summary(cleaned_data$Age)
 incomesummary <-summary(cleaned_data$Income)
@@ -412,7 +412,7 @@ qplot(cleaned_data$GPMean,
 ```
 
 ##### 5. Presented below is a table of the number count of the participants in the survey by genders.If there are blanks in gender data, they will be assigned NA. Therefore the table will have females, males and NA.
-```{r gender freq,echo=TRUE,include=TRUE}
+```{r gender_freq,echo=TRUE,include=TRUE}
 
 frequencyOfRespondantsByGender <- as.data.frame(table(cleaned_data$Gender))
 colnames(frequencyOfRespondantsByGender) <- c("Gender","Number of Participants")
@@ -423,7 +423,7 @@ kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Numb
 
 
 ##### 6. Presented below is a table of the number count of the participants in the survey by Work Status.If there are 'blanks'please specify" in work status data, they will be assigned NA. Therefore the table will have full-time, part-time,student,unemployed, retired and NA.
-```{r work status freq,echo=TRUE,include=TRUE}
+```{r work_status_freq,echo=TRUE,include=TRUE}
 
 frequencyOfRespondantsByWork <- as.data.frame(table(cleaned_data$WorkStatus))
 colnames(frequencyOfRespondantsByWork) <- c("Work","Number of Participants")
@@ -434,7 +434,7 @@ kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number o
 
 ##### 7. Presented below is a table of the number count of the participants in the survey by Occupation.
 
-```{r occupation feq,echo=TRUE,include=TRUE}
+```{r occupation_feq,echo=TRUE,include=TRUE}
 frequencyOfRespondantsByJob<- as.data.frame(table(cleaned_data$Job))
 colnames(frequencyOfRespondantsByJob) <- c("Job","Number of Participants")
 kable(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),row.names = FALSE,format = 'html')%>%
@@ -455,7 +455,7 @@ kable(head(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountr
 
 ##### 9. Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2358 people matched answer:yes their perceptions to others and 482 people mathced answer:no.
 
-```{r answer matched, echo=TRUE,include=TRUE}
+```{r answer_matched, echo=TRUE,include=TRUE}
 cleaned_data$matchingyes <- ifelse(cleaned_data$SelfQuestion=='yes'&cleaned_data$OthQuestion=='yes',1,0)
 matchedyes <-sum(cleaned_data$matchingyes)
 matchedyes
@@ -531,7 +531,7 @@ countrymatching
 
 * Finding: At younger ages it appears men and women have about the same mean income, but as they get older on average men will make more money than women.
 
-```{r age and income,echo=TRUE }
+```{r age_and_income,echo=TRUE }
 #scatter plot
 
 ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(Age, Income),color=Gender) + geom_jitter(aes(color=Gender)) + 
@@ -553,7 +553,7 @@ plot(AgeIncome)
 
 * Finding: In countries that have lower HDI, females appear to have higher life satisfaction level than males.As the HDI increases, the life satisfaction diffenrecence between females and males is getting smaller.
 
-```{r SWLS and HDI,echo=TRUE }
+```{r SWLS_and_HDI,echo=TRUE }
 #scatter plot
 ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(HDI, SWLSMean),color=Gender) + geom_jitter(aes(color=Gender),na.rm = TRUE) + 
 	scale_color_manual(breaks = c("Female", "Male", ""), values=c("red", "blue", "green")) + 
@@ -573,7 +573,7 @@ In countries that have low human development category, the life satisfaction mea
 
 In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
 
-```{r SWLS and category,echo=TRUE }
+```{r SWLS_and_category,echo=TRUE }
 #scatter plot of HDI category
 
 ggplot(cleaned_data, aes(Category, SWLSMean)) + 
@@ -590,7 +590,7 @@ ggplot(cleaned_data, aes(Category, SWLSMean)) +
 
 * Finalized HDI table
 
-```{r HDI out put, echo = TRUE, include =TRUE}
+```{r HDI_out_put, echo = TRUE, include =TRUE}
 HDIout <- write.csv(HDI, "../Output/HDI.csv", row.names=FALSE)
 ```
 

@@ -457,7 +457,7 @@ qplot(cleaned_data$Age,
   theme(axis.text.x = element_text(angle=60,hjust=1))
 ```
 
-![](Case_Study_2_files/figure-html/countByGender-1.png)<!-- -->
+![](Case_Study_2_files/figure-html/histogram_statistics-1.png)<!-- -->
 
 ```r
 #histogram of mean GP
@@ -472,7 +472,7 @@ qplot(cleaned_data$GPMean,
   theme(axis.text.x = element_text(angle=60,hjust=1))
 ```
 
-![](Case_Study_2_files/figure-html/countByGender-2.png)<!-- -->
+![](Case_Study_2_files/figure-html/histogram_statistics-2.png)<!-- -->
 
 ##### 5. Presented below is a table of the number count of the participants in the survey by genders.If there are blanks in gender data, they will be assigned NA. Therefore the table will have females, males and NA.
 
@@ -1069,7 +1069,7 @@ ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(Age, Incom
   theme(axis.text.x = element_text(angle=60,hjust=1))
 ```
 
-![](Case_Study_2_files/figure-html/age and income-1.png)<!-- -->
+![](Case_Study_2_files/figure-html/age_and_income-1.png)<!-- -->
 
 ```r
 #linear regression
@@ -1080,7 +1080,7 @@ layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page
 plot(AgeIncome)
 ```
 
-![](Case_Study_2_files/figure-html/age and income-2.png)<!-- -->
+![](Case_Study_2_files/figure-html/age_and_income-2.png)<!-- -->
 
 #### 14. Presented below is to show the relationship between Life Satisfaction and HDI Score.
 
@@ -1097,7 +1097,7 @@ ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(HDI, SWLSM
   theme(axis.text.x = element_text(angle=60,hjust=1))
 ```
 
-![](Case_Study_2_files/figure-html/SWLS and HDI-1.png)<!-- -->
+![](Case_Study_2_files/figure-html/SWLS_and_HDI-1.png)<!-- -->
 
 #### 15. Presented below is to show the relationship between Life Satisfaction and HDI Category.
 
@@ -1122,7 +1122,7 @@ ggplot(cleaned_data, aes(Category, SWLSMean)) +
   		theme(axis.text.x = element_text(angle=60,hjust=1))
 ```
 
-![](Case_Study_2_files/figure-html/SWLS and category-1.png)<!-- -->
+![](Case_Study_2_files/figure-html/SWLS_and_category-1.png)<!-- -->
 
 #### Outputting data
 
