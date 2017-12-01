@@ -17,6 +17,7 @@ library(RCurl)
 library(plyr)
 library(stringr)
 library(xtable)
+
 ```
 
 ### Introduction
@@ -89,7 +90,6 @@ Project report including:
 procrastination_data <- read.csv("Data/Procrastination.csv",stringsAsFactors = FALSE)
 
 kable(dim(procrastination_data), header = "Dimension of procrastination dataset")
-
 ```
 
 
