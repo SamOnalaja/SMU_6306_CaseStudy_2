@@ -1,4 +1,4 @@
-Code Book
+﻿Code Book
 
 This document describes the code for Case_Study_2.Rmd
 
@@ -174,7 +174,7 @@ Analyzing/Manipulating data
 	The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.
 
 7. 	How many people said they felt they were procrastinators and also said others thought they were procrastinators?	
-	2846 people.
+	There are 2358 people matched answer:yes their perceptions to others and 482 people mathced answer:no.
 
 8.	The top 15 nations in average procrastination scores using the measure of the GP.
 	Country			GPMean		HDI	 	Category

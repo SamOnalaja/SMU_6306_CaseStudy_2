@@ -453,12 +453,19 @@ kable(head(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountr
 
 ```
 
-##### 9. Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2846 people matched their perceptions to others.
+##### 9. Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2358 people matched answer:yes their perceptions to others and 482 people mathced answer:no.
 
 ```{r answer matched, echo=TRUE,include=TRUE}
-cleaned_data$matching <- ifelse(cleaned_data$SelfQuestion ==cleaned_data$OthQuestion,1,0)
-matched <-sum(cleaned_data$matching)
-matched 
+cleaned_data$matchingyes <- ifelse(cleaned_data$SelfQuestion=='yes'&cleaned_data$OthQuestion=='yes',1,0)
+matchedyes <-sum(cleaned_data$matchingyes)
+matchedyes
+
+cleaned_data$matchingno <- ifelse(cleaned_data$SelfQuestion=='no'&cleaned_data$OthQuestion=='no',1,0)
+matchedno <-sum(cleaned_data$matchingno)
+matchedno
+
+
+
 ```
 
 ##### 10. Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.Those regions are not recognized as soverign nations will have NA values to their HDI score and HDI category.
