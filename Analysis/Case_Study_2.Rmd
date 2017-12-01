@@ -17,7 +17,7 @@ library(RCurl)
 library(plyr)
 library(stringr)
 library(xtable)
-
+library(kableExtra)
 ```
 
 ### Introduction
@@ -89,7 +89,8 @@ Project report including:
 ```{r import_data, echo=TRUE,include=TRUE}
 procrastination_data <- read.csv("Data/Procrastination.csv",stringsAsFactors = FALSE)
 
-kable(dim(procrastination_data), header = "Dimension of procrastination dataset")
+kable(dim(procrastination_data), header = "Dimension of procrastination dataset",format='html')%>%
+  kable_styling(dim(procrastination_data),bootstrap_options='striped',full_width=FALSE)
 ```
 
 
@@ -415,7 +416,8 @@ qplot(cleaned_data$GPMean,
 
 frequencyOfRespondantsByGender <- as.data.frame(table(cleaned_data$Gender))
 colnames(frequencyOfRespondantsByGender) <- c("Gender","Number of Participants")
-kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],row.names = FALSE)
+kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],row.names = FALSE,format='html')%>%
+  kable_styling(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],bootstrap_options='striped',full_width=FALSE)
 
 ```
 
@@ -424,8 +426,9 @@ kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Numb
 ```{r work status freq,echo=TRUE,include=TRUE}
 
 frequencyOfRespondantsByWork <- as.data.frame(table(cleaned_data$WorkStatus))
-colnames(frequencyOfRespondantsByWork) <- c("WorkStatus","Number of Participants")
-kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number of Participants`),],row.names = FALSE)
+colnames(frequencyOfRespondantsByWork) <- c("Work","Number of Participants")
+kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number of Participants`),],row.names = FALSE,format = 'html')%>%
+	kable_styling(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number of Participants`),],bootstrap_options='striped',full_width=FALSE)
 
 ```
 
@@ -434,7 +437,8 @@ kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number o
 ```{r occupation feq,echo=TRUE,include=TRUE}
 frequencyOfRespondantsByJob<- as.data.frame(table(cleaned_data$Job))
 colnames(frequencyOfRespondantsByJob) <- c("Job","Number of Participants")
-kable(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),row.names = FALSE)
+kable(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),row.names = FALSE,format = 'html')%>%
+	  kable_styling(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),bootstrap_options='striped',full_width=FALSE)
 ```
 
 ##### 8. Presented below is a table of the number count of the participants in the survey per country. Blanks in the country data will be assigned to NA. 
@@ -444,7 +448,8 @@ kable(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Numbe
 cleaned_data$Country[cleaned_data$Country==""] <- "NA"
 frequencyOfRespondantsByCountry <- as.data.frame(table(cleaned_data$Country))
 colnames(frequencyOfRespondantsByCountry) <- c("Country","Number of Participants")
-kable(head(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountry$`Number of Participants`),],20),row.names = FALSE)
+kable(head(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountry$`Number of Participants`),],20),row.names = FALSE,format = 'html')%>%
+	 kable_styling(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),bootstrap_options='striped',full_width=FALSE)
 
 ```
 
@@ -467,7 +472,8 @@ merged15 <- merge(x=top15,y=HDI,by='Country',all.x =TRUE)
 merged15$GPMean <- round(merged15$GPMean,3)
 merged15<- merged15[with(merged15,order(-GPMean)),]
 merged15 <- merged15[1:15,]
-kable(merged15,row.names = FALSE)
+kable(merged15,row.names = FALSE,format = 'html')%>%
+	kable_styling(merged15,bootstrap_options='striped',full_width=FALSE)
 
 ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) + 
 			geom_bar(stat="identity", aes(fill=Category))+  scale_fill_hue(h = c(5, 100)) +
@@ -490,7 +496,8 @@ AIPmerged15 <- merge(x=AIPtop15,y=HDI,by='Country',all.x =TRUE)
 AIPmerged15$AIPMean <- round(AIPmerged15$AIPMean,3)
 AIPmerged15<- AIPmerged15[with(AIPmerged15,order(-AIPMean)),]
 AIPmerged15<- AIPmerged15[1:15,]
-kable(AIPmerged15,row.names = FALSE)
+kable(AIPmerged15,row.names = FALSE,format = "html")%>%
+	  kable_styling(AIPmerged15,bootstrap_options='striped',full_width=FALSE)
 
 
 ggplot(AIPmerged15, aes(reorder(Country, AIPMean),AIPMean)) + 

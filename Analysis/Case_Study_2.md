@@ -79,20 +79,18 @@ Project report including:
 ```r
 procrastination_data <- read.csv("Data/Procrastination.csv",stringsAsFactors = FALSE)
 
-kable(dim(procrastination_data), header = "Dimension of procrastination dataset")
+kable(dim(procrastination_data), header = "Dimension of procrastination dataset",format='html')%>%
+  kable_styling(dim(procrastination_data),bootstrap_options='striped',full_width=FALSE)
 ```
 
-```
-## Warning in kable_markdown(x = structure(c("4264", "61"), .Dim = c(2L, 1L:
-## The table should have a header (column names)
-```
-
-
-
-|     |
-|----:|
-| 4264|
-|   61|
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"><tbody>
+<tr>
+<td style="text-align:right;"> 4264 </td>
+  </tr>
+<tr>
+<td style="text-align:right;"> 61 </td>
+  </tr>
+</tbody></table>
 
 
 #### Munging the imported data 
@@ -481,36 +479,73 @@ qplot(cleaned_data$GPMean,
 ```r
 frequencyOfRespondantsByGender <- as.data.frame(table(cleaned_data$Gender))
 colnames(frequencyOfRespondantsByGender) <- c("Gender","Number of Participants")
-kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],row.names = FALSE)
+kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],row.names = FALSE,format='html')%>%
+  kable_styling(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],bootstrap_options='striped',full_width=FALSE)
 ```
 
-
-
-Gender    Number of Participants
--------  -----------------------
-Female                      2309
-Male                        1721
-NA                             6
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:left;"> Gender </th>
+   <th style="text-align:right;"> Number of Participants </th>
+  </tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;"> Female </td>
+   <td style="text-align:right;"> 2309 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Male </td>
+   <td style="text-align:right;"> 1721 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> NA </td>
+   <td style="text-align:right;"> 6 </td>
+  </tr>
+</tbody>
+</table>
 
 
 ##### 6. Presented below is a table of the number count of the participants in the survey by Work Status.If there are 'blanks'please specify" in work status data, they will be assigned NA. Therefore the table will have full-time, part-time,student,unemployed, retired and NA.
 
 ```r
 frequencyOfRespondantsByWork <- as.data.frame(table(cleaned_data$WorkStatus))
-colnames(frequencyOfRespondantsByWork) <- c("WorkStatus","Number of Participants")
-kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number of Participants`),],row.names = FALSE)
+colnames(frequencyOfRespondantsByWork) <- c("Work","Number of Participants")
+kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number of Participants`),],row.names = FALSE,format = 'html')%>%
+	kable_styling(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number of Participants`),],bootstrap_options='striped',full_width=FALSE)
 ```
 
-
-
-WorkStatus    Number of Participants
------------  -----------------------
-full-time                       2260
-student                          837
-part-time                        465
-unemployed                       258
-retired                          174
-NA                                42
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:left;"> Work </th>
+   <th style="text-align:right;"> Number of Participants </th>
+  </tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;"> full-time </td>
+   <td style="text-align:right;"> 2260 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> student </td>
+   <td style="text-align:right;"> 837 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> part-time </td>
+   <td style="text-align:right;"> 465 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> unemployed </td>
+   <td style="text-align:right;"> 258 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> retired </td>
+   <td style="text-align:right;"> 174 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> NA </td>
+   <td style="text-align:right;"> 42 </td>
+  </tr>
+</tbody>
+</table>
 
 ##### 7. Presented below is a table of the number count of the participants in the survey by Occupation.
 
@@ -518,33 +553,98 @@ NA                                42
 ```r
 frequencyOfRespondantsByJob<- as.data.frame(table(cleaned_data$Job))
 colnames(frequencyOfRespondantsByJob) <- c("Job","Number of Participants")
-kable(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),row.names = FALSE)
+kable(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),row.names = FALSE,format = 'html')%>%
+	  kable_styling(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),bootstrap_options='striped',full_width=FALSE)
 ```
 
-
-
-Job                       Number of Participants
------------------------  -----------------------
-Na                                          1966
-Student                                      845
-Teacher                                       88
-Attorney                                      53
-College Professor                             42
-Writer                                        41
-Engineer                                      37
-Analyst                                       35
-Assistant                                     31
-Manager                                       31
-Finance                                       28
-Information Technology                        28
-Retired                                       28
-Homemaker                                     27
-Designer                                      25
-Administration                                24
-Software Developer                            23
-Editor                                        21
-Nurse                                         21
-Marketing                                     20
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:left;"> Job </th>
+   <th style="text-align:right;"> Number of Participants </th>
+  </tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;"> Na </td>
+   <td style="text-align:right;"> 1966 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Student </td>
+   <td style="text-align:right;"> 845 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Teacher </td>
+   <td style="text-align:right;"> 88 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Attorney </td>
+   <td style="text-align:right;"> 53 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> College Professor </td>
+   <td style="text-align:right;"> 42 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Writer </td>
+   <td style="text-align:right;"> 41 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Engineer </td>
+   <td style="text-align:right;"> 37 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Analyst </td>
+   <td style="text-align:right;"> 35 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Assistant </td>
+   <td style="text-align:right;"> 31 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Manager </td>
+   <td style="text-align:right;"> 31 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Finance </td>
+   <td style="text-align:right;"> 28 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Information Technology </td>
+   <td style="text-align:right;"> 28 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Retired </td>
+   <td style="text-align:right;"> 28 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Homemaker </td>
+   <td style="text-align:right;"> 27 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Designer </td>
+   <td style="text-align:right;"> 25 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Administration </td>
+   <td style="text-align:right;"> 24 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Software Developer </td>
+   <td style="text-align:right;"> 23 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Editor </td>
+   <td style="text-align:right;"> 21 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Nurse </td>
+   <td style="text-align:right;"> 21 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Marketing </td>
+   <td style="text-align:right;"> 20 </td>
+  </tr>
+</tbody>
+</table>
 
 ##### 8. Presented below is a table of the number count of the participants in the survey per country. Blanks in the country data will be assigned to NA. 
 
@@ -553,33 +653,98 @@ Marketing                                     20
 cleaned_data$Country[cleaned_data$Country==""] <- "NA"
 frequencyOfRespondantsByCountry <- as.data.frame(table(cleaned_data$Country))
 colnames(frequencyOfRespondantsByCountry) <- c("Country","Number of Participants")
-kable(head(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountry$`Number of Participants`),],20),row.names = FALSE)
+kable(head(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountry$`Number of Participants`),],20),row.names = FALSE,format = 'html')%>%
+	 kable_styling(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),bootstrap_options='striped',full_width=FALSE)
 ```
 
-
-
-Country           Number of Participants
----------------  -----------------------
-United States                       2785
-Canada                               243
-United Kingdom                       177
-NA                                   160
-Australia                             99
-India                                 78
-Italy                                 62
-Germany                               36
-Brazil                                20
-Ireland                               19
-Isreal                                19
-Netherlands                           18
-Sweden                                15
-Norway                                14
-France                                13
-Japan                                 13
-Spain                                 13
-China                                 12
-Finland                               12
-Mexico                                12
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:left;"> Country </th>
+   <th style="text-align:right;"> Number of Participants </th>
+  </tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;"> United States </td>
+   <td style="text-align:right;"> 2785 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Canada </td>
+   <td style="text-align:right;"> 243 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> United Kingdom </td>
+   <td style="text-align:right;"> 177 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> NA </td>
+   <td style="text-align:right;"> 160 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Australia </td>
+   <td style="text-align:right;"> 99 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> India </td>
+   <td style="text-align:right;"> 78 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Italy </td>
+   <td style="text-align:right;"> 62 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Germany </td>
+   <td style="text-align:right;"> 36 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Brazil </td>
+   <td style="text-align:right;"> 20 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Ireland </td>
+   <td style="text-align:right;"> 19 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Isreal </td>
+   <td style="text-align:right;"> 19 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Netherlands </td>
+   <td style="text-align:right;"> 18 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Sweden </td>
+   <td style="text-align:right;"> 15 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Norway </td>
+   <td style="text-align:right;"> 14 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> France </td>
+   <td style="text-align:right;"> 13 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Japan </td>
+   <td style="text-align:right;"> 13 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Spain </td>
+   <td style="text-align:right;"> 13 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> China </td>
+   <td style="text-align:right;"> 12 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Finland </td>
+   <td style="text-align:right;"> 12 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Mexico </td>
+   <td style="text-align:right;"> 12 </td>
+  </tr>
+</tbody>
+</table>
 
 ##### 9. Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2846 people matched their perceptions to others.
 
@@ -606,28 +771,110 @@ merged15 <- merge(x=top15,y=HDI,by='Country',all.x =TRUE)
 merged15$GPMean <- round(merged15$GPMean,3)
 merged15<- merged15[with(merged15,order(-GPMean)),]
 merged15 <- merged15[1:15,]
-kable(merged15,row.names = FALSE)
+kable(merged15,row.names = FALSE,format = 'html')%>%
+	kable_styling(merged15,bootstrap_options='striped',full_width=FALSE)
 ```
 
-
-
-Country        GPMean  HDI     Category                    
-------------  -------  ------  ----------------------------
-Taiwan          4.800  NA      NA                          
-Puerto Rico     4.267  NA      NA                          
-Qatar           4.200  0.856   Very high human development 
-Panama          4.000  0.788   High human development      
-Myanmar         3.800  0.556   Medium human development    
-Sri Lanka       3.800  0.766   High human development      
-Poland          3.780  0.855   Very high human development 
-Austria         3.767  0.893   Very high human development 
-Turkey          3.744  0.767   High human development      
-Ecuador         3.700  0.739   High human development      
-France          3.685  0.897   Very high human development 
-Slovenia        3.667  0.890   Very high human development 
-Uruguay         3.667  0.795   High human development      
-Malaysia        3.650  0.789   High human development      
-Sweden          3.647  0.913   Very high human development 
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:left;"> Country </th>
+   <th style="text-align:right;"> GPMean </th>
+   <th style="text-align:left;"> HDI </th>
+   <th style="text-align:left;"> Category </th>
+  </tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;"> Taiwan </td>
+   <td style="text-align:right;"> 4.800 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Puerto Rico </td>
+   <td style="text-align:right;"> 4.267 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Qatar </td>
+   <td style="text-align:right;"> 4.200 </td>
+   <td style="text-align:left;"> 0.856 </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Panama </td>
+   <td style="text-align:right;"> 4.000 </td>
+   <td style="text-align:left;"> 0.788 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Myanmar </td>
+   <td style="text-align:right;"> 3.800 </td>
+   <td style="text-align:left;"> 0.556 </td>
+   <td style="text-align:left;"> Medium human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Sri Lanka </td>
+   <td style="text-align:right;"> 3.800 </td>
+   <td style="text-align:left;"> 0.766 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Poland </td>
+   <td style="text-align:right;"> 3.780 </td>
+   <td style="text-align:left;"> 0.855 </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Austria </td>
+   <td style="text-align:right;"> 3.767 </td>
+   <td style="text-align:left;"> 0.893 </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Turkey </td>
+   <td style="text-align:right;"> 3.744 </td>
+   <td style="text-align:left;"> 0.767 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Ecuador </td>
+   <td style="text-align:right;"> 3.700 </td>
+   <td style="text-align:left;"> 0.739 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> France </td>
+   <td style="text-align:right;"> 3.685 </td>
+   <td style="text-align:left;"> 0.897 </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Slovenia </td>
+   <td style="text-align:right;"> 3.667 </td>
+   <td style="text-align:left;"> 0.890 </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Uruguay </td>
+   <td style="text-align:right;"> 3.667 </td>
+   <td style="text-align:left;"> 0.795 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Malaysia </td>
+   <td style="text-align:right;"> 3.650 </td>
+   <td style="text-align:left;"> 0.789 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Sweden </td>
+   <td style="text-align:right;"> 3.647 </td>
+   <td style="text-align:left;"> 0.913 </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+</tbody>
+</table>
 
 ```r
 ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) + 
@@ -654,28 +901,110 @@ AIPmerged15 <- merge(x=AIPtop15,y=HDI,by='Country',all.x =TRUE)
 AIPmerged15$AIPMean <- round(AIPmerged15$AIPMean,3)
 AIPmerged15<- AIPmerged15[with(AIPmerged15,order(-AIPMean)),]
 AIPmerged15<- AIPmerged15[1:15,]
-kable(AIPmerged15,row.names = FALSE)
+kable(AIPmerged15,row.names = FALSE,format = "html")%>%
+	  kable_styling(AIPmerged15,bootstrap_options='striped',full_width=FALSE)
 ```
 
-
-
-Country               AIPMean  HDI     Category                    
--------------------  --------  ------  ----------------------------
-Macao                   4.600  NA      NA                          
-Taiwan                  4.600  NA      NA                          
-Dominican Republic      4.500  0.722   High human development      
-Cyprus                  4.400  0.856   Very high human development 
-Qatar                   4.100  0.856   Very high human development 
-Panama                  4.000  0.788   High human development      
-Puerto Rico             4.000  NA      NA                          
-Iceland                 3.900  0.921   Very high human development 
-Ecuador                 3.733  0.739   High human development      
-Columbia                3.700  NA      NA                          
-Kenya                   3.700  0.555   Medium human development    
-Sri Lanka               3.700  0.766   High human development      
-Turkey                  3.678  0.767   High human development      
-Uruguay                 3.600  0.795   High human development      
-France                  3.562  0.897   Very high human development 
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:left;"> Country </th>
+   <th style="text-align:right;"> AIPMean </th>
+   <th style="text-align:left;"> HDI </th>
+   <th style="text-align:left;"> Category </th>
+  </tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;"> Macao </td>
+   <td style="text-align:right;"> 4.600 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Taiwan </td>
+   <td style="text-align:right;"> 4.600 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Dominican Republic </td>
+   <td style="text-align:right;"> 4.500 </td>
+   <td style="text-align:left;"> 0.722 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Cyprus </td>
+   <td style="text-align:right;"> 4.400 </td>
+   <td style="text-align:left;"> 0.856 </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Qatar </td>
+   <td style="text-align:right;"> 4.100 </td>
+   <td style="text-align:left;"> 0.856 </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Panama </td>
+   <td style="text-align:right;"> 4.000 </td>
+   <td style="text-align:left;"> 0.788 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Puerto Rico </td>
+   <td style="text-align:right;"> 4.000 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Iceland </td>
+   <td style="text-align:right;"> 3.900 </td>
+   <td style="text-align:left;"> 0.921 </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Ecuador </td>
+   <td style="text-align:right;"> 3.733 </td>
+   <td style="text-align:left;"> 0.739 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Columbia </td>
+   <td style="text-align:right;"> 3.700 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Kenya </td>
+   <td style="text-align:right;"> 3.700 </td>
+   <td style="text-align:left;"> 0.555 </td>
+   <td style="text-align:left;"> Medium human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Sri Lanka </td>
+   <td style="text-align:right;"> 3.700 </td>
+   <td style="text-align:left;"> 0.766 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Turkey </td>
+   <td style="text-align:right;"> 3.678 </td>
+   <td style="text-align:left;"> 0.767 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Uruguay </td>
+   <td style="text-align:right;"> 3.600 </td>
+   <td style="text-align:left;"> 0.795 </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> France </td>
+   <td style="text-align:right;"> 3.562 </td>
+   <td style="text-align:left;"> 0.897 </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+</tbody>
+</table>
 
 ```r
 ggplot(AIPmerged15, aes(reorder(Country, AIPMean),AIPMean)) + 
