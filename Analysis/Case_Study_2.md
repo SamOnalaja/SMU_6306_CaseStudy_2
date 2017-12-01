@@ -1,6 +1,11 @@
-# MSDS 6306 Case Study 2
-Nuoya Rezsonya & Steven Millett  
-November 23, 2017  
+---
+title: "MSDS 6306 Case Study 2"
+author: "Nuoya Rezsonya & Steven Millett"
+date: "November 23, 2017"
+output: 
+  html_document:
+      keep_md: true
+---
 
 
 
@@ -105,7 +110,7 @@ names(procrastination_data)<-camel(names(procrastination_data))
 #a manual update of variable names that are too long or not descriptive. 
 procrastination_data<- rename(x=procrastination_data,replace=c("HowLongHaveYouHeldThisPositionYears"="ExpYears", "Edu"="Education",
 "CountryOfResidence"="Country", 
-"ÃAge"="Age",                              
+"ÏAge"="Age",                              
 "HowLongHaveYouHeldThisPositionMonths"="ExpMonths",
 "DoYouConsiderYourselfAProcrastinator"="SelfQuestion",
 "NumberOfDaughters" = "Daughters", 
@@ -126,7 +131,7 @@ colnames(procrastination_data)[grep(names(procrastination_data),pattern = "DP")]
 
 ##### 2. Cleaning up the data. We are eliminating values that don't make sense as well as errors that occured when the data was exported.
 
-* There are unrealistic and null values in the years of experience data, here those values will be assigned to zero. We also round up values to only one digit.
+* There are unrealistic and null values in the years of experience data, those values will be assigned to zero. We also round up values to only one digit.
 
 
 ```r
@@ -350,12 +355,14 @@ HDI<-rbind(bindData(4,HDI_table,"Very high human development"),
 
 ##### 2. Merging our procrastination data to the HDI data pulled from Wikipedia. 
 
+
 ```r
 #We are doing a left merge of the procrastination data on the HDI data pulled from wikipedia. This means that if there is a missing country value from the procrastination data we will still bring that data over with missing HDI information.
 merged_data<-merge(x=procrastination_data,y=HDI,by="Country",all.x=TRUE)
 ```
 
 ##### 3. Based on the request from our client. We only study subjects over the age of 18 so we are selecting a subset of only ages that we can confirm are over the age of 18.And let columns have proper data type.
+
 
 ```r
 cleaned_data <- merged_data[merged_data$Age>18 & !is.na(merged_data$Age),]
@@ -444,12 +451,12 @@ meanDPsummary
 qplot(cleaned_data$Age, 
 			geom="histogram",
       binwidth = 10,  
-      main = "Histogram for Age", 
-      xlab = "Age",  
+      main = "Histogram of Age", 
+      xlab = "Age", ylab = 'Count', 
       fill=I("light blue"), 
       col=I("red"))+
 	theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
-  theme(axis.text.x = element_text(angle=60,hjust=1))
+	theme(axis.text.x = element_text(angle=60,hjust=1))
 ```
 
 ![](Case_Study_2_files/figure-html/histogram_statistics-1.png)<!-- -->
@@ -459,8 +466,8 @@ qplot(cleaned_data$Age,
 qplot(cleaned_data$GPMean, 
 			geom="histogram",
       binwidth = 0.5,  
-      main = "Histogram for Mean GP", 
-      xlab = "Mean GP Score",  
+      main = "Histogram of Mean GP", 
+      xlab = "Mean GP Score", ylab = 'Count', 
       fill=I("light blue"), 
       col=I("red"))+
 	theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
@@ -469,7 +476,8 @@ qplot(cleaned_data$GPMean,
 
 ![](Case_Study_2_files/figure-html/histogram_statistics-2.png)<!-- -->
 
-##### 5. Presented below is a table of the number count of the participants in the survey by genders.If there are blanks in gender data, they will be assigned NA. Therefore the table will have females, males and NA.
+##### 5. Presented below is a table of the number count of the participants in the survey by genders.If there are blanks in gender data, they will be assigned NA. Therefore the gender column in the table will have females, males and NA.
+
 
 ```r
 frequencyOfRespondantsByGender <- as.data.frame(table(cleaned_data$Gender))
@@ -501,6 +509,7 @@ kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Numb
 
 
 ##### 6. Presented below is a table of the number count of the participants in the survey by Work Status.If there are 'blanks'please specify" in work status data, they will be assigned NA. Therefore the table will have full-time, part-time,student,unemployed, retired and NA.
+
 
 ```r
 frequencyOfRespondantsByWork <- as.data.frame(table(cleaned_data$WorkStatus))
@@ -542,7 +551,7 @@ kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number o
 </tbody>
 </table>
 
-##### 7. Presented below is a table of the number count of the participants in the survey by Occupation.
+##### 7. Presented below is a table of the number count of the participants in the survey by Occupation. If there are blanks in job data, they will be assigned NA.
 
 
 ```r
@@ -884,6 +893,7 @@ kable(merged15,row.names = FALSE,format = 'html')%>%
 ```r
 ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) + 
 			geom_bar(stat="identity", aes(fill=Category))+  scale_fill_hue(h = c(5, 100)) +
+	
 			ggtitle('Top 15 Nations In Average Procrastination Scores(GP)')+
 			ylab('Average Procrastination Scores(GP)')+ 
 			xlab('Country')+
@@ -906,6 +916,7 @@ AIPmerged15 <- merge(x=AIPtop15,y=HDI,by='Country',all.x =TRUE)
 AIPmerged15$AIPMean <- round(AIPmerged15$AIPMean,3)
 AIPmerged15<- AIPmerged15[with(AIPmerged15,order(-AIPMean)),]
 AIPmerged15<- AIPmerged15[1:15,]
+
 kable(AIPmerged15,row.names = FALSE,format = "html")%>%
 	  kable_styling(AIPmerged15,bootstrap_options='striped',full_width=FALSE)
 ```
@@ -1014,6 +1025,7 @@ kable(AIPmerged15,row.names = FALSE,format = "html")%>%
 ```r
 ggplot(AIPmerged15, aes(reorder(Country, AIPMean),AIPMean)) + 
 			geom_bar(stat="identity", aes(fill=Category))+  scale_fill_hue(h = c(5, 100)) +
+	
 			ggtitle('Top 15 Nations In Average Procrastination Scores(AIP)')+
 			ylab('Average Procrastination Scores(AIP)')+ 
 			xlab('Country')+
@@ -1032,33 +1044,58 @@ ggplot(AIPmerged15, aes(reorder(Country, AIPMean),AIPMean)) +
 countrymatching<-intersect(merged15$Country,AIPmerged15$Country)
 countrymatching <- data.frame(countrymatching)
 names(countrymatching) <- c('Country/Region')
-countrymatching
+
+kable(countrymatching,row.names = FALSE,format = 'html')%>%
+	kable_styling(countrymatching,bootstrap_options='striped',full_width=FALSE)
 ```
 
-```
-##   Country/Region
-## 1         Taiwan
-## 2    Puerto Rico
-## 3          Qatar
-## 4         Panama
-## 5      Sri Lanka
-## 6         Turkey
-## 7        Ecuador
-## 8         France
-## 9        Uruguay
-```
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:left;"> Country/Region </th>
+  </tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;"> Taiwan </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Puerto Rico </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Qatar </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Panama </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Sri Lanka </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Turkey </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Ecuador </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> France </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Uruguay </td>
+  </tr>
+</tbody>
+</table>
 
 #### 13. Presented below is to show the relationship between Age and Income.
 
-* Finding: At younger ages it appears men and women have about the same mean income, but as they get older on average men will make more money than women.
+* Finding: At younger ages it appears men and women have about the same mean income, but as they get older on average men will make more money than women.We are able to test that males earn 473.6912 dollars more per year.
 
 
 ```r
 #scatter plot
-
 ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(Age, Income),color=Gender) + geom_jitter(aes(color=Gender)) + 
 	scale_color_manual(breaks = c("Female", "Male", ""), values=c("red", "blue", "green")) + 
 	geom_smooth(method='lm',mapping=aes(x=Age,y=Income,color=Gender))+
+	
+	ggtitle('Scatter Plot: Age VS Income')+
 	
 	theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
   theme(axis.text.x = element_text(angle=60,hjust=1))
@@ -1068,14 +1105,15 @@ ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(Age, Incom
 
 ```r
 #linear regression
-AgeIncome <- lm(Income~Age,data = cleaned_data)
-lmsummary <- summary(AgeIncome)
-
-layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page 
-plot(AgeIncome)
+AgeIncome <- lm(Income~Age:Gender,data = subset(cleaned_data,Gender=="Male"|Gender=="Female"))
+difference <- AgeIncome$coefficients[3] - AgeIncome$coefficients[2]
+difference
 ```
 
-![](Case_Study_2_files/figure-html/age_and_income-2.png)<!-- -->
+```
+## Age:GenderMale 
+##       473.6912
+```
 
 #### 14. Presented below is to show the relationship between Life Satisfaction and HDI Score.
 
@@ -1088,6 +1126,10 @@ ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(HDI, SWLSM
 	scale_color_manual(breaks = c("Female", "Male", ""), values=c("red", "blue", "green")) + 
 	geom_smooth(method='lm',mapping=aes(x=HDI,y=SWLSMean,color=Gender),na.rm = TRUE)+
 	
+	ggtitle('Scatter Plot: Mean Life Satisfaction Score VS HDI score')+
+	ylab('Average Procrastination Scores(SWLS)')+ 
+	xlab('HDI Score')+
+	
 	theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
   theme(axis.text.x = element_text(angle=60,hjust=1))
 ```
@@ -1096,25 +1138,17 @@ ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(HDI, SWLSM
 
 #### 15. Presented below is to show the relationship between Life Satisfaction and HDI Category.
 
-* Finding: 
-In countries that have very high human development category, the life satisfaction mean scores are the highest. 
-
-In countries that have low human development category, the life satisfaction mean scores are the lowest.
-
-In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
+* Finding: In countries that have very high human development category, the life satisfaction mean scores are the highest. In countries that have low human development category, the life satisfaction mean scores are the lowest.In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
 
 
 ```r
-#
-
 ggplot(cleaned_data, aes(x=factor(Category), y=SWLSMean)) + 
 			stat_summary(fun.y = mean, geom = "bar", aes(fill=Category)) +  scale_fill_hue(h = c(5, 100)) +
-      
-    
-
+	
 			ylab('Life Satisfaction Mean Score')+ 
 			xlab('HDI Category')+
-      ggtitle("Bar Plot of Life Satisfaction by HDI Category") + 
+      ggtitle("Bar Plot: Mean Life Satisfaction Score VS HDI Categgory") + 
+	
 			theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
   		theme(axis.text.x = element_text(angle=60,hjust=1))+
       ylim(0,5)
