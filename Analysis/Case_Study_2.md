@@ -1,6 +1,11 @@
-# MSDS 6306 Case Study 2
-Nuoya Rezsonya & Steven Millett  
-November 23, 2017  
+---
+title: "Procrastination Analysis Report"
+author: "Nuoya Rezsonya & Steven Millett"
+date: "November 23, 2017"
+output: 
+  html_document:
+      keep_md: true
+---
 
 
 
@@ -110,7 +115,7 @@ names(procrastination_data)<-camel(names(procrastination_data))
 #a manual update of variable names that are too long or not descriptive. 
 procrastination_data<- rename(x=procrastination_data,replace=c("HowLongHaveYouHeldThisPositionYears"="ExpYears", "Edu"="Education",
 "CountryOfResidence"="Country", 
-"ÃAge"="Age",                              
+"ÏAge"="Age",                              
 "HowLongHaveYouHeldThisPositionMonths"="ExpMonths",
 "DoYouConsiderYourselfAProcrastinator"="SelfQuestion",
 "NumberOfDaughters" = "Daughters", 

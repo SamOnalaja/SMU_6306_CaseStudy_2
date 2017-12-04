@@ -1,5 +1,5 @@
 ---
-title: "MSDS 6306 Case Study 2"
+title: "Procrastination Analysis Report"
 author: "Nuoya Rezsonya & Steven Millett"
 date: "November 23, 2017"
 output: 
