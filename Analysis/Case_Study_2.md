@@ -1,11 +1,6 @@
----
-title: "MSDS 6306 Case Study 2"
-author: "Nuoya Rezsonya & Steven Millett"
-date: "November 23, 2017"
-output: 
-  html_document:
-      keep_md: true
----
+# MSDS 6306 Case Study 2
+Nuoya Rezsonya & Steven Millett  
+November 23, 2017  
 
 
 
@@ -73,29 +68,34 @@ Project report including:
 
 #### Import of procrastination data
 
-##### Importing the procrastination data that we got from the client and get the dimension of the data.This data set has 4262 rows and 61 columns.
+##### 2.a Importing the procrastination data that we got from the client and get the dimension of the data.This data set has 4262 rows and 61 columns.
 
 
 ```r
 procrastination_data <- read.csv("Data/Procrastination.csv",stringsAsFactors = FALSE)
 
-kable(dim(procrastination_data), header = "Dimension of procrastination dataset",format='html')%>%
+kable(cbind(c("Rows","Columns"),dim(procrastination_data)),row.names = FALSE ,  caption = "Dimension of procrastination dataset",format='html')%>%
   kable_styling(dim(procrastination_data),bootstrap_options='striped',full_width=FALSE)
 ```
 
-<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"><tbody>
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Dimension of procrastination dataset</caption>
+<tbody>
 <tr>
-<td style="text-align:right;"> 4264 </td>
+<td style="text-align:left;"> Rows </td>
+   <td style="text-align:left;"> 4264 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 61 </td>
+<td style="text-align:left;"> Columns </td>
+   <td style="text-align:left;"> 61 </td>
   </tr>
-</tbody></table>
+</tbody>
+</table>
 
 
 #### Munging the imported data 
 
-##### 1. Renaming the values of the columns to limit the size of all variable names to 12 characters or less. We have a lot of questions from different questionnaires, due to the fact that we are more interested in the average score from these questionnaires we are simply going to create sequential names based on the source questionnaire. 
+##### 2.b Renaming the values of the columns to limit the size of all variable names to 12 characters or less. We have a lot of questions from different questionnaires, due to the fact that we are more interested in the average score from these questionnaires we are simply going to create sequential names based on the source questionnaire. 
 
 
 ```r
@@ -110,7 +110,7 @@ names(procrastination_data)<-camel(names(procrastination_data))
 #a manual update of variable names that are too long or not descriptive. 
 procrastination_data<- rename(x=procrastination_data,replace=c("HowLongHaveYouHeldThisPositionYears"="ExpYears", "Edu"="Education",
 "CountryOfResidence"="Country", 
-"ÏAge"="Age",                              
+"ÃAge"="Age",                              
 "HowLongHaveYouHeldThisPositionMonths"="ExpMonths",
 "DoYouConsiderYourselfAProcrastinator"="SelfQuestion",
 "NumberOfDaughters" = "Daughters", 
@@ -129,7 +129,7 @@ colnames(procrastination_data)[grep(names(procrastination_data),pattern = "SWLS"
 colnames(procrastination_data)[grep(names(procrastination_data),pattern = "DP")] <- sprintf("DPQues%d",1:length(grep(names(procrastination_data),pattern = "DP")))
 ```
 
-##### 2. Cleaning up the data. We are eliminating values that don't make sense as well as errors that occured when the data was exported.
+##### 2.c Cleaning up the data. We are eliminating values that don't make sense as well as errors that occured when the data was exported.
 
 * There are unrealistic and null values in the years of experience data, those values will be assigned to zero. We also round up values to only one digit.
 
@@ -161,6 +161,7 @@ procrastination_data$Income[is.na(procrastination_data$Income)] <- 0
 ```r
 procrastination_data$Sons[procrastination_data$Sons=="Male"] <- "1"
 procrastination_data$Sons[procrastination_data$Sons=="Female"] <- "2"
+procrastination_data$Sons <- as.integer(procrastination_data$Sons)
 ```
 
 * Update the kids data to only Yes and No.
@@ -185,6 +186,7 @@ procrastination_data$Age <- trunc(procrastination_data$Age,digits=0)
 ```r
 #This is to replace all 0 values of Country with an empty string
 procrastination_data$Country[procrastination_data$Country=="0"] <- "NA"
+procrastination_data$Country[procrastination_data$Country=="Columbia"] <- "Colombia"
 ```
 
 * There are blanks answers under the question: 
@@ -201,7 +203,270 @@ procrastination_data$SelfQuestion[procrastination_data$SelfQuestion == '0'] <- "
 procrastination_data$SelfQuestion[procrastination_data$SelfQuestion == '4'] <- "NA"
 ```
 
-* Creating columns for the mean of DP,AIP,GP and SWLS to represent the individual's average decisional procrastination, procrastination behavior,generalized procrastination and life satisfaction. We round the mean up to only one digit.
+#### 2.d We are checking to see the format of the data we received. This will ensure easy manipulation and produce less errors when we combine the data with other information.
+
+
+```r
+kable(cbind("Column Name"= names(procrastination_data),"Column Type" = rapply(procrastination_data,typeof)),row.names = FALSE, format = 'html',
+      caption = "Data type by Variable")%>%
+  kable_styling(cbind("Column Name"= names(procrastination_data),"Column Type" = rapply(procrastination_data,typeof)),bootstrap_options='striped',full_width=FALSE)
+```
+
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Data type by Variable</caption>
+ <thead><tr>
+<th style="text-align:left;"> Column Name </th>
+   <th style="text-align:left;"> Column Type </th>
+  </tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;"> Age </td>
+   <td style="text-align:left;"> double </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Gender </td>
+   <td style="text-align:left;"> character </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Kids </td>
+   <td style="text-align:left;"> character </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Education </td>
+   <td style="text-align:left;"> character </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> WorkStatus </td>
+   <td style="text-align:left;"> character </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Income </td>
+   <td style="text-align:left;"> double </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Job </td>
+   <td style="text-align:left;"> character </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> ExpYears </td>
+   <td style="text-align:left;"> double </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> ExpMonths </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Community </td>
+   <td style="text-align:left;"> character </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Country </td>
+   <td style="text-align:left;"> character </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Marital </td>
+   <td style="text-align:left;"> character </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Sons </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Daughters </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> DPQues1 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> DPQues2 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> DPQues3 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> DPQues4 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> DPQues5 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues1 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues2 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues3 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues4 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues5 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues6 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues7 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues8 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues9 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues10 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues11 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues12 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues13 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues14 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> AIPQues15 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues1 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues2 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues3 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues4 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues5 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues6 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues7 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues8 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues9 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues10 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues11 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues12 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues13 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues14 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues15 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues16 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues17 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues18 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues19 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> GPQues20 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> SWLSQues1 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> SWLSQues2 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> SWLSQues3 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> SWLSQues4 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> SWLSQues5 </td>
+   <td style="text-align:left;"> integer </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> SelfQuestion </td>
+   <td style="text-align:left;"> character </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> OthQuestion </td>
+   <td style="text-align:left;"> character </td>
+  </tr>
+</tbody>
+</table>
+
+#### 2.e Creating columns for the mean of DP,AIP,GP and SWLS to represent the individual's average decisional procrastination, procrastination behavior,generalized procrastination and life satisfaction. We round the mean up to only one digit.
 
 
 ```r
@@ -320,7 +585,7 @@ procrastination_data$WorkStatus[procrastination_data$WorkStatus ==""] <- "NA"
 
 #### Web Scraping wikipedia
 
-##### 1. We are pulling data(HDI for nations recognized by the United Nation only) from the Human Development Index page on Wikipedia. We will combine this data from different tables and assign it a category value based on the HDI score.
+##### 3.ab We are pulling data(HDI for nations recognized by the United Nation only) from the Human Development Index page on Wikipedia. We will combine this data from different tables and assign it a category value based on the HDI score.
 
 
 ```r
@@ -351,9 +616,10 @@ HDI<-rbind(bindData(4,HDI_table,"Very high human development"),
            bindData(7,HDI_table,"High human development"),
            bindData(10,HDI_table,"Medium human development"),
            bindData(13,HDI_table,"Low human development"))
+HDI$HDI <- as.numeric(HDI$HDI)
 ```
 
-##### 2. Merging our procrastination data to the HDI data pulled from Wikipedia. 
+##### 3.c Merging our procrastination data to the HDI data pulled from Wikipedia. 
 
 
 ```r
@@ -361,17 +627,14 @@ HDI<-rbind(bindData(4,HDI_table,"Very high human development"),
 merged_data<-merge(x=procrastination_data,y=HDI,by="Country",all.x=TRUE)
 ```
 
-##### 3. Based on the request from our client. We only study subjects over the age of 18 so we are selecting a subset of only ages that we can confirm are over the age of 18.And let columns have proper data type.
+##### 4.a Based on the request from our client. We only study subjects over the age of 18 so we are selecting a subset of only ages that we can confirm are over the age of 18.And let columns have proper data type.
 
 
 ```r
 cleaned_data <- merged_data[merged_data$Age>18 & !is.na(merged_data$Age),]
-# make columns into proper data types
-cleaned_data$Sons <- as.numeric(cleaned_data$Sons)
-cleaned_data$HDI <- as.numeric(cleaned_data$HDI )
 ```
 
-##### 4. Presented below are the descriptive statistics on Age, Income, HDI, and for mean columns of GP,AIP,SWLS,DP. There are two histograms for Age and Mean GP data. The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.
+##### 4.b Presented below are the descriptive statistics on Age, Income, HDI, and for mean columns of GP,AIP,SWLS,DP. There are two histograms for Age and Mean GP data. The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.
 
 
 ```r
@@ -379,31 +642,81 @@ agesummary <- summary(cleaned_data$Age)
 incomesummary <-summary(cleaned_data$Income)
 HDIsummary <- summary(cleaned_data$HDI)
 
-agesummary
+kable(rbind(agesummary),row.names = FALSE,format='html',caption="Summary of Age")%>%
+  kable_styling(rbind(agesummary),bootstrap_options='striped',full_width=FALSE)
 ```
 
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   19.00   28.00   37.00   38.14   45.00   80.00
-```
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Summary of Age</caption>
+ <thead><tr>
+<th style="text-align:right;"> Min. </th>
+   <th style="text-align:right;"> 1st Qu. </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> 3rd Qu. </th>
+   <th style="text-align:right;"> Max. </th>
+  </tr></thead>
+<tbody><tr>
+<td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:right;"> 37 </td>
+   <td style="text-align:right;"> 38.14445 </td>
+   <td style="text-align:right;"> 45 </td>
+   <td style="text-align:right;"> 80 </td>
+  </tr></tbody>
+</table>
 
 ```r
-incomesummary
+kable(rbind(incomesummary),row.names = FALSE,format='html',caption="Summary of Income Information")%>%
+  kable_styling(rbind(incomesummary),bootstrap_options='striped',full_width=FALSE)
 ```
 
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##       0   10000   35000   53723   67500  250000
-```
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Summary of Income Information</caption>
+ <thead><tr>
+<th style="text-align:right;"> Min. </th>
+   <th style="text-align:right;"> 1st Qu. </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> 3rd Qu. </th>
+   <th style="text-align:right;"> Max. </th>
+  </tr></thead>
+<tbody><tr>
+<td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 10000 </td>
+   <td style="text-align:right;"> 35000 </td>
+   <td style="text-align:right;"> 53722.75 </td>
+   <td style="text-align:right;"> 67500 </td>
+   <td style="text-align:right;"> 250000 </td>
+  </tr></tbody>
+</table>
 
 ```r
-HDIsummary
+kable(rbind(HDIsummary),row.names = FALSE,format='html',caption="Summary of HDI")%>%
+  kable_styling(rbind(HDIsummary),bootstrap_options='striped',full_width=FALSE)
 ```
 
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-##  0.4790  0.9200  0.9200  0.9056  0.9200  0.9490     192
-```
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Summary of HDI</caption>
+ <thead><tr>
+<th style="text-align:right;"> Min. </th>
+   <th style="text-align:right;"> 1st Qu. </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> 3rd Qu. </th>
+   <th style="text-align:right;"> Max. </th>
+   <th style="text-align:right;"> NA's </th>
+  </tr></thead>
+<tbody><tr>
+<td style="text-align:right;"> 0.479 </td>
+   <td style="text-align:right;"> 0.92 </td>
+   <td style="text-align:right;"> 0.92 </td>
+   <td style="text-align:right;"> 0.9054685 </td>
+   <td style="text-align:right;"> 0.92 </td>
+   <td style="text-align:right;"> 0.949 </td>
+   <td style="text-align:right;"> 190 </td>
+  </tr></tbody>
+</table>
 
 ```r
 meanGPsummary <- summary(cleaned_data$GPMean)
@@ -411,40 +724,104 @@ meanAIPSsummary <-summary(cleaned_data$AIPMean)
 meanSWLsummary <-summary(cleaned_data$SWLSMean)
 meanDPsummary <- summary(cleaned_data$DPMean)
 
-meanGPsummary 
+kable(rbind(meanGPsummary),row.names = FALSE,format='html',caption="Summary of GP questionnaire averages")%>%
+  kable_styling(rbind(meanGPsummary),bootstrap_options='striped',full_width=FALSE)
 ```
 
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   1.000   2.800   3.200   3.235   3.800   5.000
-```
-
-```r
-meanAIPSsummary
-```
-
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   1.000   2.400   2.900   2.964   3.500   5.000
-```
-
-```r
-meanSWLsummary 
-```
-
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   1.000   2.400   3.000   3.047   3.800   5.000
-```
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Summary of GP questionnaire averages</caption>
+ <thead><tr>
+<th style="text-align:right;"> Min. </th>
+   <th style="text-align:right;"> 1st Qu. </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> 3rd Qu. </th>
+   <th style="text-align:right;"> Max. </th>
+  </tr></thead>
+<tbody><tr>
+<td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2.8 </td>
+   <td style="text-align:right;"> 3.2 </td>
+   <td style="text-align:right;"> 3.235233 </td>
+   <td style="text-align:right;"> 3.8 </td>
+   <td style="text-align:right;"> 5 </td>
+  </tr></tbody>
+</table>
 
 ```r
-meanDPsummary 
+kable(rbind(meanAIPSsummary),row.names = FALSE,format='html',caption="Summary of AIP questionnaire averages")%>%
+  kable_styling(rbind(meanAIPSsummary),bootstrap_options='striped',full_width=FALSE)
 ```
 
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Summary of AIP questionnaire averages</caption>
+ <thead><tr>
+<th style="text-align:right;"> Min. </th>
+   <th style="text-align:right;"> 1st Qu. </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> 3rd Qu. </th>
+   <th style="text-align:right;"> Max. </th>
+  </tr></thead>
+<tbody><tr>
+<td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2.4 </td>
+   <td style="text-align:right;"> 2.9 </td>
+   <td style="text-align:right;"> 2.963826 </td>
+   <td style="text-align:right;"> 3.5 </td>
+   <td style="text-align:right;"> 5 </td>
+  </tr></tbody>
+</table>
+
+```r
+kable(rbind(meanSWLsummary),row.names = FALSE,format='html',caption="Summary of SWLS questionnaire averages")%>%
+  kable_styling(rbind(meanSWLsummary),bootstrap_options='striped',full_width=FALSE)
 ```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   1.000   2.400   3.000   3.052   3.800   5.000
+
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Summary of SWLS questionnaire averages</caption>
+ <thead><tr>
+<th style="text-align:right;"> Min. </th>
+   <th style="text-align:right;"> 1st Qu. </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> 3rd Qu. </th>
+   <th style="text-align:right;"> Max. </th>
+  </tr></thead>
+<tbody><tr>
+<td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2.4 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3.046779 </td>
+   <td style="text-align:right;"> 3.8 </td>
+   <td style="text-align:right;"> 5 </td>
+  </tr></tbody>
+</table>
+
+```r
+kable(rbind(meanDPsummary),row.names = FALSE,format='html',caption="Summary of DP questionnaire averages")%>%
+  kable_styling(rbind(meanDPsummary),bootstrap_options='striped',full_width=FALSE)
 ```
+
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Summary of DP questionnaire averages</caption>
+ <thead><tr>
+<th style="text-align:right;"> Min. </th>
+   <th style="text-align:right;"> 1st Qu. </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> 3rd Qu. </th>
+   <th style="text-align:right;"> Max. </th>
+  </tr></thead>
+<tbody><tr>
+<td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2.4 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3.051635 </td>
+   <td style="text-align:right;"> 3.8 </td>
+   <td style="text-align:right;"> 5 </td>
+  </tr></tbody>
+</table>
 
 ```r
 #histogram of age
@@ -476,7 +853,7 @@ qplot(cleaned_data$GPMean,
 
 ![](Case_Study_2_files/figure-html/histogram_statistics-2.png)<!-- -->
 
-##### 5. Presented below is a table of the number count of the participants in the survey by genders.If there are blanks in gender data, they will be assigned NA. Therefore the gender column in the table will have females, males and NA.
+##### 4.c.1 Presented below is a table of the number count of the participants in the survey by genders. If there are blanks in gender data, they will be assigned NA. Therefore the gender column in the table will have females, males and NA.
 
 
 ```r
@@ -508,7 +885,7 @@ kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Numb
 </table>
 
 
-##### 6. Presented below is a table of the number count of the participants in the survey by Work Status.If there are 'blanks'please specify" in work status data, they will be assigned NA. Therefore the table will have full-time, part-time,student,unemployed, retired and NA.
+##### 4.c.2 Presented below is a table of the number count of the participants in the survey by Work Status.If there are 'blanks'please specify" in work status data, they will be assigned NA. Therefore the table will have full-time, part-time,student,unemployed, retired and NA.
 
 
 ```r
@@ -551,7 +928,7 @@ kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number o
 </tbody>
 </table>
 
-##### 7. Presented below is a table of the number count of the participants in the survey by Occupation. If there are blanks in job data, they will be assigned NA.
+##### 4.c.3 Presented below is a table of the number count of the participants in the survey by Occupation. If there are blanks in job data, they will be assigned NA. This table has been summarized to the top 20 listed job types, the complete list of jobs and their frequency can be found in the ouput directory in jobs.csv.
 
 
 ```r
@@ -650,7 +1027,7 @@ kable(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Numbe
 </tbody>
 </table>
 
-##### 8. Presented below is a table of the number count of the participants in the survey per country. Blanks in the country data will be assigned to NA. 
+##### 4.d Presented below is a table of the number count of the participants in the survey per country. Blanks in the country data will be assigned to NA. This table has been summarized to the top 20 listed countries types, the complete list of countries and their frequency can be found in the ouput directory in country.csv.
 
 
 ```r
@@ -750,7 +1127,7 @@ kable(head(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountr
 </tbody>
 </table>
 
-##### 9. Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2358 people matched answer:yes their perceptions to others and 482 people mathced answer:no.
+##### 4.e Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2358 people matched answer:yes their perceptions to others and 482 people mathced answer:no.
 
 
 ```r
@@ -773,7 +1150,7 @@ matchedno
 ## [1] 482
 ```
 
-##### 10. Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.Those regions are not recognized as soverign nations will have NA values to their HDI score and HDI category.
+##### 5.b.1 Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.Those regions are not recognized as soverign nations will have NA values to their HDI score and HDI category.
 
 
 ```r
@@ -793,98 +1170,98 @@ kable(merged15,row.names = FALSE,format = 'html')%>%
 <thead><tr>
 <th style="text-align:left;"> Country </th>
    <th style="text-align:right;"> GPMean </th>
-   <th style="text-align:left;"> HDI </th>
+   <th style="text-align:right;"> HDI </th>
    <th style="text-align:left;"> Category </th>
   </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;"> Taiwan </td>
    <td style="text-align:right;"> 4.800 </td>
-   <td style="text-align:left;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> NA </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Puerto Rico </td>
    <td style="text-align:right;"> 4.267 </td>
-   <td style="text-align:left;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> NA </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Qatar </td>
    <td style="text-align:right;"> 4.200 </td>
-   <td style="text-align:left;"> 0.856 </td>
+   <td style="text-align:right;"> 0.856 </td>
    <td style="text-align:left;"> Very high human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Panama </td>
    <td style="text-align:right;"> 4.000 </td>
-   <td style="text-align:left;"> 0.788 </td>
+   <td style="text-align:right;"> 0.788 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Myanmar </td>
    <td style="text-align:right;"> 3.800 </td>
-   <td style="text-align:left;"> 0.556 </td>
+   <td style="text-align:right;"> 0.556 </td>
    <td style="text-align:left;"> Medium human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Sri Lanka </td>
    <td style="text-align:right;"> 3.800 </td>
-   <td style="text-align:left;"> 0.766 </td>
+   <td style="text-align:right;"> 0.766 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Poland </td>
    <td style="text-align:right;"> 3.780 </td>
-   <td style="text-align:left;"> 0.855 </td>
+   <td style="text-align:right;"> 0.855 </td>
    <td style="text-align:left;"> Very high human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Austria </td>
    <td style="text-align:right;"> 3.767 </td>
-   <td style="text-align:left;"> 0.893 </td>
+   <td style="text-align:right;"> 0.893 </td>
    <td style="text-align:left;"> Very high human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Turkey </td>
    <td style="text-align:right;"> 3.744 </td>
-   <td style="text-align:left;"> 0.767 </td>
+   <td style="text-align:right;"> 0.767 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Ecuador </td>
    <td style="text-align:right;"> 3.700 </td>
-   <td style="text-align:left;"> 0.739 </td>
+   <td style="text-align:right;"> 0.739 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> France </td>
    <td style="text-align:right;"> 3.685 </td>
-   <td style="text-align:left;"> 0.897 </td>
+   <td style="text-align:right;"> 0.897 </td>
    <td style="text-align:left;"> Very high human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Slovenia </td>
    <td style="text-align:right;"> 3.667 </td>
-   <td style="text-align:left;"> 0.890 </td>
+   <td style="text-align:right;"> 0.890 </td>
    <td style="text-align:left;"> Very high human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Uruguay </td>
    <td style="text-align:right;"> 3.667 </td>
-   <td style="text-align:left;"> 0.795 </td>
+   <td style="text-align:right;"> 0.795 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Malaysia </td>
    <td style="text-align:right;"> 3.650 </td>
-   <td style="text-align:left;"> 0.789 </td>
+   <td style="text-align:right;"> 0.789 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Sweden </td>
    <td style="text-align:right;"> 3.647 </td>
-   <td style="text-align:left;"> 0.913 </td>
+   <td style="text-align:right;"> 0.913 </td>
    <td style="text-align:left;"> Very high human development </td>
   </tr>
 </tbody>
@@ -893,6 +1270,7 @@ kable(merged15,row.names = FALSE,format = 'html')%>%
 ```r
 ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) + 
 			geom_bar(stat="identity", aes(fill=Category))+  scale_fill_hue(h = c(5, 100)) +
+      coord_flip() +
 	
 			ggtitle('Top 15 Nations In Average Procrastination Scores(GP)')+
 			ylab('Average Procrastination Scores(GP)')+ 
@@ -904,7 +1282,7 @@ ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) +
 
 ![](Case_Study_2_files/figure-html/barchart5B-1.png)<!-- -->
 
-##### 11. Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the AIP score.Those regions are not recognized as soverign nations will have NA values as their HDI score and HDI category.
+##### 5.c.1 Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the AIP score.Those regions are not recognized as soverign nations will have NA values as their HDI score and HDI category.
 
 
 ```r
@@ -925,98 +1303,98 @@ kable(AIPmerged15,row.names = FALSE,format = "html")%>%
 <thead><tr>
 <th style="text-align:left;"> Country </th>
    <th style="text-align:right;"> AIPMean </th>
-   <th style="text-align:left;"> HDI </th>
+   <th style="text-align:right;"> HDI </th>
    <th style="text-align:left;"> Category </th>
   </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;"> Macao </td>
    <td style="text-align:right;"> 4.600 </td>
-   <td style="text-align:left;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> NA </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Taiwan </td>
    <td style="text-align:right;"> 4.600 </td>
-   <td style="text-align:left;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> NA </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Dominican Republic </td>
    <td style="text-align:right;"> 4.500 </td>
-   <td style="text-align:left;"> 0.722 </td>
+   <td style="text-align:right;"> 0.722 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Cyprus </td>
    <td style="text-align:right;"> 4.400 </td>
-   <td style="text-align:left;"> 0.856 </td>
+   <td style="text-align:right;"> 0.856 </td>
    <td style="text-align:left;"> Very high human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Qatar </td>
    <td style="text-align:right;"> 4.100 </td>
-   <td style="text-align:left;"> 0.856 </td>
+   <td style="text-align:right;"> 0.856 </td>
    <td style="text-align:left;"> Very high human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Panama </td>
    <td style="text-align:right;"> 4.000 </td>
-   <td style="text-align:left;"> 0.788 </td>
+   <td style="text-align:right;"> 0.788 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Puerto Rico </td>
    <td style="text-align:right;"> 4.000 </td>
-   <td style="text-align:left;"> NA </td>
+   <td style="text-align:right;"> NA </td>
    <td style="text-align:left;"> NA </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Iceland </td>
    <td style="text-align:right;"> 3.900 </td>
-   <td style="text-align:left;"> 0.921 </td>
+   <td style="text-align:right;"> 0.921 </td>
    <td style="text-align:left;"> Very high human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Ecuador </td>
    <td style="text-align:right;"> 3.733 </td>
-   <td style="text-align:left;"> 0.739 </td>
+   <td style="text-align:right;"> 0.739 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
-<td style="text-align:left;"> Columbia </td>
+<td style="text-align:left;"> Colombia </td>
    <td style="text-align:right;"> 3.700 </td>
-   <td style="text-align:left;"> NA </td>
-   <td style="text-align:left;"> NA </td>
+   <td style="text-align:right;"> 0.727 </td>
+   <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Kenya </td>
    <td style="text-align:right;"> 3.700 </td>
-   <td style="text-align:left;"> 0.555 </td>
+   <td style="text-align:right;"> 0.555 </td>
    <td style="text-align:left;"> Medium human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Sri Lanka </td>
    <td style="text-align:right;"> 3.700 </td>
-   <td style="text-align:left;"> 0.766 </td>
+   <td style="text-align:right;"> 0.766 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Turkey </td>
    <td style="text-align:right;"> 3.678 </td>
-   <td style="text-align:left;"> 0.767 </td>
+   <td style="text-align:right;"> 0.767 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Uruguay </td>
    <td style="text-align:right;"> 3.600 </td>
-   <td style="text-align:left;"> 0.795 </td>
+   <td style="text-align:right;"> 0.795 </td>
    <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> France </td>
    <td style="text-align:right;"> 3.562 </td>
-   <td style="text-align:left;"> 0.897 </td>
+   <td style="text-align:right;"> 0.897 </td>
    <td style="text-align:left;"> Very high human development </td>
   </tr>
 </tbody>
@@ -1025,25 +1403,30 @@ kable(AIPmerged15,row.names = FALSE,format = "html")%>%
 ```r
 ggplot(AIPmerged15, aes(reorder(Country, AIPMean),AIPMean)) + 
 			geom_bar(stat="identity", aes(fill=Category))+  scale_fill_hue(h = c(5, 100)) +
-	
+	    coord_flip() +    
+  
 			ggtitle('Top 15 Nations In Average Procrastination Scores(AIP)')+
 			ylab('Average Procrastination Scores(AIP)')+ 
 			xlab('Country')+
 
 			theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
-  		theme(axis.text.x = element_text(angle=60,hjust=1))
+  		theme(axis.text.x = element_text(angle=60,hjust=1))+
+      ylim(0,5)
 ```
 
 ![](Case_Study_2_files/figure-html/barchart5C-1.png)<!-- -->
 
 
-##### 12. Presented below is a table displaying nations and regions show up both in GP and AIP plot.
+##### 5.c.2 Presented below is a table displaying nations and regions show up both in GP and AIP plot. 
 
 
 ```r
 countrymatching<-intersect(merged15$Country,AIPmerged15$Country)
 countrymatching <- data.frame(countrymatching)
-names(countrymatching) <- c('Country/Region')
+names(countrymatching) <- c('Country')
+countrymatching<-merge(countrymatching,subset(HDI,select=c("Country","Category")),by='Country',all.x = TRUE)
+
+names(countrymatching) <- c('Country/Region','Category')
 
 kable(countrymatching,row.names = FALSE,format = 'html')%>%
 	kable_styling(countrymatching,bootstrap_options='striped',full_width=FALSE)
@@ -1052,41 +1435,51 @@ kable(countrymatching,row.names = FALSE,format = 'html')%>%
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:left;"> Country/Region </th>
+   <th style="text-align:left;"> Category </th>
   </tr></thead>
 <tbody>
 <tr>
-<td style="text-align:left;"> Taiwan </td>
-  </tr>
-<tr>
-<td style="text-align:left;"> Puerto Rico </td>
-  </tr>
-<tr>
-<td style="text-align:left;"> Qatar </td>
-  </tr>
-<tr>
-<td style="text-align:left;"> Panama </td>
-  </tr>
-<tr>
-<td style="text-align:left;"> Sri Lanka </td>
-  </tr>
-<tr>
-<td style="text-align:left;"> Turkey </td>
-  </tr>
-<tr>
 <td style="text-align:left;"> Ecuador </td>
+   <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> France </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Panama </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Puerto Rico </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Qatar </td>
+   <td style="text-align:left;"> Very high human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Sri Lanka </td>
+   <td style="text-align:left;"> High human development </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Taiwan </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Turkey </td>
+   <td style="text-align:left;"> High human development </td>
   </tr>
 <tr>
 <td style="text-align:left;"> Uruguay </td>
+   <td style="text-align:left;"> High human development </td>
   </tr>
 </tbody>
 </table>
 
-#### 13. Presented below is to show the relationship between Age and Income.
+*Finding: It appears that countries that show up in both categories have a high or very high level of development.
 
-* Finding: At younger ages it appears men and women have about the same mean income, but as they get older on average men will make more money than women.We are able to test that males earn 473.6912 dollars more per year.
+#### 5.d Presented below is to show the relationship between Age and Income.
 
 
 ```r
@@ -1107,17 +1500,11 @@ ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(Age, Incom
 #linear regression
 AgeIncome <- lm(Income~Age:Gender,data = subset(cleaned_data,Gender=="Male"|Gender=="Female"))
 difference <- AgeIncome$coefficients[3] - AgeIncome$coefficients[2]
-difference
 ```
 
-```
-## Age:GenderMale 
-##       473.6912
-```
+* Finding: At younger ages it appears men and women have about the same mean income, but as they get older on average men will make more money than women. We are able to test that males earn 473.69 dollars more per year.
 
-#### 14. Presented below is to show the relationship between Life Satisfaction and HDI Score.
-
-* Finding: In countries that have lower HDI, females appear to have higher life satisfaction level than males.As the HDI increases, the life satisfaction diffenrecence between females and males is getting smaller.
+#### 5.e.1 Presented below is to show the relationship between Life Satisfaction and HDI Score.
 
 
 ```r
@@ -1136,9 +1523,9 @@ ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(HDI, SWLSM
 
 ![](Case_Study_2_files/figure-html/SWLS_and_HDI-1.png)<!-- -->
 
-#### 15. Presented below is to show the relationship between Life Satisfaction and HDI Category.
+* Finding: In countries that have lower HDI, females appear to have higher life satisfaction level than males.As the HDI increases, the life satisfaction diffenrecence between females and males is getting smaller.
 
-* Finding: In countries that have very high human development category, the life satisfaction mean scores are the highest. In countries that have low human development category, the life satisfaction mean scores are the lowest.In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
+#### 5.e.2 Presented below is to show the relationship between Life Satisfaction and HDI Category.
 
 
 ```r
@@ -1156,26 +1543,46 @@ ggplot(cleaned_data, aes(x=factor(Category), y=SWLSMean)) +
 
 ![](Case_Study_2_files/figure-html/SWLS_and_category-1.png)<!-- -->
 
+```r
+df3 <- aggregate(SWLSMean~Category, data = cleaned_data, mean)
+```
+
+* Finding: In countries that have very high human development category, the life satisfaction mean scores are the highest. In countries that have low human development category, the life satisfaction mean scores are the lowest.In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
+
 #### Outputting data
 
-* Finalized HDI table
+##### 6.a Finalized HDI table
 
 
 ```r
 HDIout <- write.csv(HDI, "../Output/HDI.csv", row.names=FALSE)
 ```
 
-* Tidied version of the original data
+##### 6.b Tidied version of the original data
 
 ```r
 cleaned_data <- write.csv(cleaned_data, "../Output/cleaned_data.csv", row.names=FALSE)
 ```
 
-* Top 15 nations in average procrastination scores using the measure of the GP score and AIP score 
+##### 6.c Top 15 nations in average procrastination scores using the measure of the GP score and AIP score 
 
 
 ```r
 top15GP <- write.csv(merged15, "../Output/GP15.csv", row.names=FALSE)
 top15AIP <- write.csv(AIPmerged15, "../Output/AIP15.csv", row.names=FALSE)
+```
+
+#####* Finalized job data
+
+
+```r
+cleaned_data$Job <- write.csv(cleaned_data$Job, "../Output/job_data.csv", row.names=FALSE)
+```
+
+#####\* Finalized output of Country by participants
+
+
+```r
+frequencyOfRespondantsByCountry <- write.csv(frequencyOfRespondantsByCountry, "../Output/Country.csv", row.names=FALSE)
 ```
 

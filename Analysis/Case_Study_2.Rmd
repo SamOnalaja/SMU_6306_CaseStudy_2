@@ -84,19 +84,19 @@ Project report including:
 
 #### Import of procrastination data
 
-##### Importing the procrastination data that we got from the client and get the dimension of the data.This data set has 4262 rows and 61 columns.
+##### 2.a Importing the procrastination data that we got from the client and get the dimension of the data.This data set has 4262 rows and 61 columns.
 
 ```{r import_data, echo=TRUE,include=TRUE}
 procrastination_data <- read.csv("Data/Procrastination.csv",stringsAsFactors = FALSE)
 
-kable(dim(procrastination_data), header = "Dimension of procrastination dataset",format='html')%>%
+kable(cbind(c("Rows","Columns"),dim(procrastination_data)),row.names = FALSE ,  caption = "Dimension of procrastination dataset",format='html')%>%
   kable_styling(dim(procrastination_data),bootstrap_options='striped',full_width=FALSE)
 ```
 
 
 #### Munging the imported data 
 
-##### 1. Renaming the values of the columns to limit the size of all variable names to 12 characters or less. We have a lot of questions from different questionnaires, due to the fact that we are more interested in the average score from these questionnaires we are simply going to create sequential names based on the source questionnaire. 
+##### 2.b Renaming the values of the columns to limit the size of all variable names to 12 characters or less. We have a lot of questions from different questionnaires, due to the fact that we are more interested in the average score from these questionnaires we are simply going to create sequential names based on the source questionnaire. 
 
 ```{r renaming_columns, echo=TRUE,include= TRUE}
 #a function that removes all of the periods from variable names and makes the name into Camel Case form.
@@ -130,7 +130,7 @@ colnames(procrastination_data)[grep(names(procrastination_data),pattern = "DP")]
 
 ```
 
-##### 2. Cleaning up the data. We are eliminating values that don't make sense as well as errors that occured when the data was exported.
+##### 2.c Cleaning up the data. We are eliminating values that don't make sense as well as errors that occured when the data was exported.
 
 * There are unrealistic and null values in the years of experience data, those values will be assigned to zero. We also round up values to only one digit.
 
@@ -161,6 +161,7 @@ procrastination_data$Income[is.na(procrastination_data$Income)] <- 0
 ```{r number_of_sons relabel, echo=TRUE, include=TRUE}
 procrastination_data$Sons[procrastination_data$Sons=="Male"] <- "1"
 procrastination_data$Sons[procrastination_data$Sons=="Female"] <- "2"
+procrastination_data$Sons <- as.integer(procrastination_data$Sons)
 ```
 
 * Update the kids data to only Yes and No.
@@ -183,6 +184,7 @@ procrastination_data$Age <- trunc(procrastination_data$Age,digits=0)
 ```{r country_of_residence,echo=TRUE,include=TRUE}
 #This is to replace all 0 values of Country with an empty string
 procrastination_data$Country[procrastination_data$Country=="0"] <- "NA"
+procrastination_data$Country[procrastination_data$Country=="Columbia"] <- "Colombia"
 ```
 
 * There are blanks answers under the question: 
@@ -198,7 +200,17 @@ procrastination_data$SelfQuestion[procrastination_data$SelfQuestion == '0'] <- "
 procrastination_data$SelfQuestion[procrastination_data$SelfQuestion == '4'] <- "NA"
 ```
 
-* Creating columns for the mean of DP,AIP,GP and SWLS to represent the individual's average decisional procrastination, procrastination behavior,generalized procrastination and life satisfaction. We round the mean up to only one digit.
+#### 2.d We are checking to see the format of the data we received. This will ensure easy manipulation and produce less errors when we combine the data with other information.
+
+```{r check_types,echo=TRUE,include=TRUE}
+
+kable(cbind("Column Name"= names(procrastination_data),"Column Type" = rapply(procrastination_data,typeof)),row.names = FALSE, format = 'html',
+      caption = "Data type by Variable")%>%
+  kable_styling(cbind("Column Name"= names(procrastination_data),"Column Type" = rapply(procrastination_data,typeof)),bootstrap_options='striped',full_width=FALSE)
+
+```
+
+#### 2.e Creating columns for the mean of DP,AIP,GP and SWLS to represent the individual's average decisional procrastination, procrastination behavior,generalized procrastination and life satisfaction. We round the mean up to only one digit.
 
 ```{r mean ,echo=TRUE,include=TRUE}
 #Here we are greping all of the variables with certain criteria in their names and creating a new variable of the mean of variables
@@ -315,7 +327,7 @@ procrastination_data$WorkStatus[procrastination_data$WorkStatus ==""] <- "NA"
 
 #### Web Scraping wikipedia
 
-##### 1. We are pulling data(HDI for nations recognized by the United Nation only) from the Human Development Index page on Wikipedia. We will combine this data from different tables and assign it a category value based on the HDI score.
+##### 3.ab We are pulling data(HDI for nations recognized by the United Nation only) from the Human Development Index page on Wikipedia. We will combine this data from different tables and assign it a category value based on the HDI score.
 
 ```{r scrape_wikipedia, echo=TRUE,include=TRUE}
 
@@ -346,9 +358,10 @@ HDI<-rbind(bindData(4,HDI_table,"Very high human development"),
            bindData(7,HDI_table,"High human development"),
            bindData(10,HDI_table,"Medium human development"),
            bindData(13,HDI_table,"Low human development"))
+HDI$HDI <- as.numeric(HDI$HDI)
 ```
 
-##### 2. Merging our procrastination data to the HDI data pulled from Wikipedia. 
+##### 3.c Merging our procrastination data to the HDI data pulled from Wikipedia. 
 
 ```{r merge_datasets, echo=TRUE,include=TRUE}
 #We are doing a left merge of the procrastination data on the HDI data pulled from wikipedia. This means that if there is a missing country value from the procrastination data we will still bring that data over with missing HDI information.
@@ -356,16 +369,14 @@ merged_data<-merge(x=procrastination_data,y=HDI,by="Country",all.x=TRUE)
 
 ```
 
-##### 3. Based on the request from our client. We only study subjects over the age of 18 so we are selecting a subset of only ages that we can confirm are over the age of 18.And let columns have proper data type.
+##### 4.a Based on the request from our client. We only study subjects over the age of 18 so we are selecting a subset of only ages that we can confirm are over the age of 18.And let columns have proper data type.
 
 ```{r preliminary_analysis, echo=TRUE}
 cleaned_data <- merged_data[merged_data$Age>18 & !is.na(merged_data$Age),]
-# make columns into proper data types
-cleaned_data$Sons <- as.numeric(cleaned_data$Sons)
-cleaned_data$HDI <- as.numeric(cleaned_data$HDI )
+
 ```
 
-##### 4. Presented below are the descriptive statistics on Age, Income, HDI, and for mean columns of GP,AIP,SWLS,DP. There are two histograms for Age and Mean GP data. The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.
+##### 4.b Presented below are the descriptive statistics on Age, Income, HDI, and for mean columns of GP,AIP,SWLS,DP. There are two histograms for Age and Mean GP data. The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.
 
 ```{r histogram_statistics, echo=TRUE}
 
@@ -373,19 +384,35 @@ agesummary <- summary(cleaned_data$Age)
 incomesummary <-summary(cleaned_data$Income)
 HDIsummary <- summary(cleaned_data$HDI)
 
-agesummary
-incomesummary
-HDIsummary
+kable(rbind(agesummary),row.names = FALSE,format='html',caption="Summary of Age")%>%
+  kable_styling(rbind(agesummary),bootstrap_options='striped',full_width=FALSE)
+
+kable(rbind(incomesummary),row.names = FALSE,format='html',caption="Summary of Income Information")%>%
+  kable_styling(rbind(incomesummary),bootstrap_options='striped',full_width=FALSE)
+
+kable(rbind(HDIsummary),row.names = FALSE,format='html',caption="Summary of HDI")%>%
+  kable_styling(rbind(HDIsummary),bootstrap_options='striped',full_width=FALSE)
 
 meanGPsummary <- summary(cleaned_data$GPMean)
 meanAIPSsummary <-summary(cleaned_data$AIPMean)
 meanSWLsummary <-summary(cleaned_data$SWLSMean)
 meanDPsummary <- summary(cleaned_data$DPMean)
 
-meanGPsummary 
-meanAIPSsummary
-meanSWLsummary 
-meanDPsummary 
+kable(rbind(meanGPsummary),row.names = FALSE,format='html',caption="Summary of GP questionnaire averages")%>%
+  kable_styling(rbind(meanGPsummary),bootstrap_options='striped',full_width=FALSE)
+
+kable(rbind(meanAIPSsummary),row.names = FALSE,format='html',caption="Summary of AIP questionnaire averages")%>%
+  kable_styling(rbind(meanAIPSsummary),bootstrap_options='striped',full_width=FALSE)
+
+kable(rbind(meanSWLsummary),row.names = FALSE,format='html',caption="Summary of SWLS questionnaire averages")%>%
+  kable_styling(rbind(meanSWLsummary),bootstrap_options='striped',full_width=FALSE)
+
+kable(rbind(meanDPsummary),row.names = FALSE,format='html',caption="Summary of DP questionnaire averages")%>%
+  kable_styling(rbind(meanDPsummary),bootstrap_options='striped',full_width=FALSE)
+ 
+
+ 
+ 
 
 #histogram of age
 qplot(cleaned_data$Age, 
@@ -410,7 +437,7 @@ qplot(cleaned_data$GPMean,
   theme(axis.text.x = element_text(angle=60,hjust=1))
 ```
 
-##### 5. Presented below is a table of the number count of the participants in the survey by genders.If there are blanks in gender data, they will be assigned NA. Therefore the gender column in the table will have females, males and NA.
+##### 4.c.1 Presented below is a table of the number count of the participants in the survey by genders. If there are blanks in gender data, they will be assigned NA. Therefore the gender column in the table will have females, males and NA.
 
 ```{r gender_freq,echo=TRUE,include=TRUE}
 
@@ -422,7 +449,7 @@ kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Numb
 ```
 
 
-##### 6. Presented below is a table of the number count of the participants in the survey by Work Status.If there are 'blanks'please specify" in work status data, they will be assigned NA. Therefore the table will have full-time, part-time,student,unemployed, retired and NA.
+##### 4.c.2 Presented below is a table of the number count of the participants in the survey by Work Status.If there are 'blanks'please specify" in work status data, they will be assigned NA. Therefore the table will have full-time, part-time,student,unemployed, retired and NA.
 
 ```{r work_status_freq,echo=TRUE,include=TRUE}
 
@@ -433,7 +460,7 @@ kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number o
 
 ```
 
-##### 7. Presented below is a table of the number count of the participants in the survey by Occupation. If there are blanks in job data, they will be assigned NA.
+##### 4.c.3 Presented below is a table of the number count of the participants in the survey by Occupation. If there are blanks in job data, they will be assigned NA. This table has been summarized to the top 20 listed job types, the complete list of jobs and their frequency can be found in the ouput directory in jobs.csv.
 
 ```{r occupation_feq,echo=TRUE,include=TRUE}
 
@@ -443,7 +470,7 @@ kable(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Numbe
 	  kable_styling(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),bootstrap_options='striped',full_width=FALSE)
 ```
 
-##### 8. Presented below is a table of the number count of the participants in the survey per country. Blanks in the country data will be assigned to NA. 
+##### 4.d Presented below is a table of the number count of the participants in the survey per country. Blanks in the country data will be assigned to NA. This table has been summarized to the top 20 listed countries types, the complete list of countries and their frequency can be found in the ouput directory in country.csv.
 
 ```{r countByCountry, echo=TRUE,include=TRUE}
 
@@ -455,7 +482,7 @@ kable(head(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountr
 
 ```
 
-##### 9. Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2358 people matched answer:yes their perceptions to others and 482 people mathced answer:no.
+##### 4.e Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2358 people matched answer:yes their perceptions to others and 482 people mathced answer:no.
 
 ```{r answer_matched, echo=TRUE,include=TRUE}
 cleaned_data$matchingyes <- ifelse(cleaned_data$SelfQuestion=='yes'&cleaned_data$OthQuestion=='yes',1,0)
@@ -467,7 +494,7 @@ matchedno <-sum(cleaned_data$matchingno)
 matchedno
 ```
 
-##### 10. Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.Those regions are not recognized as soverign nations will have NA values to their HDI score and HDI category.
+##### 5.b.1 Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.Those regions are not recognized as soverign nations will have NA values to their HDI score and HDI category.
 
 ```{r barchart5B,echo=TRUE,include=TRUE}
 top15 <- aggregate(cleaned_data$GPMean,list(cleaned_data$Country),mean)
@@ -483,6 +510,7 @@ kable(merged15,row.names = FALSE,format = 'html')%>%
 
 ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) + 
 			geom_bar(stat="identity", aes(fill=Category))+  scale_fill_hue(h = c(5, 100)) +
+      coord_flip() +
 	
 			ggtitle('Top 15 Nations In Average Procrastination Scores(GP)')+
 			ylab('Average Procrastination Scores(GP)')+ 
@@ -492,7 +520,7 @@ ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) +
   		theme(axis.text.x = element_text(angle=60,hjust=1))
 ```
 
-##### 11. Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the AIP score.Those regions are not recognized as soverign nations will have NA values as their HDI score and HDI category.
+##### 5.c.1 Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the AIP score.Those regions are not recognized as soverign nations will have NA values as their HDI score and HDI category.
 
 ```{r barchart5C,echo=TRUE,include=TRUE}
 AIPtop15 <- aggregate(cleaned_data$AIPMean,list(cleaned_data$Country),mean)
@@ -509,30 +537,35 @@ kable(AIPmerged15,row.names = FALSE,format = "html")%>%
 
 ggplot(AIPmerged15, aes(reorder(Country, AIPMean),AIPMean)) + 
 			geom_bar(stat="identity", aes(fill=Category))+  scale_fill_hue(h = c(5, 100)) +
-	
+	    coord_flip() +    
+  
 			ggtitle('Top 15 Nations In Average Procrastination Scores(AIP)')+
 			ylab('Average Procrastination Scores(AIP)')+ 
 			xlab('Country')+
 
 			theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
-  		theme(axis.text.x = element_text(angle=60,hjust=1))
+  		theme(axis.text.x = element_text(angle=60,hjust=1))+
+      ylim(0,5)
 ```
 
 
-##### 12. Presented below is a table displaying nations and regions show up both in GP and AIP plot.
+##### 5.c.2 Presented below is a table displaying nations and regions show up both in GP and AIP plot. 
 
 ```{r countryinboth, echo=TRUE,include=TRUE}
 countrymatching<-intersect(merged15$Country,AIPmerged15$Country)
 countrymatching <- data.frame(countrymatching)
-names(countrymatching) <- c('Country/Region')
+names(countrymatching) <- c('Country')
+countrymatching<-merge(countrymatching,subset(HDI,select=c("Country","Category")),by='Country',all.x = TRUE)
+
+names(countrymatching) <- c('Country/Region','Category')
 
 kable(countrymatching,row.names = FALSE,format = 'html')%>%
 	kable_styling(countrymatching,bootstrap_options='striped',full_width=FALSE)
 ```
 
-#### 13. Presented below is to show the relationship between Age and Income.
+*Finding: It appears that countries that show up in both categories have a high or very high level of development.
 
-* Finding: At younger ages it appears men and women have about the same mean income, but as they get older on average men will make more money than women.We are able to test that males earn 473.6912 dollars more per year.
+#### 5.d Presented below is to show the relationship between Age and Income.
 
 ```{r age_and_income,echo=TRUE }
 #scatter plot
@@ -548,12 +581,11 @@ ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(Age, Incom
 #linear regression
 AgeIncome <- lm(Income~Age:Gender,data = subset(cleaned_data,Gender=="Male"|Gender=="Female"))
 difference <- AgeIncome$coefficients[3] - AgeIncome$coefficients[2]
-difference
 ```
 
-#### 14. Presented below is to show the relationship between Life Satisfaction and HDI Score.
+* Finding: At younger ages it appears men and women have about the same mean income, but as they get older on average men will make more money than women. We are able to test that males earn `r round(difference,2)` dollars more per year.
 
-* Finding: In countries that have lower HDI, females appear to have higher life satisfaction level than males.As the HDI increases, the life satisfaction diffenrecence between females and males is getting smaller.
+#### 5.e.1 Presented below is to show the relationship between Life Satisfaction and HDI Score.
 
 ```{r SWLS_and_HDI,echo=TRUE }
 #scatter plot
@@ -570,9 +602,9 @@ ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(HDI, SWLSM
 
 ```
 
-#### 15. Presented below is to show the relationship between Life Satisfaction and HDI Category.
+* Finding: In countries that have lower HDI, females appear to have higher life satisfaction level than males.As the HDI increases, the life satisfaction diffenrecence between females and males is getting smaller.
 
-* Finding: In countries that have very high human development category, the life satisfaction mean scores are the highest. In countries that have low human development category, the life satisfaction mean scores are the lowest.In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
+#### 5.e.2 Presented below is to show the relationship between Life Satisfaction and HDI Category.
 
 ```{r SWLS_and_category,echo=TRUE }
 ggplot(cleaned_data, aes(x=factor(Category), y=SWLSMean)) + 
@@ -585,25 +617,43 @@ ggplot(cleaned_data, aes(x=factor(Category), y=SWLSMean)) +
 			theme(plot.title=element_text(hjust = .5), axis.ticks.y=element_blank(),axis.ticks.x=element_blank()) +
   		theme(axis.text.x = element_text(angle=60,hjust=1))+
       ylim(0,5)
+
+df3 <- aggregate(SWLSMean~Category, data = cleaned_data, mean)
+
+
 ```
+
+* Finding: In countries that have very high human development category, the life satisfaction mean scores are the highest. In countries that have low human development category, the life satisfaction mean scores are the lowest.In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
 
 #### Outputting data
 
-* Finalized HDI table
+##### 6.a Finalized HDI table
 
 ```{r HDI_out_put, echo = TRUE, include =TRUE}
 HDIout <- write.csv(HDI, "../Output/HDI.csv", row.names=FALSE)
 ```
 
-* Tidied version of the original data
+##### 6.b Tidied version of the original data
 ```{r munged, echo = TRUE, include =TRUE}
 cleaned_data <- write.csv(cleaned_data, "../Output/cleaned_data.csv", row.names=FALSE)
 ```
 
-* Top 15 nations in average procrastination scores using the measure of the GP score and AIP score 
+##### 6.c Top 15 nations in average procrastination scores using the measure of the GP score and AIP score 
 
 ```{r top15, echo = TRUE, include =TRUE}
 top15GP <- write.csv(merged15, "../Output/GP15.csv", row.names=FALSE)
 top15AIP <- write.csv(AIPmerged15, "../Output/AIP15.csv", row.names=FALSE)
+```
+
+#####* Finalized job data
+
+```{r job_out_put, echo = TRUE, include =TRUE}
+cleaned_data$Job <- write.csv(cleaned_data$Job, "../Output/job_data.csv", row.names=FALSE)
+```
+
+#####\* Finalized output of Country by participants
+
+```{r countryfrequency_out_put, echo = TRUE, include =TRUE}
+frequencyOfRespondantsByCountry <- write.csv(frequencyOfRespondantsByCountry, "../Output/Country.csv", row.names=FALSE)
 ```
 
