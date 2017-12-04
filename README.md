@@ -13,10 +13,12 @@ Analysis Folder: this contains the analysis
 1. Data: The original data set, Procrastination.csv 
 
 2. Case_Study_2.md - the markdown file that contains the details of this analysis(report and plots)
-   Case_Study_2.html - the html output by knitting rmarkdown file
-   Case_Study_2.Rmd - the rmarkdown file created by our group that contains the details of this analysis(report and plots)
 
-3. Case_Study_2_files/figure-html - contains all the plots generated from this analysis
+3. Case_Study_2.html - the html output by knitting rmarkdown file
+
+4. Case_Study_2.Rmd - the rmarkdown file created by our group that contains the details of this analysis(report and plots)
+
+5. Case_Study_2_files/figure-html - contains all the plots generated from this analysis
 
 Output Folder
 1. AIP15.csv - Top 15 nations in average procrastination scores using the measure of AIP score
