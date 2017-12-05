@@ -60,7 +60,6 @@ Output Folder
 
 Variables:
 
-Variables:
 • Age: The participant’s age in years.
 
 • Gender: The gender the participant identifies as (Male or Female)
