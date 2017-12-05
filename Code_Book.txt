@@ -81,7 +81,8 @@ The final data set(cleaned-up procrastination data) being used for the analysis 
 
 1. Procrastination data - after cleaning, saved in to data frame Procrastination_data 
 
-• Renaming the values of the columns to limit the size of all variable names to 12 characters or less and creating sequential names based on the source questionnaire. 
+• Renaming the values of the columns to limit the size of all variable names to 12 characters or less and creating 
+  sequential names based on the source questionnaire. 
 
 • Eliminating values that don't make sense as well as errors that occurred when the data was exported.
 
