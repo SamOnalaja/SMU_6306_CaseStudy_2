@@ -1,11 +1,6 @@
----
-title: "Procrastination Analysis Report"
-author: "Nuoya Rezsonya & Steven Millett"
-date: "November 23, 2017"
-output: 
-  html_document:
-      keep_md: true
----
+# Procrastination Analysis Report
+Nuoya Rezsonya & Steven Millett  
+November 23, 2017  
 
 
 
@@ -15,17 +10,17 @@ This report summarizes the statistical analysis, analysis results and analysis p
 
 The purpose of this report is to illustrate data processing and modelling method used in this analysis as well as inferences and conclusions one can draw from it.
 
-Project target is providing the analysis result to clients who want to get a preliminary understanding of how procrasination and life satisfaction scale are associated with the following factors:
+Project target is providing the analysis result to clients who want to get a preliminary understanding of how procrastination and life satisfaction scale are associated with the following factors:
 
 * Age
 	
 * Gender
 	
-* Children(having children or not and how many children)
+* Children (having children or not and how many children)
 	
 * Education Level
 	
-* Work Status(full time or part time)
+* Work Status (full time or part time)
 	
 * Annual Income
 	
@@ -35,7 +30,7 @@ Project target is providing the analysis result to clients who want to get a pre
 	
 * Community Size
 	
-* Country of Residence(HDIs of Nations)
+* Country of Residence (HDIs of Nations)
 	
 * Marital Status
 
@@ -43,15 +38,15 @@ Project report including:
 
 * Statistical analysis:
 
-	+ keep all pbservations where the participant is above 18
+	+ keep all observations where the participant is above 18
 	
-	+ provide descriptive statistics on age, income, HDI and mean scores of decisional procrastination, procrastination behavior,generalized procrastination and life satisfactor
+	+ provide descriptive statistics on age, income, HDI and mean scores of decisional procrastination, procrastination behavior, generalized procrastination and life satisfaction
 
 	+ provide histograms of Age and mean score of generalized procrastination
 
 	+ provide tables of the number count of participants in the survey by gender, work status and occupation
 	
-	+ provide table of the number count of participants in the survey per contry in descending order
+	+ provide table of the number count of participants in the survey per country in descending order
 	
 	+ provide how many people said they felt they were procrastinators and also said others thought they were procrastinators
 	
@@ -67,13 +62,13 @@ Project report including:
 	
 * Conclusion and references from the statistical analysis 
 
-* Output files(in csv format) can be found in the repository.
+* Output files (in csv format) can be found in the repository.
 
 ### Analysis processes
 
 #### Import of procrastination data
 
-##### 2.a Importing the procrastination data that we got from the client and get the dimension of the data.This data set has 4262 rows and 61 columns.
+##### 2.a Importing the procrastination data that we got from the client and get the dimension of the data. This data set has 4262 rows and 61 columns.
 
 
 ```r
@@ -115,7 +110,7 @@ names(procrastination_data)<-camel(names(procrastination_data))
 #a manual update of variable names that are too long or not descriptive. 
 procrastination_data<- rename(x=procrastination_data,replace=c("HowLongHaveYouHeldThisPositionYears"="ExpYears", "Edu"="Education",
 "CountryOfResidence"="Country", 
-"ÏAge"="Age",                              
+"ÃAge"="Age",                              
 "HowLongHaveYouHeldThisPositionMonths"="ExpMonths",
 "DoYouConsiderYourselfAProcrastinator"="SelfQuestion",
 "NumberOfDaughters" = "Daughters", 
@@ -134,7 +129,7 @@ colnames(procrastination_data)[grep(names(procrastination_data),pattern = "SWLS"
 colnames(procrastination_data)[grep(names(procrastination_data),pattern = "DP")] <- sprintf("DPQues%d",1:length(grep(names(procrastination_data),pattern = "DP")))
 ```
 
-##### 2.c Cleaning up the data. We are eliminating values that don't make sense as well as errors that occured when the data was exported.
+##### 2.c Cleaning up the data. We are eliminating values that don't make sense as well as errors that occurred when the data was exported.
 
 * There are unrealistic and null values in the years of experience data, those values will be assigned to zero. We also round up values to only one digit.
 
@@ -149,7 +144,7 @@ procrastination_data$ExpYears[procrastination_data$ExpYears==999 | is.na(procras
 procrastination_data$ExpYears <- round(procrastination_data$ExpYears,digits=1)
 ```
 
-* There are zeros in the occupation data. We are replacing zeros with NA. And also there are blanks in the Income data. We are replacing them with zero.
+* There are zeros in the occupation data. We are replacing zeros with NA and there are blanks in the Income data, which we are replacing with zeroes.
 
 
 ```r
@@ -160,7 +155,7 @@ procrastination_data$Job[procrastination_data$Job=="0"] <- "NA"
 procrastination_data$Income[is.na(procrastination_data$Income)] <- 0
 ```
 
-* Relabelling the number of sons data. The data is labelled as Male and Female. Here we relabel the genders back to intergers with Male=1 and Female =2.
+* Relabeling the number of sons data. The data is labelled as Male and Female. Here we relabel the genders back to integers with Male=1 and Female =2.
 
 
 ```r
@@ -185,7 +180,7 @@ procrastination_data$Kids <- ifelse(grepl(procrastination_data$Kids,pattern = "Y
 procrastination_data$Age <- trunc(procrastination_data$Age,digits=0)
 ```
 
-* There are zero values in the contry of residence. We are replacing them with NA to treat this as missing.
+* There are zero values in the country of residence. We are replacing them with NA to treat this as missing.
 
 
 ```r
@@ -471,7 +466,7 @@ kable(cbind("Column Name"= names(procrastination_data),"Column Type" = rapply(pr
 </tbody>
 </table>
 
-#### 2.e Creating columns for the mean of DP,AIP,GP and SWLS to represent the individual's average decisional procrastination, procrastination behavior,generalized procrastination and life satisfaction. We round the mean up to only one digit.
+#### 2.e Creating columns for the mean of DP, AIP, GP and SWLS to represent the individual's average decisional procrastination, procrastination behavior, generalized procrastination and life satisfaction. We round the mean up to only one digit.
 
 
 ```r
@@ -498,9 +493,9 @@ procrastination_data$AIPMean <- round(procrastination_data$AIPMean,digits=1)
 	
 	* All Job titles under 5 characters were made to an empty string.
 	
-	* All jobs with a slash(/) had all text after the slash removed.
+	* All jobs with a slash (/) had all text after the slash removed.
 	
-	* All jobs with parantheses had the parantheses removed.
+	* All jobs with parentheses had the parentheses removed.
 	
 	* All jobs with leading and trailing white space were trimmed.
 	
@@ -588,9 +583,9 @@ procrastination_data$Gender[procrastination_data$Gender ==""] <- "NA"
 procrastination_data$WorkStatus[procrastination_data$WorkStatus ==""] <- "NA"
 ```
 
-#### Web Scraping wikipedia
+#### Web Scraping Wikipedia
 
-##### 3.ab We are pulling data(HDI for nations recognized by the United Nation only) from the Human Development Index page on Wikipedia. We will combine this data from different tables and assign it a category value based on the HDI score.
+##### 3.ab We are pulling data (HDI for nations recognized by the United Nation only) from the Human Development Index page on Wikipedia. We will combine this data from different tables and assign it a category value based on the HDI score.
 
 
 ```r
@@ -628,7 +623,7 @@ HDI$HDI <- as.numeric(HDI$HDI)
 
 
 ```r
-#We are doing a left merge of the procrastination data on the HDI data pulled from wikipedia. This means that if there is a missing country value from the procrastination data we will still bring that data over with missing HDI information.
+#We are doing a left merge of the procrastination data on the HDI data pulled from Wikipedia. This means that if there is a missing country value from the procrastination data we will still bring that data over with missing HDI information.
 merged_data<-merge(x=procrastination_data,y=HDI,by="Country",all.x=TRUE)
 ```
 
@@ -639,7 +634,7 @@ merged_data<-merge(x=procrastination_data,y=HDI,by="Country",all.x=TRUE)
 cleaned_data <- merged_data[merged_data$Age>18 & !is.na(merged_data$Age),]
 ```
 
-##### 4.b Presented below are the descriptive statistics on Age, Income, HDI, and for mean columns of GP,AIP,SWLS,DP. There are two histograms for Age and Mean GP data. The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.
+##### 4.b Presented below are the descriptive statistics on Age, Income, HDI, and for mean columns of GP, AIP, SWLS, and DP. There are two histograms for Age and Mean GP data. The histogram for Age is right skewed while the histogram for Mean GP is more symmetrical and bell shaped.
 
 
 ```r
@@ -858,18 +853,19 @@ qplot(cleaned_data$GPMean,
 
 ![](Case_Study_2_files/figure-html/histogram_statistics-2.png)<!-- -->
 
-##### 4.c.1 Presented below is a table of the number count of the participants in the survey by genders. If there are blanks in gender data, they will be assigned NA. Therefore the gender column in the table will have females, males and NA.
+##### 4.c.1 Presented below is a table of the number count of the participants in the survey by genders. If there are blanks in gender data, they will be assigned NA. Therefore, the gender column in the table will have females, males and NA.
 
 
 ```r
 frequencyOfRespondantsByGender <- as.data.frame(table(cleaned_data$Gender))
 colnames(frequencyOfRespondantsByGender) <- c("Gender","Number of Participants")
-kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],row.names = FALSE,format='html')%>%
+kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],row.names = FALSE,format='html', caption = "Frequency of survey participants by gender")%>%
   kable_styling(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Number of Participants`),],bootstrap_options='striped',full_width=FALSE)
 ```
 
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead><tr>
+<caption>Frequency of survey participants by gender</caption>
+ <thead><tr>
 <th style="text-align:left;"> Gender </th>
    <th style="text-align:right;"> Number of Participants </th>
   </tr></thead>
@@ -890,18 +886,19 @@ kable(frequencyOfRespondantsByGender[order(-frequencyOfRespondantsByGender$`Numb
 </table>
 
 
-##### 4.c.2 Presented below is a table of the number count of the participants in the survey by Work Status.If there are 'blanks'please specify" in work status data, they will be assigned NA. Therefore the table will have full-time, part-time,student,unemployed, retired and NA.
+##### 4.c.2 Presented below is a table of the number count of the participants in the survey by Work Status. If there are blank values in work status data, they will be assigned NA. Therefore, the table will have full-time,  part-time, student, unemployed, retired, and NA.
 
 
 ```r
 frequencyOfRespondantsByWork <- as.data.frame(table(cleaned_data$WorkStatus))
 colnames(frequencyOfRespondantsByWork) <- c("Work","Number of Participants")
-kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number of Participants`),],row.names = FALSE,format = 'html')%>%
+kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number of Participants`),],row.names = FALSE,format = 'html', caption = "Frequency of survey participants by work status")%>%
 	kable_styling(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number of Participants`),],bootstrap_options='striped',full_width=FALSE)
 ```
 
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead><tr>
+<caption>Frequency of survey participants by work status</caption>
+ <thead><tr>
 <th style="text-align:left;"> Work </th>
    <th style="text-align:right;"> Number of Participants </th>
   </tr></thead>
@@ -933,18 +930,19 @@ kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number o
 </tbody>
 </table>
 
-##### 4.c.3 Presented below is a table of the number count of the participants in the survey by Occupation. If there are blanks in job data, they will be assigned NA. This table has been summarized to the top 20 listed job types, the complete list of jobs and their frequency can be found in the ouput directory in jobs.csv.
+##### 4.c.3 Presented below is a table of the number count of the participants in the survey by Occupation. If there are blanks in job data, they will be assigned NA. This table has been summarized to the top 20 listed job types, the complete list of jobs and their frequency can be found in the output directory in jobs.csv.
 
 
 ```r
 frequencyOfRespondantsByJob<- as.data.frame(table(cleaned_data$Job))
 colnames(frequencyOfRespondantsByJob) <- c("Job","Number of Participants")
-kable(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),row.names = FALSE,format = 'html')%>%
+kable(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),row.names = FALSE,format = 'html', caption = "Frequency of survey participants by occupation")%>%
 	  kable_styling(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),bootstrap_options='striped',full_width=FALSE)
 ```
 
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead><tr>
+<caption>Frequency of survey participants by occupation</caption>
+ <thead><tr>
 <th style="text-align:left;"> Job </th>
    <th style="text-align:right;"> Number of Participants </th>
   </tr></thead>
@@ -1032,19 +1030,20 @@ kable(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Numbe
 </tbody>
 </table>
 
-##### 4.d Presented below is a table of the number count of the participants in the survey per country. Blanks in the country data will be assigned to NA. This table has been summarized to the top 20 listed countries types, the complete list of countries and their frequency can be found in the ouput directory in country.csv.
+##### 4.d Presented below is a table of the number count of the participants in the survey per country. Blanks in the country data will be assigned to NA. This table has been summarized to the top 20 listed countries types, the complete list of countries and their frequency can be found in the output directory in country.csv.
 
 
 ```r
 cleaned_data$Country[cleaned_data$Country==""] <- "NA"
 frequencyOfRespondantsByCountry <- as.data.frame(table(cleaned_data$Country))
 colnames(frequencyOfRespondantsByCountry) <- c("Country","Number of Participants")
-kable(head(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountry$`Number of Participants`),],20),row.names = FALSE,format = 'html')%>%
+kable(head(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountry$`Number of Participants`),],20),row.names = FALSE,format = 'html', caption = "Frequency of survey participants by country")%>%
 	 kable_styling(head(frequencyOfRespondantsByJob[order(-frequencyOfRespondantsByJob$`Number of Participants`),],20),bootstrap_options='striped',full_width=FALSE)
 ```
 
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead><tr>
+<caption>Frequency of survey participants by country</caption>
+ <thead><tr>
 <th style="text-align:left;"> Country </th>
    <th style="text-align:right;"> Number of Participants </th>
   </tr></thead>
@@ -1132,30 +1131,35 @@ kable(head(frequencyOfRespondantsByCountry[order(-frequencyOfRespondantsByCountr
 </tbody>
 </table>
 
-##### 4.e Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2358 people matched answer:yes their perceptions to others and 482 people mathced answer:no.
+##### 4.e Presented below is a total number of the matched answers from question: whether the person considers themselves a procrastinator and question: whether others consider them a procrastinator. There are 2358 people matched answer: yes (their perceptions to others) and 482 people matched answer: no.
 
 
 ```r
 cleaned_data$matchingyes <- ifelse(cleaned_data$SelfQuestion=='yes'&cleaned_data$OthQuestion=='yes',1,0)
 matchedyes <-sum(cleaned_data$matchingyes)
-matchedyes
-```
 
-```
-## [1] 2358
-```
 
-```r
 cleaned_data$matchingno <- ifelse(cleaned_data$SelfQuestion=='no'&cleaned_data$OthQuestion=='no',1,0)
 matchedno <-sum(cleaned_data$matchingno)
-matchedno
+kable(cbind(c("Matched Yes","Matched No"),c(matchedyes, matchedno)),row.names = FALSE,format = 'html', caption = "Number of individuals whose external and personal surveys matched")%>%
+	 kable_styling(cbind(c("Matched Yes","Matched No"),c(matchedyes, matchedno)),bootstrap_options='striped',full_width=FALSE)
 ```
 
-```
-## [1] 482
-```
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Number of individuals whose external and personal surveys matched</caption>
+<tbody>
+<tr>
+<td style="text-align:left;"> Matched Yes </td>
+   <td style="text-align:left;"> 2358 </td>
+  </tr>
+<tr>
+<td style="text-align:left;"> Matched No </td>
+   <td style="text-align:left;"> 482 </td>
+  </tr>
+</tbody>
+</table>
 
-##### 5.b.1 Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.Those regions are not recognized as soverign nations will have NA values to their HDI score and HDI category.
+##### 5.b.1 Presented below is a bar chart displaying the top 15 nations in average procrastination scores using the measure of the GP score. Those regions are not recognized as sovereign nations will have NA values to their HDI score and HDI category.
 
 
 ```r
@@ -1167,12 +1171,13 @@ merged15 <- merge(x=top15,y=HDI,by='Country',all.x =TRUE)
 merged15$GPMean <- round(merged15$GPMean,3)
 merged15<- merged15[with(merged15,order(-GPMean)),]
 merged15 <- merged15[1:15,]
-kable(merged15,row.names = FALSE,format = 'html')%>%
+kable(merged15,row.names = FALSE,format = 'html', caption = "Top 15 countries by their GP Mean score")%>%
 	kable_styling(merged15,bootstrap_options='striped',full_width=FALSE)
 ```
 
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead><tr>
+<caption>Top 15 countries by their GP Mean score</caption>
+ <thead><tr>
 <th style="text-align:left;"> Country </th>
    <th style="text-align:right;"> GPMean </th>
    <th style="text-align:right;"> HDI </th>
@@ -1287,7 +1292,7 @@ ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) +
 
 ![](Case_Study_2_files/figure-html/barchart5B-1.png)<!-- -->
 
-##### 5.c.1 Presented below is a barchart displaying the top 15 nations in average procrastination scores using the measure of the AIP score.Those regions are not recognized as soverign nations will have NA values as their HDI score and HDI category.
+##### 5.c.1 Presented below is a bar chart displaying the top 15 nations in average procrastination scores using the measure of the AIP score. Those regions are not recognized as sovereign nations will have NA values as their HDI score and HDI category.
 
 
 ```r
@@ -1300,12 +1305,13 @@ AIPmerged15$AIPMean <- round(AIPmerged15$AIPMean,3)
 AIPmerged15<- AIPmerged15[with(AIPmerged15,order(-AIPMean)),]
 AIPmerged15<- AIPmerged15[1:15,]
 
-kable(AIPmerged15,row.names = FALSE,format = "html")%>%
+kable(AIPmerged15,row.names = FALSE,format = "html", caption = "Top 15 countries by their AIP Mean score")%>%
 	  kable_styling(AIPmerged15,bootstrap_options='striped',full_width=FALSE)
 ```
 
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead><tr>
+<caption>Top 15 countries by their AIP Mean score</caption>
+ <thead><tr>
 <th style="text-align:left;"> Country </th>
    <th style="text-align:right;"> AIPMean </th>
    <th style="text-align:right;"> HDI </th>
@@ -1433,12 +1439,13 @@ countrymatching<-merge(countrymatching,subset(HDI,select=c("Country","Category")
 
 names(countrymatching) <- c('Country/Region','Category')
 
-kable(countrymatching,row.names = FALSE,format = 'html')%>%
+kable(countrymatching,row.names = FALSE,format = 'html', caption = "Countries in both the top AIP and GP ranking")%>%
 	kable_styling(countrymatching,bootstrap_options='striped',full_width=FALSE)
 ```
 
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead><tr>
+<caption>Countries in both the top AIP and GP ranking</caption>
+ <thead><tr>
 <th style="text-align:left;"> Country/Region </th>
    <th style="text-align:left;"> Category </th>
   </tr></thead>
@@ -1528,7 +1535,7 @@ ggplot(data=subset(cleaned_data,Gender=="Male"|Gender=="Female"), aes(HDI, SWLSM
 
 ![](Case_Study_2_files/figure-html/SWLS_and_HDI-1.png)<!-- -->
 
-* Finding: In countries that have lower HDI, females appear to have higher life satisfaction level than males.As the HDI increases, the life satisfaction diffenrecence between females and males is getting smaller.
+* Finding: In countries that have lower HDI, females appear to have higher life satisfaction level than males. As the HDI increases, the life satisfaction difference between females and males is getting smaller.
 
 #### 5.e.2 Presented below is to show the relationship between Life Satisfaction and HDI Category.
 
@@ -1552,7 +1559,7 @@ ggplot(cleaned_data, aes(x=factor(Category), y=SWLSMean)) +
 df3 <- aggregate(SWLSMean~Category, data = cleaned_data, mean)
 ```
 
-* Finding: In countries that have very high human development category, the life satisfaction mean scores are the highest. In countries that have low human development category, the life satisfaction mean scores are the lowest.In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
+* Finding: In countries that have very high human development category, the life satisfaction mean scores are the highest. In countries that have low human development category, the life satisfaction mean scores are the lowest. In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
 
 #### Outputting data
 
