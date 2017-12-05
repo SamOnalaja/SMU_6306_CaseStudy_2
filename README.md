@@ -9,6 +9,7 @@ Nuoya Rezsonya
 
 email: nrezsonya@smu.edu
 
+git repository: https://github.com/nuoyakang
 
 Steven Millett
 
@@ -54,7 +55,7 @@ Output Folder
 
 4. cleaned_data.csv - tidied version of the original data
 
-5. jobdata.csv - Finalized job data
+5. job_data.csv - Finalized job data
 
 6. Country.csv - Finalized output of Country by participants
 

@@ -1,6 +1,11 @@
-# Procrastination Analysis Report
-Nuoya Rezsonya & Steven Millett  
-November 23, 2017  
+---
+title: "Procrastination Analysis Report"
+author: "Nuoya Rezsonya & Steven Millett"
+date: "November 23, 2017"
+output: 
+  html_document:
+      keep_md: true
+---
 
 
 
@@ -110,7 +115,7 @@ names(procrastination_data)<-camel(names(procrastination_data))
 #a manual update of variable names that are too long or not descriptive. 
 procrastination_data<- rename(x=procrastination_data,replace=c("HowLongHaveYouHeldThisPositionYears"="ExpYears", "Edu"="Education",
 "CountryOfResidence"="Country", 
-"ÃAge"="Age",                              
+"ÏAge"="Age",                              
 "HowLongHaveYouHeldThisPositionMonths"="ExpMonths",
 "DoYouConsiderYourselfAProcrastinator"="SelfQuestion",
 "NumberOfDaughters" = "Daughters", 
@@ -1159,7 +1164,7 @@ kable(cbind(c("Matched Yes","Matched No"),c(matchedyes, matchedno)),row.names = 
 </tbody>
 </table>
 
-##### 5.b.1 Presented below is a bar chart displaying the top 15 nations in average procrastination scores using the measure of the GP score. Those regions are not recognized as sovereign nations will have NA values to their HDI score and HDI category.
+##### 5.b.1 Presented below is a bar chart displaying the top 15 nations in average procrastination scores using the measure of the General Procrastination (GP) score. Those regions are not recognized as sovereign nations will have NA values to their HDI score and HDI category.
 
 
 ```r
@@ -1292,7 +1297,7 @@ ggplot(merged15, aes(reorder(Country, GPMean),GPMean)) +
 
 ![](Case_Study_2_files/figure-html/barchart5B-1.png)<!-- -->
 
-##### 5.c.1 Presented below is a bar chart displaying the top 15 nations in average procrastination scores using the measure of the AIP score. Those regions are not recognized as sovereign nations will have NA values as their HDI score and HDI category.
+##### 5.c.1 Presented below is a bar chart displaying the top 15 nations in average procrastination scores using the measure of the Adult Inventory of Procrastination (AIP) score. Those regions are not recognized as sovereign nations will have NA values as their HDI score and HDI category.
 
 
 ```r
@@ -1560,6 +1565,11 @@ df3 <- aggregate(SWLSMean~Category, data = cleaned_data, mean)
 ```
 
 * Finding: In countries that have very high human development category, the life satisfaction mean scores are the highest. In countries that have low human development category, the life satisfaction mean scores are the lowest. In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
+
+#### Conclusion
+It appears from the data that procrastination is a first world problem, procrastination is a luxury that only those that are in high to very highly developed countries can afford. Whether this occurs in these countries because of selection bias, only countries with secure social welfare programs provide this segment of the population an opportunity to participate in these surveys, or if it is that only with higher standards of living are people able to procrastinate it is difficult to tell from this data. 
+
+As a follow-up to this collection it is recommended that further study is done to see if the samples collected are true representations of the entire population of the country. We recommend that a random sample is polled on these different questionnaires from different levels of the HDI scale. This way we can tell if the samples from the countries with lower HDIs were under represented or if higher levels of procrastination are positively correlated to HDI score. 
 
 #### Outputting data
 

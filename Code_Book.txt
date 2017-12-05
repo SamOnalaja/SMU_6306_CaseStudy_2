@@ -4,40 +4,51 @@ This document describes the code for Case_Study_2.Rmd
 
 The project is splitted (by comments) in some sections:
 
-    Objects
-    Loading data
-    Analysing /Manipulating data
-	Plots
-    Writing final data to CSV
+*  Objects
+*  Loading data
+*  Analysing /Manipulating data
+*  Answers questions about the dataset
+*  Plots
+*  Writing final data to CSV
 
-Objects
+*  Objects
 
 data.frame objects: 
 
 procrastination_data - imported raw data
+
 HDI - HDI table from wiki(web scraping)
 
 merged_data - data frame after merging procrastination_data and HDI
+
 cleaned_data - data frame, subset of merged data(subjects over the age of 18),updated after analysis
 
 frequencyOfRespondantsByGender - data frame of counts of number of participants by gender
+
 frequencyOfRespondantsByWork - data frame of counts of number of participants by work status
+
 frequencyOfRespondantsByJob -data frame of counts of number of participants by occupation
+
 frequencyOfRespondantsByCountry -data frame of counts of number of participants by country/region
 
 top15 - data frame contains all countries and their corresponding GP mean
+
 merged15 - merged data frame of the top 15 nations in average GP scores, HDI score and HDI category
 
 AIPtop15 - data frame contains all countries and their corresponding AIP mean
+
 AIPmerged15 - merged data frame of the top 15 nations in average AIP scores, HDI score and HDI category
 
 countrymatching - data frame of countries that show up both in AIPmerged15 and merged15
 
-Loading data
+*  Loading data
 
 This case study analyzes the dataset of procrastination data. The dataset is not in a tidy format and munging is needed.
+
 Raw data is read into procrastination_data data frame.
+
 There are 4262 entries in the original procrastination dataset which contain the following information:
+
 • Age: The participant’s age in years.
 • Gender: The gender the participant identifies as (Male or Female)
 • Kids: Binary, whether they have kids or not.
@@ -59,16 +70,72 @@ There are 4262 entries in the original procrastination dataset which contain the
 • Do others consider you a procrastinator?: a binary response
 
 HDI is a data frame we obtained from wiki by web scraping. HDI data frame contains the following information:
+
 • country - countries are recognized as soverign nations
 • HDI score - numbers
 • HDI category - categorized as low, medium, high, very high
 
-The procrastination_data is merged with HDI data frame on country, then being subsetted to study subjects over the age of 18.
-The final data set being used for the analysis is saved as csv file -> Output/cleaned_data.csv
+The final data set(cleaned-up procrastination data) being used for the analysis is saved as csv file -> Output/cleaned_data.csv
 
-Analyzing/Manipulating data
+*  Analyzing/Manipulating data
 
-Answers following question about the dataset
+1. Procrastination data - after cleaning, saved in to data frame Procrastination_data 
+
+• Renaming the values of the columns to limit the size of all variable names to 12 characters or less and creating sequential names based on the source questionnaire. 
+
+• Eliminating values that don't make sense as well as errors that occurred when the data was exported.
+
+• In the occupation column, replacing zeros with NAs
+
+• In the number of sons data, relabelling the genders back to integers with Male=1 and Female =2.
+
+• In the income column, replacing NAs with zeros
+
+• In the kids column, update the data to only Yes and No
+
+• In the age column, truncating all values of age after the decimal
+
+• In the country of residence column, replacing zeros with NAs
+
+• In the column of question: Do you consider yourself a procrastinator and Do others consider you a procrastinator, replacing blanks and numbers with NAs
+
+• In the column of gender, replacing blanks with NAs
+
+• Creating columns for the mean of DP, AIP, GP and SWLS.
+
+• The job titles also need to be organized. 
+
+	* Any job title with 'please specify' will be assigned to a NA to be treated as missing.
+	
+	* All students are titled as student.
+	
+	* Professional job titles are being assigned to a more general term, i.e. yoga teacher and ESL teacher were simplified to teacher.
+	
+	* Everyone with a job status of Unemployed with a blank occupation is assigned the value Unemployed for their occupation 
+	
+	* All Job titles under 5 characters were made to an empty string.
+	
+	* All jobs with a slash (/) had all text after the slash removed.
+	
+	* All jobs with parentheses had the parentheses removed.
+	
+	* All jobs with leading and trailing white space were trimmed.
+
+2. HDI table - web scrapping from wikipedia and saved into data frame HDI
+
+• pulling data (HDI for nations recognized by the United Nation only) from the Human Development Index page on Wikipedia
+
+• combine this data from different tables and assign it a category value based on the HDI score
+
+3. Merging cleaned-up procrastination data to the HDI data pulled from Wikipedia - saved into data frame merged_data
+
+4. merged_data has been subsetted due to client's request - saved into data frame cleaned_data
+
+• selecting a subset of only ages that we can confirm are over the age of 18
+
+• The analysis is based on this cleaned_data
+
+*  Answers following question about the dataset
 		
 1.	Output number of rows and columns the procrastination data set has
 	rows : 4262
@@ -227,7 +294,7 @@ Answers following question about the dataset
 	In countries that have low human development category, the life satisfaction mean scores are the lowest.
 	In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category.
 
-Plots
+*  Plots
 
 1. 	Two simple histograms for age and mean GP data. 
 2. 	A barchart displaying the top 15 nations in average procrastination scores using the measure of the GP score.
@@ -236,10 +303,14 @@ Plots
 5. 	Scatter plot between Life Satisfaction and HDI Score. (HDI score data is on horizontal axis)
 6. 	Barplot of Life Satisfaction and HDI Category.
 
-Writing final data to CSV
+*  Writing final data to CSV
 
 The OutPut file contains the following csv files: 
 1. 	HDI.csv          - write HDI table from wiki(web scraping) into csv
 2. 	cleaned_data.csv - updated after analysis,tidied version of the original input to be output in the repository, including the merged HDI data
 3. 	GP15.csv         - top 15 nation with mean GP score as well as their HDI scores
 4. 	AIP15.csv        - top 15 nation with mean AIP score as well as their HDI scores
+5.	job_data.csv	 - Finalized job data
+6. 	Country.csv 	 - Finalized output of Country by participants
+
+
