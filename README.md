@@ -53,17 +53,29 @@ Output Folder
 Session Information
 
 R version 3.4.2 (2017-09-28)
+
 Platform: x86_64-w64-mingw32/x64 (64-bit)
+
 Running under: Windows 7 x64 (build 7601) Service Pack 1
+
 Libraries used:
+
 ggplot2 2.2.1 
+
 knitr 1.17
+
 rvest 0.3.2
+
 XML 3.98-1.9
+
 RCurl 1.95-4.8
+
 plyr 1.8.4
+
 stringr 1.2.0
+
 xtable 1.8-2
+
 kableExtra 0.6.1
 
 Matrix products: default
@@ -80,21 +92,40 @@ loaded via a namespace (and not attached):
 
 Variables:
 • Age: The participant’s age in years.
+
 • Gender: The gender the participant identifies as (Male or Female)
+
 • Kids: Binary, whether they have kids or not.
+
 • Edu: Education level
+
 • Work Status: What kind of job are they working?
+
 • Annual Income: All converted to dollars.
+
 • Current Occupation: A write-in for occupation.
+
 • How long have you held this position?: Years: Number of years in this job.
+
 • How long have you held this position?: Months: Number of months in this job.
+
 • Community: Size of community
+
 • Country of Residence: The country where the person holds citizenship.
+
 • Marital Status: Single, Married, Divorced, Separated, etc.
+
 • Number of sons/Number of daughters: integer number of children.
+
 • All variables starting DP(5 columns/questions) – the Decisional Procrastination Scale (Mann, 1982)
+
 • All variables starting AIP(15 columns/quesions) – Adult Inventory of Procrastination (McCown & Johnson, 1989)
+
 • All variables starting GP(20 columns/questions) – the General Procrastination scale (Lay, 1986)
+
 • All variables starting SWLS(5 columns/questions) – the Satisfaction with Life Scale (Diener et al., 1985)
+
 • Do you consider yourself a procrastinator?: a binary response
+
 • Do others consider you a procrastinator?: a binary response
+
