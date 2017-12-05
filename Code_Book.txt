@@ -98,7 +98,8 @@ The final data set(cleaned-up procrastination data) being used for the analysis 
 
 • In the country of residence column, replacing zeros with NAs
 
-• In the column of question: Do you consider yourself a procrastinator and Do others consider you a procrastinator, replacing blanks and numbers with NAs
+• In the column of question: Do you consider yourself a procrastinator and Do others consider you a procrastinator:
+  replacing blanks and numbers with NAs
 
 • In the column of gender, replacing blanks with NAs
 
@@ -110,7 +111,8 @@ The final data set(cleaned-up procrastination data) being used for the analysis 
 	
 	* All students are titled as student.
 	
-	* Professional job titles are being assigned to a more general term, i.e. yoga teacher and ESL teacher were simplified to teacher.
+	* Professional job titles are being assigned to a more general term, i.e. yoga teacher and ESL teacher were simplified 
+	  to teacher.
 	
 	* Everyone with a job status of Unemployed with a blank occupation is assigned the value Unemployed for their occupation 
 	
@@ -286,14 +288,17 @@ The final data set(cleaned-up procrastination data) being used for the analysis 
 	Taiwan,Puerto Rico,Qatar,Panama,Sri Lanka,Turkey,Ecuador,France,Uruguay
 
 10. 	Relationship between age and income:
-	At younger ages it appears men and women have about the same mean income, but as they get older on average men will make more money than women.
+	At younger ages it appears men and women have about the same mean income, but as they get older on average men will 
+	make more money than women.
 
 11. 	Relationship between Life Satisfaction and HDI Score:
-	In countries that have lower HDI, females appear to have higher life satisfaction level than males.As the HDI increases, the life satisfaction diffenrecence between females and males is getting smaller.
+	In countries that have lower HDI, females appear to have higher life satisfaction level than males.As the HDI increases, 
+	the life satisfaction diffenrecence between females and males is getting smaller.
 
 12. 	Relationship between Life Satisfaction and HDI Category:
 	In countries that have low human development category, the life satisfaction mean scores are the lowest.
-	In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category.
+	In countries that have medium human development category, the life satisfaction mean scores are the higher than those 
+	from high human development category.
 
 *  Plots
 
@@ -308,7 +313,8 @@ The final data set(cleaned-up procrastination data) being used for the analysis 
 
 The OutPut file contains the following csv files: 
 1. 	HDI.csv          - write HDI table from wiki(web scraping) into csv
-2. 	cleaned_data.csv - updated after analysis,tidied version of the original input to be output in the repository, including the merged HDI data
+2. 	cleaned_data.csv - updated after analysis,tidied version of the original input to be output in the repository, 
+			   including the merged HDI data
 3. 	GP15.csv         - top 15 nation with mean GP score as well as their HDI scores
 4. 	AIP15.csv        - top 15 nation with mean AIP score as well as their HDI scores
 5.	job_data.csv	 - Finalized job data
