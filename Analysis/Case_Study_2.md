@@ -39,6 +39,8 @@ Project target is providing the analysis result to clients who want to get a pre
 	
 * Marital Status
 
+* HDI score and HDI category
+
 Project report including:
 
 * Statistical analysis:
@@ -194,7 +196,7 @@ procrastination_data$Country[procrastination_data$Country=="0"] <- "NA"
 procrastination_data$Country[procrastination_data$Country=="Columbia"] <- "Colombia"
 ```
 
-* There are blanks answers under the question: 
+* There are blanks and random numbers in the answers under the question: 
 	* Do you consider yourself a procrastinator?
 	* Do others consider you a procrastinator?
 	* Here we assign them a NA value.
@@ -935,7 +937,7 @@ kable(frequencyOfRespondantsByWork[order(-frequencyOfRespondantsByWork$`Number o
 </tbody>
 </table>
 
-##### 4.c.3 Presented below is a table of the number count of the participants in the survey by Occupation. If there are blanks in job data, they will be assigned NA. This table has been summarized to the top 20 listed job types, the complete list of jobs and their frequency can be found in the output directory in jobs.csv.
+##### 4.c.3 Presented below is a table of the number count of the participants in the survey by Occupation. If there are blanks in job data, they will be assigned NA. This table has been summarized to the top 20 listed job types, the complete list of jobs and their frequency can be found in the output directory in job_data.csv.
 
 
 ```r
@@ -1564,7 +1566,7 @@ ggplot(cleaned_data, aes(x=factor(Category), y=SWLSMean)) +
 df3 <- aggregate(SWLSMean~Category, data = cleaned_data, mean)
 ```
 
-* Finding: In countries that have very high human development category, the life satisfaction mean scores are the highest. In countries that have low human development category, the life satisfaction mean scores are the lowest. In countries that have medium human development category, the life satisfaction mean scores are the higher than those from high human development category. 
+* Finding: In countries that have very high human development category, the life satisfaction mean scores are the highest. In countries that have low human development category, the life satisfaction mean scores are the lowest. In countries that have medium human development category, the life satisfaction mean scores are a little bit higher than those from high human development category. 
 
 #### Conclusion
 It appears from the data that procrastination is a first world problem, procrastination is a luxury that only those that are in high to very highly developed countries can afford. Whether this occurs in these countries because of selection bias, only countries with secure social welfare programs provide this segment of the population an opportunity to participate in these surveys, or if it is that only with higher standards of living are people able to procrastinate it is difficult to tell from this data. 
