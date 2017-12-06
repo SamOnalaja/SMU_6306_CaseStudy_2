@@ -297,8 +297,8 @@ The final data set(cleaned-up procrastination data) being used for the analysis 
 
 12. 	Relationship between Life Satisfaction and HDI Category:
 	In countries that have low human development category, the life satisfaction mean scores are the lowest.
-	In countries that have medium human development category, the life satisfaction mean scores are the higher than those 
-	from high human development category.
+	In countries that have medium human development category, the life satisfaction mean scores are a little bit
+	higher than those from high human development category.
 
 *  Plots
 
